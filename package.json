@@ -1,0 +1,26 @@
+{
+  "name": "koala-timemap",
+  "version": "1.0.0",
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "scripts": {
+    "server": "npm start --prefix server",
+    "client": "npm start --prefix client",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Net22-Group-Assignments/koala-timemap.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Net22-Group-Assignments/koala-timemap/issues"
+  },
+  "homepage": "https://github.com/Net22-Group-Assignments/koala-timemap#readme",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
