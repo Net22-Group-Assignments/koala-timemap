@@ -5,39 +5,48 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [clientId, setClientId] = useState("");
   const [authed, setAuthed] = useState(false);
-  //const [user, setUser] = useState({});
+  const [user, setUser] = useState("");
+  const [secret, setSecret] = useState("");
 
-  useEffect(async () => {
-    const status = await fetch("/status")
-        .then((res) => res.json())
-        .then((data) => data.message);
-    if (status) {
-      setAuthed(status);
-      return;
+  useEffect(() => {
+    fetch("/status")
+      .then((res) => res.json())
+      .then((data) => {
+        const status = data.tokenRegistered;
+        console.log(status);
+        setAuthed(status);
+      });
+    if (!authed) {
+      fetch("/clientId")
+        .then((res) => res.text())
+        .then((data) => {
+          console.log(data);
+          setClientId(data);
+        });
     }
+  }, []);
 
-    fetch("/api")
-      .then((res) => res.text())
-      .then((data) => setClientId(data));
-  });
   const authorize = async (code) => {
     //fetch here
+    console.log(`authorize code: ${code}`);
     await fetch(`/login`, {
       method: "POST",
-          headers: {
-      "Content-Type": "text/plain",
-      body: code
-    });
-        .then((res) => res.json())
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ code: code }),
+    })
+      .then((res) => res.json())
       .then((data) => {
-        setUser(data.message);
-        console.log(user);
+        setSecret(data.accessToken);
+        console.log(secret);
         setAuthed(true);
       });
   };
   const unauthorize = () => {
     setUser({});
     setAuthed(false);
+    setSecret("");
   };
 
   return (

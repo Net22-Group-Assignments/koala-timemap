@@ -1,37 +1,66 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const axios = require("axios");
+const cors = require("cors");
 const storage = require("node-persist");
+const { getMe, getUser, getUsers } = require("./api");
 
 dotenv.config();
 
-let access_token = null;
+let accessToken = null;
+let userId = null; // TODO Should we store the notion user object or just the user id?
 
 (async function () {
   await storage.init();
-  access_token = storage.getItem("access_token");
+  accessToken = await storage.getItem("access_token");
+  console.log(accessToken);
+  if (accessToken != null) {
+    try {
+      const user = await getMe(accessToken);
+      console.log(user);
+    } catch (error) {
+      if (error.response.status == 401) {
+        console.error(`Bearer Token ${accessToken} in storage not valid`);
+        //await storage.removeItem("access_token");
+      }
+    }
+  }
 })();
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 
 const app = express();
-app.use(express.text());
-
-const status = { tokenRegistered: access_token !== null };
+app.use(cors());
+app.use(express.json());
 
 app.get("/status", (req, res) => {
-  res.json({ status });
+  res.json({ tokenRegistered: accessToken != null });
 });
+
 app.get("/clientId", (req, res) => {
   res.status(200).send(process.env.NOTION_OAUTH_CLIENT_ID);
 });
 
+// TODO Only for dev purpose, remove later.
 app.get("/accessToken", (req, res) => {
-  res.status(200).send(access_token);
+  res.json({ accessToken: accessToken });
+});
+
+app.get("/me", async (req, res) => {
+  res.json(await getMe(accessToken));
+});
+
+app.get("/users/:userId", async (req, res) => {
+  const { userId } = req.params;
+  res.json(await getUser(accessToken, userId));
+});
+
+app.get("/users", async (req, res) => {
+  res.json(await getUsers(accessToken));
 });
 
 app.post("/login", async (req, res) => {
-  const code = req.body;
+  const code = req.body.code;
   console.log(`code: ${code}`);
   const options = {
     method: "POST",
@@ -61,29 +90,26 @@ app.post("/login", async (req, res) => {
     return;
   }
 
-  access_token = data.access_token;
-  await storage.setItem("access_token", access_token);
-  status.tokenRegistered = true;
-  console.log(`access_token ${access_token}`);
-  res.json({ message: data.owner });
-  //res.status(200).send(`accesstoken: ${access_token}`);
+  accessToken = data.access_token;
+  await storage.setItem("access_token", accessToken);
+  console.log(`access_token ${accessToken}`);
+
+  res.json({ accessToken: accessToken });
 });
 
 app.post("/testLogin", async (req, res) => {
-  const code = req.body;
+  const code = req.body.code;
   console.log(`code: ${code}`);
-  access_token = code;
-  await storage.setItem("access_token", access_token);
-  status.tokenRegistered = true;
-  console.log(`access_token ${access_token}`);
+  accessToken = code;
+  await storage.setItem("access_token", accessToken);
+  console.log(`access_token ${accessToken}`);
   //res.json({ message: response.data.owner });
-  res.status(200).send(`accesstoken: ${access_token}`);
+  res.status(200).send(`accesstoken: ${accessToken}`);
 });
 
 app.post("/logout", async (req, res) => {
-  access_token = null;
+  accessToken = null;
   await storage.removeItem("access_token");
-  status.tokenRegistered = false;
   res.status(200).send("Accesstoken removed");
 });
 
