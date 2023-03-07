@@ -1,57 +1,48 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useNotionStatus, useUserInfo } from "../hooks";
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
-  const [clientId, setClientId] = useState("");
-  const [authed, setAuthed] = useState(false);
-  const [user, setUser] = useState("");
-  const [secret, setSecret] = useState("");
+  const [isTokenStored, isTokenValid, clientId] = useNotionStatus();
+  const user = useUserInfo();
 
-  useEffect(() => {
-    fetch("/status")
-      .then((res) => res.json())
-      .then((data) => {
-        const status = data.tokenRegistered;
-        console.log(status);
-        setAuthed(status);
-      });
-    if (!authed) {
-      fetch("/clientId")
-        .then((res) => res.text())
-        .then((data) => {
-          console.log(data);
-          setClientId(data);
-        });
-    }
-  }, []);
-
+  //const authorized = isTokenStored && isTokenValid;
   const authorize = async (code) => {
     //fetch here
     console.log(`authorize code: ${code}`);
-    await fetch(`/login`, {
+    fetch(`/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ code: code }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setSecret(data.accessToken);
-        console.log(secret);
-        setAuthed(true);
-      });
+    }).then((res) => {
+      if (res.ok) {
+        //setAuthorized(true);
+      }
+    });
   };
+
   const unauthorize = () => {
-    setUser({});
-    setAuthed(false);
-    setSecret("");
+    fetch("/logout", {
+      method: "POST",
+    }).then((res) => {
+      if (res.ok) {
+        //setAuthorized(false);
+      }
+    });
   };
 
   return (
     <AuthContext.Provider
-      value={{ clientId, authorize, authed, user, unauthorize }}
+      value={{
+        authorize,
+        authorized: isTokenStored && isTokenValid,
+        clientId,
+        user,
+        unauthorize,
+      }}
     >
       {children}
     </AuthContext.Provider>

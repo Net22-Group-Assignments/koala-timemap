@@ -3,20 +3,9 @@ import { useEffect, useState } from "react";
 import { useAuth } from "./components/AuthProvider";
 
 function App() {
-  const { clientId, authorize, authed, user, unauthorize } = useAuth();
+  const { authorized, user, clientId } = useAuth();
 
-  useEffect(() => {
-    if (!authed) {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get("code");
-      console.log(`code from params: ${code}`);
-      if (code) {
-        authorize(code);
-      }
-    }
-  });
-
-  if (!authed)
+  if (!authorized)
     return (
       <div className="App">
         <a
@@ -28,7 +17,12 @@ function App() {
       </div>
     );
 
-  return <div className="App">{JSON.stringify(user)}</div>;
+  return (
+    <div className="App">
+      <p>Authorized</p>
+      {JSON.stringify(user)}
+    </div>
+  );
 }
 
 export default App;

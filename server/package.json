@@ -4,8 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node server.js --integration public",
+    "dev": "nodemon server.js --integration internal",
+    "mock": "nodemon server.js --integration mock",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

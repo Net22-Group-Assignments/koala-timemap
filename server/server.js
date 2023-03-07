@@ -3,20 +3,46 @@ const dotenv = require("dotenv");
 const axios = require("axios");
 const cors = require("cors");
 const storage = require("node-persist");
-const { getMe, getUser, getUsers } = require("./api");
+const { Client } = require("@notionhq/client");
+const { MockClient } = require("./mock.js");
 
 dotenv.config();
 
+const integrationArgIndex = process.argv.indexOf("--integration");
+let integrationValue;
+if (integrationArgIndex > -1) {
+  integrationValue = process.argv[integrationArgIndex + 1];
+}
+
 let accessToken = null;
-let userId = null; // TODO Should we store the notion user object or just the user id?
+let notion = null;
+let validToken = false;
 
 (async function () {
+  if (integrationValue == "mock") {
+    notion = MockClient;
+    accessToken = "00000000-0000-0000-0000-000000000000";
+    validToken = true;
+    return;
+  }
+
+  if (integrationValue == "internal" && !process.env.NOTION_API_KEY) {
+    console.log("No internal access token in .env file");
+    process.exit(1);
+  }
   await storage.init();
-  accessToken = await storage.getItem("access_token");
+  accessToken =
+    integrationValue == "public"
+      ? await storage.getItem("access_token")
+      : process.env.NOTION_API_KEY;
   console.log(accessToken);
   if (accessToken != null) {
+    notion = new Client({
+      auth: accessToken,
+    });
     try {
-      const user = await getMe(accessToken);
+      const user = await notion.users.me();
+      validToken = true;
       console.log(user);
     } catch (error) {
       if (error.response.status == 401) {
@@ -32,9 +58,16 @@ const PORT = 3001;
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});
 
 app.get("/status", (req, res) => {
-  res.json({ tokenRegistered: accessToken != null });
+  res.json({
+    tokenRegistered: accessToken != null,
+    validToken: validToken,
+    clientId: process.env.NOTION_OAUTH_CLIENT_ID,
+  });
 });
 
 app.get("/clientId", (req, res) => {
@@ -47,19 +80,33 @@ app.get("/accessToken", (req, res) => {
 });
 
 app.get("/me", async (req, res) => {
-  res.json(await getMe(accessToken));
+  const response = await notion.users.me();
+  if (integrationValue == "public") {
+    res.json(response.bot.owner.user);
+  } else {
+    res.json(response);
+  }
 });
 
 app.get("/users/:userId", async (req, res) => {
   const { userId } = req.params;
-  res.json(await getUser(accessToken, userId));
+  res.json(await notion.users.retrieve({ user_id: userId }));
 });
 
 app.get("/users", async (req, res) => {
-  res.json(await getUsers(accessToken));
+  res.json(await notion.users.list());
 });
 
 app.post("/login", async (req, res) => {
+  if (integrationValue != "public") {
+    res.status(400).send("Running with internal access token");
+    return;
+  }
+  if (validToken) {
+    res.status(400).send("Accesstoken already registered and validated");
+    return;
+  }
+
   const code = req.body.code;
   console.log(`code: ${code}`);
   const options = {
@@ -80,39 +127,29 @@ app.post("/login", async (req, res) => {
   try {
     const response = await axios.request(options);
     data = response.data;
+    accessToken = data.access_token;
+    await storage.setItem("access_token", accessToken);
+    console.log(`access_token ${accessToken}`);
+
+    res.status(200).end();
   } catch (error) {
-    //console.log(error);
+    console.error(error.status);
     if (data?.hasOwnProperty("error")) {
       res.status(500).send(data.error);
       return;
     }
-    res.status(500).send("Major Malfunction with code " + code);
-    return;
+    res.status(500).end();
   }
-
-  accessToken = data.access_token;
-  await storage.setItem("access_token", accessToken);
-  console.log(`access_token ${accessToken}`);
-
-  res.json({ accessToken: accessToken });
-});
-
-app.post("/testLogin", async (req, res) => {
-  const code = req.body.code;
-  console.log(`code: ${code}`);
-  accessToken = code;
-  await storage.setItem("access_token", accessToken);
-  console.log(`access_token ${accessToken}`);
-  //res.json({ message: response.data.owner });
-  res.status(200).send(`accesstoken: ${accessToken}`);
 });
 
 app.post("/logout", async (req, res) => {
+  if (integrationValue != "public") {
+    res.status(400).send("Running with internal access token");
+    return;
+  }
   accessToken = null;
+  validToken = false;
+  notion = null;
   await storage.removeItem("access_token");
   res.status(200).send("Accesstoken removed");
-});
-
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
 });
