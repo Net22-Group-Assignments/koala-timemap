@@ -41,9 +41,14 @@ const init = async () => {
       auth: accessToken,
     });
     try {
-      const user = await notion.users.me();
+      const response = await notion.users.me();
       validToken = true;
-      console.log(`USER: ${user}`);
+      console.log("USER:");
+      if (integrationType === "public") {
+        console.log(response.bot.owner.user);
+      } else {
+        console.log(response);
+      }
     } catch (error) {
       if (error.response.status === 401) {
         console.error(`Bearer Token ${accessToken} in storage not valid`);
