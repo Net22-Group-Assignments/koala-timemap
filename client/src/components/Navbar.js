@@ -1,17 +1,18 @@
-import { Fragment } from 'react';
-import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { NavLink } from 'react-router-dom';
+import { Fragment } from "react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { NavLink } from "react-router-dom";
 
 const navigation = [
-  { name: 'Time Summary', href: '/TimeSummary' },
-  { name: 'Time Registry', href: '/TimeRegistry' },
-  { name: 'Projects', href: '/Projects' },
-  { name: 'Other', href: '/other' },
-]
+  { name: "Time Summary", href: "/TimeSummary" },
+  { name: "Time Registry", href: "/TimeRegistry" },
+  { name: "Projects", href: "/Projects" },
+  { name: "Other", href: "/other" },
+  { name: "Dev", href: "/dev" },
+];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Navbar(props) {
@@ -42,10 +43,10 @@ export default function Navbar(props) {
                           to={item.href}
                           className={({ isActive }) => {
                             return (
-                              'px-3 py-2 text-gray-400 rounded-md text-sm font-medium no-underline' +
+                              "px-3 py-2 text-gray-400 rounded-md text-sm font-medium no-underline" +
                               (!isActive
-                                ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                                : 'bg-gray-900 text-white')
+                                ? "text-gray-300 hover:bg-gray-700 hover:text-white"
+                                : "bg-gray-900 text-white")
                             );
                           }}
                         >
@@ -75,10 +76,10 @@ export default function Navbar(props) {
                     to={item.href}
                     className={({ isActive }) => {
                       return (
-                        'block rounded-md px-3 py-2 text-base font-medium no-underline' +
+                        "block rounded-md px-3 py-2 text-base font-medium no-underline" +
                         (!isActive
-                          ? 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                          : 'bg-gray-900 text-white')
+                          ? "text-gray-300 hover:bg-gray-700 hover:text-white"
+                          : "bg-gray-900 text-white")
                       );
                     }}
                   >
@@ -90,9 +91,11 @@ export default function Navbar(props) {
           </>
         )}
       </Disclosure>
-      <div className='bg-gray-300'>
-        <div className='max-w-7xl mx-auto min-h-screen px-2 py-2'>{props.children}</div>
+      <div className="bg-gray-300">
+        <div className="max-w-7xl mx-auto min-h-screen px-2 py-2">
+          {props.children}
+        </div>
       </div>
     </>
-  )
+  );
 }

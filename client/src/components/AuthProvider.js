@@ -1,42 +1,27 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { useNotionStatus, useUserInfo } from "../hooks";
+import { createContext, useContext } from "react";
+import { useLogin, useLogout, useNotionStatus, useUserInfo } from "../hooks";
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
-  const [isTokenStored, isTokenValid, clientId] = useNotionStatus();
+  const {
+    isConnected,
+    isTokenStored,
+    isTokenValid,
+    clientId,
+    integrationType,
+  } = useNotionStatus();
+  const login = useLogin();
+  const logout = useLogout();
   const user = useUserInfo();
-
-  //const authorized = isTokenStored && isTokenValid;
-  const authorize = async (code) => {
-    //fetch here
-    console.log(`authorize code: ${code}`);
-    fetch(`/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ code: code }),
-    }).then((res) => {
-      if (res.ok) {
-        //setAuthorized(true);
-      }
-    });
-  };
-
-  const unauthorize = () => {
-    fetch("/logout", {
-      method: "POST",
-    }).then((res) => {
-      if (res.ok) {
-        //setAuthorized(false);
-      }
-    });
-  };
+  const authorize = async (code) => await login(code);
+  const unauthorize = async () => await logout();
 
   return (
     <AuthContext.Provider
       value={{
+        isConnected,
+        integrationType,
         authorize,
         authorized: isTokenStored && isTokenValid,
         clientId,

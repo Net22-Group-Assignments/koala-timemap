@@ -1,9 +1,32 @@
-import "./App.css";
-import { useEffect, useState } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Projects from "./pages/Project";
+import TimeRegistry from "./pages/TimeRegistry";
+import TimeSummary from "./pages/TimeSummary";
 import { useAuth } from "./components/AuthProvider";
+import Dev from "./pages/Dev";
+import { useEffect } from "react";
 
 function App() {
-  const { authorized, user, clientId } = useAuth();
+  const { isConnected, integrationType, authorized, authorize, clientId } =
+    useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (integrationType === "public" && isConnected && !authorized) {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+      console.log(`code from params: ${code}`);
+      if (code) {
+        (async function () {
+          await authorize(code);
+        })();
+        navigate("/", { replace: true });
+      }
+    }
+  }, [isConnected, authorized]);
+
+  if (!isConnected) return <div>No connection to server</div>;
 
   if (!authorized)
     return (
@@ -18,10 +41,17 @@ function App() {
     );
 
   return (
-    <div className="App">
-      <p>Authorized</p>
-      {JSON.stringify(user)}
-    </div>
+    <>
+      <Navbar>
+        <Routes>
+          <Route path="/" element={<TimeSummary />} />
+          <Route path="/timesummary" element={<TimeSummary />} />
+          <Route path="/timeregistry" element={<TimeRegistry />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/dev" element={<Dev />} />
+        </Routes>
+      </Navbar>
+    </>
   );
 }
 
