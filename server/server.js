@@ -3,6 +3,9 @@ const dotenv = require("dotenv");
 const axios = require("axios");
 const cors = require("cors");
 const storage = require("node-persist");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
+
 const { Client } = require("@notionhq/client");
 const { MockClient } = require("./mock.js");
 
@@ -65,6 +68,8 @@ const PORT = 3001;
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
   console.log(`Running with ${integrationType} Notion integration`);
