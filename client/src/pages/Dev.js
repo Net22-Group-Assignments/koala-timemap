@@ -1,27 +1,15 @@
-import { useAuth } from "../components/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { useNotionStatus, useUserInfo } from "../hooks";
 
 function Dev() {
-  const { integrationType, clientId, user, authorized, unauthorize } =
-    useAuth();
-  const navigate = useNavigate();
+  const { isConnected, integrationType, clientId } = useNotionStatus();
+  const user = useUserInfo();
+
+  if (!isConnected) return <div>No connection to server</div>;
   return (
     <>
       <div>Integration: {integrationType}</div>
       <div>clientId: {clientId}</div>
       <div>{JSON.stringify(user)}</div>
-      {integrationType === "public" && authorized && (
-        <div>
-          <button
-            onClick={async () => {
-              unauthorize();
-              navigate("/", { replace: true });
-            }}
-          >
-            Deregister Notion Token
-          </button>
-        </div>
-      )}
     </>
   );
 }

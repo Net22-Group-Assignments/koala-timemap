@@ -4,18 +4,13 @@ import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { NavLink } from "react-router-dom";
 
 const navigation = [
-  { name: "Time Summary", href: "/TimeSummary" },
-  { name: "Time Registry", href: "/TimeRegistry" },
-  { name: "Projects", href: "/Projects" },
+  { name: "Time Summary", href: "/timesummary" },
+  { name: "Time Registry", href: "/timeregistry" },
+  { name: "Projects", href: "/projects" },
   { name: "Other", href: "/other" },
   { name: "Dev", href: "/dev" },
 ];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
-export default function Navbar(props) {
+export default function Navbar() {
   return (
     <>
       <Disclosure as="nav" className="bg-gray-800">
@@ -91,11 +86,6 @@ export default function Navbar(props) {
           </>
         )}
       </Disclosure>
-      <div className="bg-gray-300">
-        <div className="max-w-7xl mx-auto min-h-screen px-2 py-2">
-          {props.children}
-        </div>
-      </div>
     </>
   );
 }

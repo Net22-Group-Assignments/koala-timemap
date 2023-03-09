@@ -6,6 +6,9 @@ function useNotionStatus() {
   const [isTokenStored, setIsTokenStored] = useState(false);
   const [isTokenValid, setIsTokenValid] = useState(false);
   const [clientId, setClientId] = useState(null);
+  const [isAuthorized, setIsAuthorized] = useState(
+    isTokenStored && isTokenValid
+  );
 
   useEffect(() => {
     try {
@@ -17,6 +20,7 @@ function useNotionStatus() {
           setIsTokenStored(data.tokenRegistered);
           setIsTokenValid(data.validToken);
           setClientId(data.clientId);
+          setIsAuthorized(isTokenStored && isTokenValid);
         });
     } catch (error) {
       console.error("No connection to server");
@@ -30,6 +34,7 @@ function useNotionStatus() {
     clientId,
     setIsTokenStored,
     setIsTokenValid,
+    isAuthorized,
   };
 }
 
