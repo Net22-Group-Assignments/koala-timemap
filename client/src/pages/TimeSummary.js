@@ -1,3 +1,4 @@
+import GetTime from "../components/GetTime";
 export default function TimeSummary() {
-  return <p>Time Summary go here</p>;
+  return <GetTime />;
 }
