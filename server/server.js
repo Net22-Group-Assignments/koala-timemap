@@ -4,8 +4,8 @@ const axios = require("axios");
 const cors = require("cors");
 const storage = require("node-persist");
 const swaggerUi = require("swagger-ui-express");
-const swaggerDocument = require("./swagger.json");
-
+const fs = require("fs");
+const swaggerDocumentPath = "./swagger.json";
 const { Client } = require("@notionhq/client");
 const { MockClient } = require("./mock.js");
 
@@ -69,7 +69,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// Don't load swagger if no swagger.json file present.
+if (fs.existsSync(swaggerDocumentPath)) {
+  const swaggerDocument = require(swaggerDocumentPath);
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+}
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
   console.log(`Running with ${integrationType} Notion integration`);
@@ -123,6 +128,18 @@ app.get("/users", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.sendStatus(500);
+  }
+});
+
+app.get("/projects", async (req, res) => {
+  try {
+    res.json(
+      await notion.databases.query({
+        database_id: process.env.PROJECT_DATABASE_ID,
+      })
+    );
+  } catch (error) {
+    console.error(error);
   }
 });
 
