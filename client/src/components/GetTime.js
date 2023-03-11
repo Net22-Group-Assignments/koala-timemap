@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export default function GetTime() {
   const [projectData, setProjectData] = useState(null);
   useEffect(() => {
-    fetch("/projects")
+    fetch("/timereports")
       .then((res) => res.json())
       .then((data) => setProjectData(data));
   }, []);
@@ -15,7 +15,7 @@ export default function GetTime() {
           projectData.results.map((project) => (
             <li>
               <span>
-                {project.properties.Projectname.title[0].text.content}
+                {console.log(project.properties.Project.relation[0].id)}
               </span>
             </li>
           ))}
@@ -23,3 +23,4 @@ export default function GetTime() {
     </div>
   );
 }
+//{project.properties.Projectname.title[0].text.content}

@@ -138,6 +138,30 @@ app.get("/projects", async (req, res) => {
   }
 });
 
+app.get("/people", async (req, res) => {
+  try {
+    res.json(
+      await notion.databases.query({
+        database_id: process.env.PEOPLE_DATABASE_ID,
+      })
+    );
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+app.get("/timereports", async (req, res) => {
+  try {
+    res.json(
+      await notion.databases.query({
+        database_id: process.env.TIME_DATABASE_ID,
+      })
+    );
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 app.post("/login", async (req, res) => {
   if (integrationType !== "public") {
     res.status(400).send("Running with internal access token");
