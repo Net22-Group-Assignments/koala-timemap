@@ -4,7 +4,6 @@ import Projects from "./pages/Project";
 import TimeRegistry from "./pages/TimeRegistry";
 import TimeSummary from "./pages/TimePage/TimeSummary";
 import Dev from "./pages/Dev";
-import GetTime from "./components/GetTime";
 
 function App() {
   return (
