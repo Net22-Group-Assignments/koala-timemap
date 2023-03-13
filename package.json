@@ -24,5 +24,10 @@
   "homepage": "https://github.com/Net22-Group-Assignments/koala-timemap#readme",
   "devDependencies": {
     "concurrently": "^7.6.0"
+  },
+  "dependencies": {
+    "@mui/material": "^5.11.12",
+    "bootstrap": "^5.2.3",
+    "react-bootstrap": "^2.7.2"
   }
 }

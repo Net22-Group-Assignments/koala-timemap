@@ -3,6 +3,8 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { NavLink } from "react-router-dom";
 
+import "./Navbar.css";
+
 const navigation = [
   { name: "Time Summary", href: "/timesummary" },
   { name: "Time Registry", href: "/timeregistry" },
