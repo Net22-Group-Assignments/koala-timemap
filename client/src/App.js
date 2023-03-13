@@ -2,9 +2,8 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/NavBar-folder/Navbar";
 import Projects from "./pages/Project";
 import TimeRegistry from "./pages/TimeRegistry";
-import TimeSummary from "./pages/TimeFolder/TimeSummary";
+import TimeSummary from "./pages/TimeSummary";
 import Dev from "./pages/Dev";
-import GetTime from "./pages/TimeFolder/TimeComponent";
 
 function App() {
   return (
