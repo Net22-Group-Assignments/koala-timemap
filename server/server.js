@@ -67,6 +67,15 @@ app.get("/projects", async (req, res) => {
     console.error(error);
   }
 });
+
+app.post("projects", async (req, res) => {
+  try {
+    res.json(
+
+    )
+  }
+})
+
 app.get("/users/:userId", async (req, res) => {
   try {
     const { userId } = req.params;

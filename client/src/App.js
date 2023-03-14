@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/NavBar-folder/Navbar";
 import Projects from "./pages/Project";
-import TimeRegistry from "./pages/TimeRegistry";
+import TimeRegistry from "./pages/TimePage/TimeRegistry";
 import TimeSummary from "./pages/TimePage/TimeSummary";
 import Dev from "./pages/Dev";
 
