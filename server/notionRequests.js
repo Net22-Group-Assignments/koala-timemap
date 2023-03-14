@@ -62,9 +62,8 @@ const init = async () => {
       }
     }
   }
+  return notion;
 };
-
-init();
 
 // Retrieves the Notion user object associated with current token
 const getTokenBotUser = async () => {
@@ -157,6 +156,7 @@ const createReport = async (date, personId, hours, projectId, noteText) => {
 };
 
 module.exports = {
+  init,
   status,
   getTokenBotUser,
   getNotionUserById,
