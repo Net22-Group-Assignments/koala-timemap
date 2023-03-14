@@ -16,10 +16,10 @@ function useNotionStatus() {
         .then((res) => res.json())
         .then((data) => {
           setIsConnected(true);
-          setIntegrationType(data.integrationType);
-          setIsTokenStored(data.tokenRegistered);
-          setIsTokenValid(data.validToken);
-          setClientId(data.clientId);
+          setIntegrationType(data.integration_type);
+          setIsTokenStored(data.access_token);
+          setIsTokenValid(data.valid_token);
+          setClientId(data.client_id);
           setIsAuthorized(isTokenStored && isTokenValid);
         });
     } catch (error) {
