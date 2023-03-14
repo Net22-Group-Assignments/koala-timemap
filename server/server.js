@@ -9,6 +9,7 @@ const swaggerDocumentPath = "./swagger.json";
 const { Client } = require("@notionhq/client");
 const userRoutes = require("./routes/users");
 const peopleRoutes = require("./routes/people");
+const timeReportRoutes = require("./routes/timereports");
 const { status } = require("./notionRequests");
 
 dotenv.config();
@@ -27,6 +28,8 @@ if (fs.existsSync(swaggerDocumentPath)) {
 
 app.use("/", userRoutes);
 app.use("/api", peopleRoutes);
+app.use("/api", timeReportRoutes);
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
   console.log(`Running with ${status.integrationType} Notion integration`);

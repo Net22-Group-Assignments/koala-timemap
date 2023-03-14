@@ -3,10 +3,12 @@ const storage = require("node-persist");
 const { Client } = require("@notionhq/client");
 const dotenv = require("dotenv");
 const integrationArgIndex = process.argv.indexOf("--integration");
+const TimeReport = require("./timemap_objects");
 
 dotenv.config();
 
 const peopleDB = process.env.PEOPLE_DATABASE_ID;
+const timeReportsDB = process.env.TIMEREPORTS_DATABASE_ID;
 
 let status = {
   integration_type: null,
@@ -129,6 +131,31 @@ const filterPeople = (person) => {
   };
 };
 
+const createReport = async (date, personId, hours, projectId, noteText) => {
+  const timeReport = new TimeReport(
+    new Date(date),
+    personId,
+    hours,
+    projectId,
+    noteText
+  );
+
+  const bodyParams = {
+    parent: {
+      type: "database_id",
+      database_id: timeReportsDB,
+    },
+    properties: timeReport,
+  };
+
+  try {
+    const response = await notion.pages.create(bodyParams);
+    return response;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 module.exports = {
   status,
   getTokenBotUser,
@@ -136,4 +163,5 @@ module.exports = {
   getNotionUsers,
   getPeople,
   getPeopleById,
+  createReport,
 };
