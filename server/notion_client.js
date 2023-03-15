@@ -1,4 +1,4 @@
-const { Client } = require("@notionhq/client");
+const { Client, LogLevel } = require("@notionhq/client");
 
 const Notion = {
   token: null,
@@ -8,6 +8,7 @@ const Notion = {
     if (token != null) {
       const client = new Client({
         auth: token,
+        logLevel: LogLevel.DEBUG,
       });
       this.token = token;
       this.client = client;
