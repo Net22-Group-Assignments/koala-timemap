@@ -116,7 +116,7 @@ export default function AddTime(props) {
                                 <input className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                                     id="industry"
                                     placeholder='2000-00-00'
-                                    type="text"
+                                    type="date"
                                     value={timespanStart}
                                     onChange={(e) => {
                                         setTimespanStart(e.target.value)
@@ -135,7 +135,7 @@ export default function AddTime(props) {
                                 <input className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                                     id="industry"
                                     placeholder='2000-00-00'
-                                    type="text"
+                                    type="date"
                                     value={timespanEnd}
                                     onChange={(e) => {
                                         setTimespanEnd(e.target.value)

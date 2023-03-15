@@ -8,53 +8,21 @@ export default function TimeRegistry() {
 
   const [projects, setProjects] = useState();
   const [show, setShow] = useState(false);
+  const DATABASE_ID = process.env.NOTION_DATABASE_ID
 
   function toggleShow() {
     setShow(!show);
   }
 
   useEffect(() => {
-    const url = 'api/projects';
-    fetch(url)
+    fetch("/api/projects")
       .then((response) => response.json())
       .then((data) => {
         setProjects(data.projects);
       })
   }, []);
   function newProject(Projectname, Status, Hours, TimespanStart, TimespanEnd) {
-    // const data = {
-    //   parent: {
-    //     type: "database_id",
-    //     database_id: "3a6e6b4bbcab4f83a66750fc4313e44c"
-    //   },
-    //   properties: {
-    //     Hours: {
-    //       number: 16
-    //     },
-    //     Status: {
-    //       select: {
-    //         name: "Active"
-    //       }
-    //     },
-    //     Timespan: {
-    //       date: {
-    //         start: "2000-00-00",
-    //         end: "2012-02-13"
-    //       }
-    //     },
-    //     Projectname: {
-    //       title: [{
-    //         text:
-    //         {
-    //           content: "The Bestest Project"
-    //         }
-    //       }]
-    //     }
-    //   }
-    // };
-
-    const url = 'http://localhost:3001/api/projects';
-    fetch(url, {
+    fetch("/api/projects", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -66,7 +34,7 @@ export default function TimeRegistry() {
         },
         properties: {
           Hours: {
-            number: 3000,
+            number: parseInt(Hours),
           },
           Status: {
             select: {
@@ -112,13 +80,11 @@ export default function TimeRegistry() {
     <>
       <h1>Here is our projects: </h1>
       {/* <ul>
-        {customers
-          ? customers.map((customer) => {
+        {projects
+          ? projects.map((project) => {
             return (
-              <li key={customer.id}>
-                <Link to={'/customers/' + customer.id}>
-                  {customer.name}
-                </Link>
+              <li>
+                {console.log(project)}
               </li>
             );
           })
