@@ -8,7 +8,6 @@ export default function TimeRegistry() {
 
   const [projects, setProjects] = useState();
   const [show, setShow] = useState(false);
-  const DATABASE_ID = process.env.NOTION_DATABASE_ID
 
   function toggleShow() {
     setShow(!show);
