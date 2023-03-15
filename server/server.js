@@ -25,20 +25,17 @@ if (integrationArgIndex > -1) {
 }
 
 (async () => {
-  if (status.integration_type === "internal" && !process.env.NOTION_API_KEY) {
+  if (status.integration_type !== "internal" && !process.env.NOTION_API_KEY) {
     console.log("No internal access token in .env file");
     process.exit(1);
   }
-  await storage.init();
-  status.access_token =
-    status.integration_type === "public"
-      ? await storage.getItem("access_token")
-      : process.env.NOTION_API_KEY;
+  status.access_token = process.env.NOTION_API_KEY;
   console.log(`Access token: ${status.access_token}`);
   Notion.configure(status.integration_type, status.access_token);
   UserService.configure(Notion);
   try {
     console.log(await UserService.getTokenBotUser());
+    console.log("Valid internal token");
     status.valid_token = true;
   } catch (e) {
     console.error(e);
