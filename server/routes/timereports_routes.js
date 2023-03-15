@@ -11,16 +11,21 @@ router.get("/timereports", async (req, res) => {
 });
 
 router.post("/timereports", async (req, res) => {
-  const { date, person_id, hours, project_id, note } = req.body.time_report;
-  res.json(
-    await TimeReportsService.createReport(
+  const { schema } = req.query;
+  let response;
+  if (schema === "native") {
+    const { date, person_id, hours, project_id, note } = req.body.time_report;
+    response = await TimeReportsService.createReportWithNativeSchema(
       date,
       person_id,
       hours,
       project_id,
       note
-    )
-  );
+    );
+  } else {
+    response = await TimeReportsService.createReport(req.body);
+  }
+  res.json(response);
 });
 
 module.exports = router;
