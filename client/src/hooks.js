@@ -12,7 +12,7 @@ function useNotionStatus() {
 
   useEffect(() => {
     try {
-      fetch("/api/status")
+      fetch("/status")
         .then((res) => res.json())
         .then((data) => {
           setIsConnected(true);
@@ -44,7 +44,7 @@ function useUserInfo() {
 
   useEffect(() => {
     if (isConnected && isTokenValid) {
-      fetch("/api/me")
+      fetch("/me")
         .then((res) => res.json())
         .then((data) => setUser(data));
     }
