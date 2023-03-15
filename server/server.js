@@ -1,17 +1,52 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const axios = require("axios");
 const cors = require("cors");
 const storage = require("node-persist");
 const swaggerUi = require("swagger-ui-express");
 const fs = require("fs");
 const swaggerDocumentPath = "./swagger.json";
-const userRoutes = require("./routes/users");
-const peopleRoutes = require("./routes/people");
-const timeReportRoutes = require("./routes/timereports");
-const { init, status } = require("./notionRequests");
+const { Notion } = require("./notion_client");
+const UserService = require("./service/user_service");
+const ProjectsService = require("./service/projects_service");
+const TimeReportsService = require("./service/timereports_service");
+const PeopleService = require("./service/people_service");
+const integrationArgIndex = process.argv.indexOf("--integration");
 
 dotenv.config();
+
+let status = {
+  integration_type: null,
+  access_token: null,
+  valid_token: false,
+};
+
+if (integrationArgIndex > -1) {
+  status.integration_type = process.argv[integrationArgIndex + 1];
+}
+
+(async () => {
+  if (status.integration_type === "internal" && !process.env.NOTION_API_KEY) {
+    console.log("No internal access token in .env file");
+    process.exit(1);
+  }
+  await storage.init();
+  status.access_token =
+    status.integration_type === "public"
+      ? await storage.getItem("access_token")
+      : process.env.NOTION_API_KEY;
+  console.log(`Access token: ${status.access_token}`);
+  Notion.configure(status.integration_type, status.access_token);
+  UserService.configure(Notion);
+  try {
+    console.log(await UserService.getTokenBotUser());
+    status.valid_token = true;
+  } catch (e) {
+    console.error(e);
+  }
+  ProjectsService.configure(Notion);
+  TimeReportsService.configure(Notion);
+  PeopleService.configure(Notion);
+})();
 
 const PORT = 3001;
 
@@ -19,108 +54,36 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-let notion;
-
-(async () => {
-  notion = await init();
-})();
-
 // Don't load swagger if no swagger.json file present.
 if (fs.existsSync(swaggerDocumentPath)) {
   const swaggerDocument = require(swaggerDocumentPath);
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 }
 
-app.use("/", userRoutes);
-app.use("/api", peopleRoutes);
-app.use("/api", timeReportRoutes);
+app.use("/api", require("./routes/users_routes"));
+app.use("/api", require("./routes/people_routes"));
+app.use("/api", require("./routes/timereports_routes"));
+app.use("/api", require("./routes/projects_routes"));
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
-  console.log(`Running with ${status.integrationType} Notion integration`);
+  console.log(`Running with ${status.integration_type} Notion integration`);
 });
 
-app.get("/status", (req, res) => {
+app.get("/api/status", (req, res) => {
   res.json({
     ...status,
     client_id: process.env.NOTION_OAUTH_CLIENT_ID,
   });
 });
 
-app.get("/clientId", (req, res) => {
+app.get("/api/clientId", (req, res) => {
   res.status(200).send(process.env.NOTION_OAUTH_CLIENT_ID);
 });
 
 // TODO Only for dev purpose, remove later.
-app.get("/accessToken", (req, res) => {
-  res.json({ accessToken: accessToken });
-});
-
-app.get("/projects", async (req, res) => {
-  try {
-    res.json(
-      await notion.databases.query({
-        database_id: process.env.PROJECT_DATABASE_ID,
-      })
-    );
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-app.get("/users/:userId", async (req, res) => {
-  try {
-    const { userId } = req.params;
-    res.json(await notion.users.retrieve({ user_id: userId }));
-  } catch (error) {
-    console.error(error);
-    res.sendStatus(500);
-  }
-});
-
-app.get("/users", async (req, res) => {
-  try {
-    res.json(await notion.users.list());
-  } catch (error) {
-    console.error(error);
-    res.sendStatus(500);
-  }
-});
-
-app.get("/projects", async (req, res) => {
-  try {
-    res.json(
-      await notion.databases.query({
-        database_id: process.env.PROJECT_DATABASE_ID,
-      })
-    );
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-app.get("/people", async (req, res) => {
-  try {
-    res.json(
-      await notion.databases.query({
-        database_id: process.env.PEOPLE_DATABASE_ID,
-      })
-    );
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-app.get("/timereports", async (req, res) => {
-  try {
-    res.json(
-      await notion.databases.query({
-        database_id: process.env.TIME_DATABASE_ID,
-      })
-    );
-  } catch (error) {
-    console.error(error);
-  }
+app.get("/api/accessToken", (req, res) => {
+  res.json({ accessToken: status.access_token });
 });
 
 // app.post("/login", async (req, res) => {
