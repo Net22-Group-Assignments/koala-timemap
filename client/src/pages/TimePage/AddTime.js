@@ -8,7 +8,8 @@ export default function AddTime(props) {
     const [hours, setHours] = useState('');
     const [workedHours, setWorkedHours] = useState('');
     const [hoursLeft, setHoursLeft] = useState('');
-    const [timespan, setTimespan] = useState('');
+    const [timespanStart, setTimespanStart] = useState('');
+    const [timespanEnd, setTimespanEnd] = useState('');
     const [show, setShow] = useState(props.show);
 
     const handleClose = () => setShow(false);
@@ -41,8 +42,9 @@ export default function AddTime(props) {
                             setHours('')
                             setWorkedHours('')
                             setHoursLeft('')
-                            setTimespan('')
-                            props.newProject(projectname, status, hours, workedHours, hoursLeft, timespan);
+                            setTimespanStart('')
+                            setTimespanEnd('')
+                            props.newProject(projectname, status, hours, timespanStart, timespanEnd);
                         }}
                         id='editmodal'
                         className="w-full max-w-sm">
@@ -94,7 +96,7 @@ export default function AddTime(props) {
                             <div className="md:w-2/3">
                                 <input className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                                     id="industry"
-                                    placeholder='0'
+                                    placeholder='Doesnt work yet'
                                     type="text"
                                     value={hours}
                                     onChange={(e) => {
@@ -107,45 +109,7 @@ export default function AddTime(props) {
                             <div className="md:w-1/3">
                                 <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
                                     for="industry">
-                                    Whorked Hours
-                                </label>
-                            </div>
-                            <div className="md:w-2/3">
-                                <input className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                                    id="industry"
-                                    placeholder='0'
-                                    type="text"
-                                    value={workedHours}
-                                    onChange={(e) => {
-                                        setWorkedHours(e.target.value)
-                                    }}
-                                />
-                            </div>
-                        </div>
-                        <div className="md:flex md:items-center mb-6">
-                            <div className="md:w-1/3">
-                                <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                                    for="industry">
-                                    Hours Left
-                                </label>
-                            </div>
-                            <div className="md:w-2/3">
-                                <input className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                                    id="industry"
-                                    placeholder='0'
-                                    type="text"
-                                    value={hoursLeft}
-                                    onChange={(e) => {
-                                        setHoursLeft(e.target.value)
-                                    }}
-                                />
-                            </div>
-                        </div>
-                        <div className="md:flex md:items-center mb-6">
-                            <div className="md:w-1/3">
-                                <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                                    for="industry">
-                                    Timespan
+                                    Timespan Start
                                 </label>
                             </div>
                             <div className="md:w-2/3">
@@ -153,9 +117,28 @@ export default function AddTime(props) {
                                     id="industry"
                                     placeholder='2000-00-00'
                                     type="text"
-                                    value={timespan}
+                                    value={timespanStart}
                                     onChange={(e) => {
-                                        setTimespan(e.target.value)
+                                        setTimespanStart(e.target.value)
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <div className="md:flex md:items-center mb-6">
+                            <div className="md:w-1/3">
+                                <label className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                                    for="industry">
+                                    Timespan End
+                                </label>
+                            </div>
+                            <div className="md:w-2/3">
+                                <input className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                                    id="industry"
+                                    placeholder='2000-00-00'
+                                    type="text"
+                                    value={timespanEnd}
+                                    onChange={(e) => {
+                                        setTimespanEnd(e.target.value)
                                     }}
                                 />
                             </div>

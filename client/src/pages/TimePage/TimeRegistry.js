@@ -14,53 +14,82 @@ export default function TimeRegistry() {
   }
 
   useEffect(() => {
-    const url = '/projects';
+    const url = 'api/projects';
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
         setProjects(data.projects);
       })
   }, []);
-  function newProject(Projectname, Status, Hours, WorkedHours, HoursLeft, Timespan) {
-    const data = {
-      Projectname: Projectname, Status: Status, Hours: Hours, WorkedHours: WorkedHours, HoursLeft: HoursLeft, Timespan: Timespan
-    };
-
-    //   {
-    //     "parent": {
-    //     "type": "database_id",
-    //     "database_id": "3a6e6b4bbcab4f83a66750fc4313e44c"  },
-    //   "properties": {
-    //     "Hours":{
-    //         "number": 10    },
-    //     "Status": {
-    //         "select": {
-    //         "name": "Done"      }
+  function newProject(Projectname, Status, Hours, TimespanStart, TimespanEnd) {
+    // const data = {
+    //   parent: {
+    //     type: "database_id",
+    //     database_id: "3a6e6b4bbcab4f83a66750fc4313e44c"
+    //   },
+    //   properties: {
+    //     Hours: {
+    //       number: 16
     //     },
-    //     "Timespan": {
-    //         "date": {
-    //                 "start": "2012-02-07",
-    //          "end": "2012-02-13"            }
+    //     Status: {
+    //       select: {
+    //         name: "Active"
+    //       }
     //     },
-    //     "Projectname": {
-    //         "title": [
-    //                 {
-    //             "text": {
-    //                 "content": "My newest project"            }
-    //                 }
-    //             ]
+    //     Timespan: {
+    //       date: {
+    //         start: "2000-00-00",
+    //         end: "2012-02-13"
+    //       }
+    //     },
+    //     Projectname: {
+    //       title: [{
+    //         text:
+    //         {
+    //           content: "The Bestest Project"
+    //         }
+    //       }]
     //     }
     //   }
-    // }
+    // };
 
-    const url = '/projects';
-    console.log(data);
+    const url = 'http://localhost:3001/api/projects';
     fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-type': 'application/json'
+        "Content-type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify({
+        parent: {
+          type: "database_id",
+          database_id: "3a6e6b4bbcab4f83a66750fc4313e44c",
+        },
+        properties: {
+          Hours: {
+            number: 3000,
+          },
+          Status: {
+            select: {
+              name: Status,
+            },
+          },
+          Timespan: {
+            date: {
+              start: TimespanStart,
+              end: TimespanEnd,
+            },
+          },
+          Projectname: {
+            title: [
+              {
+                text: {
+                  content: Projectname
+                },
+              },
+            ],
+          },
+        },
+      }),
     })
       .then((response) => {
         console.log(response);
