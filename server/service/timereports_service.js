@@ -17,7 +17,20 @@ const TimeReportsService = {
       console.error(e);
     }
   },
-  createReport: async function (date, personId, hours, projectId, noteText) {
+  createReport: async function (bodyParams) {
+    try {
+      return await this.Notion.client.pages.create(bodyParams);
+    } catch (e) {
+      console.error(e);
+    }
+  },
+  createReportWithNativeSchema: async function (
+    date,
+    personId,
+    hours,
+    projectId,
+    noteText
+  ) {
     const timeReport = new TimeReport(
       new Date(date),
       personId,
@@ -34,12 +47,7 @@ const TimeReportsService = {
       properties: timeReport,
     };
 
-    try {
-      const response = await this.Notion.client.pages.create(bodyParams);
-      return response;
-    } catch (e) {
-      console.error(e);
-    }
+    return await this.createReport(bodyParams);
   },
 };
 
