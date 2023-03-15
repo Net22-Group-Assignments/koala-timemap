@@ -27,29 +27,28 @@ export default function TimeRegistry() {
     };
 
     //   {
-    //     parent: {
-    //     type: "database_id"
-    //     database_id: "3a6e6b4b-bcab-4f83-a667-50fc4313e44c"
-    //   },
-    //   properties: {
-    //     Hours:{
-    //         number: 10
+    //     "parent": {
+    //     "type": "database_id",
+    //     "database_id": "3a6e6b4bbcab4f83a66750fc4313e44c"  },
+    //   "properties": {
+    //     "Hours":{
+    //         "number": 10    },
+    //     "Status": {
+    //         "select": {
+    //         "name": "Done"      }
     //     },
-    //     Status: {
-    //         select: {
-    //         name: "Done"
-    //       }
+    //     "Timespan": {
+    //         "date": {
+    //                 "start": "2012-02-07",
+    //          "end": "2012-02-13"            }
     //     },
-    //     Timespan: {
-    //         start: "2012-02-07",
-    //       end: "2012-02-13",
-    //     }
-    //     Projectname: {
-    //         title: [ 
-    //       text: {
-    //         content: "My newest project"
-    //       }
-    //       ]
+    //     "Projectname": {
+    //         "title": [
+    //                 {
+    //             "text": {
+    //                 "content": "My newest project"            }
+    //                 }
+    //             ]
     //     }
     //   }
     // }
