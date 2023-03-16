@@ -104,31 +104,31 @@ export default function TimeRegistry() {
         properties: {
           Date: {
             date: {
-              start: "2023-04-05",
+              start: Date,
             },
           },
           Person: {
-            Relation: [
+            relation: [
               {
                 id: "245df54e41b946f8a13c142c6ee7c52f",
               },
             ],
           },
           Hours: {
-            Number: 7,
+            number: parseInt(Hours),
           },
           Project: {
-            Relation: [
+            relation: [
               {
                 id: "864ab78911db478ea72d26cb458182a1",
               },
             ],
           },
           Note: {
-            Title: [
+            title: [
               {
                 text: {
-                  content: "Antecknar anteckningar",
+                  content: Note,
                 },
               },
             ],

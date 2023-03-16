@@ -80,7 +80,7 @@ export default function AddTime(props) {
                 <input
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   id="industry"
-                  placeholder="Sven Svensson"
+                  placeholder="Do not type anything"
                   type="text"
                   value={person}
                   onChange={(e) => {
@@ -124,7 +124,7 @@ export default function AddTime(props) {
                 <input
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   id="industry"
-                  placeholder="My fantastic project"
+                  placeholder="Do not type anything"
                   type="text"
                   value={project}
                   onChange={(e) => {
