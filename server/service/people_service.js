@@ -6,14 +6,14 @@ const PeopleService = {
   configure: function (Notion) {
     this.Notion = Notion;
   },
-  getPeople: async function (filter, simplify = false) {
+  getPeople: async function (filter, schema) {
     let query = { database_id: peopleDB };
     if (filter != null) {
       query = { ...query, filter };
     }
     try {
       const response = await this.Notion.client.databases.query(query);
-      if (simplify) {
+      if (schema === "native") {
         let people = [];
         response.results.map((person) => {
           people = [...people, filterPeople(person)];
@@ -25,12 +25,12 @@ const PeopleService = {
       console.error(e);
     }
   },
-  getPeopleById: async function (peopleId, simplify = false) {
+  getPeopleById: async function (peopleId, schema) {
     try {
       const person = await this.Notion.client.pages.retrieve({
         page_id: peopleId,
       });
-      if (simplify) {
+      if (schema === "native") {
         return filterPeople(person);
       }
       return person;
@@ -49,6 +49,7 @@ const filterPeople = (person) => {
     role: properties["Role"].select.name,
     notion_id: notionUser?.id,
     notion_name: notionUser?.name,
+    notion_email: notionUser?.person?.email,
   };
 };
 
