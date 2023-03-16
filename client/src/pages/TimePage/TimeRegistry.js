@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import React, { useState, useEffect } from "react";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import AddTime from './AddTime';
+import AddProject from "./AddProject";
 
 export default function TimeRegistry() {
-
   const [projects, setProjects] = useState();
   const [show, setShow] = useState(false);
 
@@ -18,7 +17,7 @@ export default function TimeRegistry() {
       .then((response) => response.json())
       .then((data) => {
         setProjects(data.projects);
-      })
+      });
   }, []);
   function newProject(Projectname, Status, Hours, TimespanStart, TimespanEnd) {
     fetch("/api/projects", {
@@ -50,7 +49,7 @@ export default function TimeRegistry() {
             title: [
               {
                 text: {
-                  content: Projectname
+                  content: Projectname,
                 },
               },
             ],
@@ -61,19 +60,18 @@ export default function TimeRegistry() {
       .then((response) => {
         console.log(response);
         if (!response.ok) {
-          throw new Error('Something went wrong')
+          throw new Error("Something went wrong");
         }
         return response.json();
       })
       .then((data) => {
         toggleShow();
         console.log(data);
-        setProjects([...projects, data.projects])
-
+        setProjects([...projects, data.projects]);
       })
       .catch((e) => {
         console.log(e);
-      })
+      });
   }
   return (
     <>
@@ -89,10 +87,7 @@ export default function TimeRegistry() {
           })
           : null}
       </ul> */}
-      <AddTime
-        newProject={newProject}
-        show={show}
-        toggleShow={toggleShow} />
+      <AddProject newProject={newProject} show={show} toggleShow={toggleShow} />
     </>
-  )
+  );
 }
