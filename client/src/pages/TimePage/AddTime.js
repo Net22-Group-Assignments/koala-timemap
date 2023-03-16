@@ -2,34 +2,34 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
-export default function AddProject(props) {
+export default function AddTime(props) {
   const [date, setDate] = useState("");
   const [person, setPerson] = useState("");
   const [hours, setHours] = useState("");
   const [project, setProject] = useState("");
   const [note, setNote] = useState("");
-  const [show, setShow] = useState(props.show);
+  const [showTime, setShowTime] = useState(props.show);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => setShowTime(false);
+  const handleShow = () => setShowTime(true);
 
   return (
     <>
       <button
-        onClick={props.toggleShow}
+        onClick={props.toggleShowTime}
         className="block mx-auto m-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
       >
         + Add Time Report
       </button>
 
       <Modal
-        show={props.show}
+        show={props.showTime}
         onHide={handleClose}
         backdrop="static"
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Add Project</Modal.Title>
+          <Modal.Title>Add Time Report</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form
@@ -160,7 +160,7 @@ export default function AddProject(props) {
         <Modal.Footer>
           <button
             className="bg-slate-400 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded"
-            onClick={props.toggleShow}
+            onClick={props.toggleShowTime}
           >
             Close
           </button>

@@ -10,22 +10,22 @@ export default function AddProject(props) {
   const [hoursLeft, setHoursLeft] = useState("");
   const [timespanStart, setTimespanStart] = useState("");
   const [timespanEnd, setTimespanEnd] = useState("");
-  const [show, setShow] = useState(props.show);
+  const [showProject, setShowProject] = useState(props.show);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => setShowProject(false);
+  const handleShow = () => setShowProject(true);
 
   return (
     <>
       <button
-        onClick={props.toggleShow}
+        onClick={props.toggleShowProject}
         className="block mx-auto m-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
       >
         + Add Data
       </button>
 
       <Modal
-        show={props.show}
+        show={props.showProject}
         onHide={handleClose}
         backdrop="static"
         keyboard={false}
@@ -170,7 +170,7 @@ export default function AddProject(props) {
         <Modal.Footer>
           <button
             className="bg-slate-400 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded"
-            onClick={props.toggleShow}
+            onClick={props.toggleShowProject}
           >
             Close
           </button>
