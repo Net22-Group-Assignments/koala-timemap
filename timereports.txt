@@ -1,0 +1,39 @@
+{
+  "parent": {
+    "type": "database_id",
+    "database_id": "32d3152bf0ff4036b38598308527c376"
+  },
+  "properties": {
+    "Date": {
+      "date": {
+        "start": "2023-04-05"
+      }
+    },
+    "Person": {
+      "relation": [
+        {
+          "id": "245df54e41b946f8a13c142c6ee7c52f"
+        }
+      ]
+    },
+    "Hours": {
+      "number": 7
+    },
+    "Project": {
+      "relation": [
+        {
+          "id": "864ab78911db478ea72d26cb458182a1"
+        }
+      ]
+    },
+    "Note": {
+      "title": [
+        {
+          "text": {
+            "content": "Jobbig json dagien 2"
+          }
+        }
+      ]
+    }
+  }
+}

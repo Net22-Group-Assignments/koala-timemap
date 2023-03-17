@@ -9,7 +9,6 @@ export default function TimeSummary() {
       .then((res) => res.json())
       .then((data) => setProjectData(data));
   }, []);
-
   const [peopleData, setPeopleData] = useState(null);
   useEffect(() => {
     fetch("/api/people")
@@ -33,19 +32,19 @@ export default function TimeSummary() {
           </thead>
           {projectData
             ? projectData.results.map((project) => (
-                <tbody>
-                  <tr>
-                    <td>
-                      {project.properties.Projectname.title[0].text.content}
-                    </td>
-                    <td>{project.properties.Status.select.name}</td>
-                    <td>{project.properties.Hours.number}</td>
-                    <td>{project.properties.HoursLeft.formula.number}</td>
-                    <td>{project.properties.WorkedHours.rollup.number}</td>
-                    <td>{project.properties.Timespan.date.start}</td>
-                  </tr>
-                </tbody>
-              ))
+              <tbody>
+                <tr>
+                  <td>
+                    {project.properties.Projectname.title[0].text.content}
+                  </td>
+                  <td>{project.properties.Status.select.name}</td>
+                  <td>{project.properties.Hours.number}</td>
+                  <td>{project.properties.HoursLeft.formula.number}</td>
+                  <td>{project.properties.WorkedHours.rollup.number}</td>
+                  <td>{project.properties.Timespan.date.start}</td>
+                </tr>
+              </tbody>
+            ))
             : null}
         </Table>
       </div>
@@ -60,14 +59,14 @@ export default function TimeSummary() {
           </thead>
           {peopleData
             ? peopleData.results.map((people) => (
-                <tbody>
-                  <tr>
-                    <td>{people.properties.Name.title[0].text.content}</td>
-                    <td>{people.properties.TotalHours.rollup.number}</td>
-                    <td>{people.properties.Role.select.name}</td>
-                  </tr>
-                </tbody>
-              ))
+              <tbody>
+                <tr>
+                  <td>{people.properties.Name.title[0].text.content}</td>
+                  <td>{people.properties.TotalHours.rollup.number}</td>
+                  <td>{people.properties.Role.select.name}</td>
+                </tr>
+              </tbody>
+            ))
             : null}
         </Table>
       </div>
