@@ -15,9 +15,16 @@ export default function TimeSummary() {
       .then((res) => res.json())
       .then((data) => setPeopleData(data));
   }, []);
+  const [timeData, setTimeData] = useState(null);
+  useEffect(() => {
+    fetch("/api/timereports?collated=true")
+      .then((res) => res.json())
+      .then((data) => setTimeData(data));
+  }, []);
 
   return (
     <div className="Table_container">
+      {/* Here is display for projects DB */}
       <div className="Project_container">
         <Table striped bordered hover>
           <thead>
@@ -32,22 +39,23 @@ export default function TimeSummary() {
           </thead>
           {projectData
             ? projectData.results.map((project) => (
-              <tbody>
-                <tr>
-                  <td>
-                    {project.properties.Projectname.title[0].text.content}
-                  </td>
-                  <td>{project.properties.Status.select.name}</td>
-                  <td>{project.properties.Hours.number}</td>
-                  <td>{project.properties.HoursLeft.formula.number}</td>
-                  <td>{project.properties.WorkedHours.rollup.number}</td>
-                  <td>{project.properties.Timespan.date.start}</td>
-                </tr>
-              </tbody>
-            ))
+                <tbody>
+                  <tr>
+                    <td>
+                      {project.properties.Projectname.title[0].text.content}
+                    </td>
+                    <td>{project.properties.Status.select.name}</td>
+                    <td>{project.properties.Hours.number}</td>
+                    <td>{project.properties.HoursLeft.formula.number}</td>
+                    <td>{project.properties.WorkedHours.rollup.number}</td>
+                    <td>{project.properties.Timespan.date.start}</td>
+                  </tr>
+                </tbody>
+              ))
             : null}
         </Table>
       </div>
+      {/* Here is the display for People DB */}
       <div className="People_container">
         <Table striped bordered hover>
           <thead>
@@ -59,14 +67,51 @@ export default function TimeSummary() {
           </thead>
           {peopleData
             ? peopleData.results.map((people) => (
-              <tbody>
-                <tr>
-                  <td>{people.properties.Name.title[0].text.content}</td>
-                  <td>{people.properties.TotalHours.rollup.number}</td>
-                  <td>{people.properties.Role.select.name}</td>
-                </tr>
-              </tbody>
-            ))
+                <tbody>
+                  <tr>
+                    <td>{people.properties.Name.title[0].text.content}</td>
+                    <td>{people.properties.TotalHours.rollup.number}</td>
+                    <td>{people.properties.Role.select.name}</td>
+                  </tr>
+                </tbody>
+              ))
+            : null}
+        </Table>
+      </div>
+      {/* Here is the display for TimeProject DB */}
+      <div className="TimeReport_container">
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Person</th>
+              <th>Hours</th>
+              <th>Project</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          {timeData
+            ? timeData.results.map((time) => (
+                <tbody>
+                  <tr>
+                    <td>{time.properties.Date.date.start}</td>
+                    <td>
+                      {
+                        time.properties.Person.relation_properties.Name.title[0]
+                          .text.content
+                      }
+                    </td>
+                    <td>{time.properties.Hours.number}</td>
+                    <td>
+                      {
+                        time.properties.Project.relation_properties.Projectname
+                          .title[0].text.content
+                      }
+                    </td>
+                    <td>{time.properties.Note.title[0].text.content}</td>
+                  </tr>
+                </tbody>
+              ))
             : null}
         </Table>
       </div>
