@@ -17,7 +17,7 @@ export default function TimeSummary() {
   }, []);
   const [timeData, setTimeData] = useState(null);
   useEffect(() => {
-    fetch("/api/timereports")
+    fetch("/api/timereports?collated=true")
       .then((res) => res.json())
       .then((data) => setTimeData(data));
   }, []);
@@ -95,9 +95,19 @@ export default function TimeSummary() {
                 <tbody>
                   <tr>
                     <td>{time.properties.Date.date.start}</td>
-                    <td>{time.properties.Person.relation[0].id}</td>
+                    <td>
+                      {
+                        time.properties.Person.relation_properties.Name.title[0]
+                          .text.content
+                      }
+                    </td>
                     <td>{time.properties.Hours.number}</td>
-                    <td>{time.properties.Project.relation[0].id}</td>
+                    <td>
+                      {
+                        time.properties.Project.relation_properties.Projectname
+                          .title[0].text.content
+                      }
+                    </td>
                     <td>{time.properties.Note.title[0].text.content}</td>
                   </tr>
                 </tbody>
