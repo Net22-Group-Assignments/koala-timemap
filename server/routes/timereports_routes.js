@@ -3,8 +3,13 @@ const TimeReportsService = require("../service/timereports_service");
 const router = express.Router();
 
 router.get("/timereports", async (req, res) => {
+  const { collated } = req.query;
   try {
-    res.json(await TimeReportsService.getReports());
+    if (collated) {
+      res.json(await TimeReportsService.getCollatedReports());
+    } else {
+      res.json(await TimeReportsService.getReports());
+    }
   } catch (error) {
     console.error(error);
   }
