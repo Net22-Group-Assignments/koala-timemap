@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import Select from "react-select";
 
 export default function AddTime(props) {
   const [date, setDate] = useState("");
@@ -10,6 +11,11 @@ export default function AddTime(props) {
   const [note, setNote] = useState("");
   const [showTime, setShowTime] = useState(props.show);
 
+  const options = [
+    { value: "chocolate", label: "Chocolate" },
+    { value: "strawberry", label: "Strawberry" },
+    { value: "vanilla", label: "Vanilla" },
+  ];
   const handleClose = () => setShowTime(false);
   const handleShow = () => setShowTime(true);
 
@@ -121,16 +127,17 @@ export default function AddTime(props) {
                 </label>
               </div>
               <div className="md:w-2/3">
-                <input
-                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                  id="industry"
-                  placeholder="Do not type anything"
-                  type="text"
-                  value={project}
-                  onChange={(e) => {
-                    setProject(e.target.value);
-                  }}
-                />
+                <Select options={options} />
+                {/*<input*/}
+                {/*  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"*/}
+                {/*  id="industry"*/}
+                {/*  placeholder="Do not type anything"*/}
+                {/*  type="text"*/}
+                {/*  value={project}*/}
+                {/*  onChange={(e) => {*/}
+                {/*    setProject(e.target.value);*/}
+                {/*  }}*/}
+                {/*/>*/}
               </div>
             </div>
             <div className="md:flex md:items-center mb-6">
