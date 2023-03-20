@@ -6,7 +6,7 @@ const PeopleService = {
   configure: function (Notion) {
     this.Notion = Notion;
   },
-  getPeople: async function (filter, schema) {
+  getPeople: async function (filter, schema = "notion") {
     let query = { database_id: peopleDB };
     if (filter != null) {
       query = { ...query, filter };
@@ -25,7 +25,7 @@ const PeopleService = {
       console.error(e);
     }
   },
-  getPeopleById: async function (peopleId, schema) {
+  getPeopleById: async function (peopleId, schema = "notion") {
     try {
       const person = await this.Notion.client.pages.retrieve({
         page_id: peopleId,
