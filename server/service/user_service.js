@@ -1,12 +1,12 @@
 const UserService = {
-  configure: function (Notion) {
-    this.Notion = Notion;
+  configure: function (clientPool) {
+    this.clientPool = clientPool;
   },
-  getTokenBotUser: async function () {
+  getTokenBotUser: async function (botId) {
     try {
-      const response = this.Notion.client.users.me();
-      if (this.Notion.integrationType === "public")
-        return response.bot.owner.user;
+      const Notion = this.clientPool.obtainClient(botId);
+      const response = Notion.client.users.me();
+      if (Notion.integrationType === "public") return response.bot.owner.user;
       return response;
     } catch (e) {
       console.error(e);

@@ -10,14 +10,14 @@ const Notion = {
   },
   configure: async function (integrationType, token) {
     if (token != null) {
-      const client = new Client({
+      const newClient = new Client({
         auth: token,
         logLevel: LogLevel.DEBUG,
       });
       try {
-        const response = await client.users.me();
+        const response = await newClient.users.me();
         this.token = token;
-        this.client = client;
+        this.client = newClient;
         this.integration.id = response.id;
         this.integration.type = integrationType;
         this.integration.name = response.name;
@@ -30,4 +30,16 @@ const Notion = {
   },
 };
 
-module.exports = { Notion };
+const ClientPool = () => {
+  const clients = {};
+  return {
+    obtainClient: (botId) => {
+      if (clients[botId]) {
+        return clients[botId];
+      }
+      console.error(`No client registered for user ${botId}`);
+    },
+  };
+};
+
+module.exports = { Notion, ClientPool };
