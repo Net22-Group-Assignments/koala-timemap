@@ -1,4 +1,5 @@
 const express = require("express");
+const apicache = require("apicache");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const storage = require("node-persist");
@@ -11,6 +12,7 @@ const ProjectsService = require("./service/projects_service");
 const TimeReportsService = require("./service/timereports_service");
 const PeopleService = require("./service/people_service");
 const LoginService = require("./service/login_service");
+const morgan = require("morgan");
 const integrationArgIndex = process.argv.indexOf("--integration");
 
 dotenv.config();
@@ -69,8 +71,10 @@ if (integrationArgIndex > -1) {
 const PORT = 3001;
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
+app.use(morgan("dev"));
 
 // Don't load swagger if no swagger.json file present.
 if (fs.existsSync(swaggerDocumentPath)) {
