@@ -2,7 +2,7 @@ const express = require("express");
 const UserService = require("../service/user_service");
 const router = express.Router();
 
-router.get("/me", async (req, res) => {
+router.get("users/me", async (req, res) => {
   res.json(await UserService.getTokenBotUser());
 });
 
