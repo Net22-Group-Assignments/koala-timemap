@@ -6,10 +6,12 @@ const ProjectService = require("../service/projects_service");
 const cache = apicache.middleware;
 
 router.get("/projects", cache("5 minutes"), async (req, res) => {
+  req.apicacheGroup = "projects";
   res.json(await ProjectService.getProjects());
 });
 
 router.post("/projects", async (req, res) => {
+  apicache.clear("projects");
   res.json(await ProjectService.createProject(req.body));
 });
 

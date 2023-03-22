@@ -5,7 +5,7 @@ const UserService = require("../service/user_service");
 
 const cache = apicache.middleware;
 
-router.get("/users/me", async (req, res) => {
+router.get("users/users/me", async (req, res) => {
   const botId = req.body.bot_id;
   console.log(botId);
   res.json(await UserService.getTokenBotUser(botId));
