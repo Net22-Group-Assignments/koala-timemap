@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
+import EditProject from "./EditProject";
 
 export default function TimeSummary() {
+  const [editProject, setEditProject] = useState([]);
+  const [showEditProject, setShowEditProject] = useState(false);
+
+  function toggleShowEditProject() {
+    setShowEditProject(!showEditProject);
+  }
   const [projectData, setProjectData] = useState(null);
   useEffect(() => {
     fetch("/api/projects")
@@ -34,7 +41,14 @@ export default function TimeSummary() {
               <th>Hours</th>
               <th>Worked hours</th>
               <th>Estimated hours left</th>
-              <th>TimeSpan</th>
+              <th>
+                TimeSpan
+                <EditProject
+                  editProject={editProject}
+                  showEditProject={showEditProject}
+                  toggleShowEditProject={toggleShowEditProject}
+                />
+              </th>
             </tr>
           </thead>
           {projectData
