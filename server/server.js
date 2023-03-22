@@ -1,5 +1,6 @@
 const express = require("express");
 const apicache = require("apicache");
+const morgan = require("morgan");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const storage = require("node-persist");
@@ -12,7 +13,7 @@ const ProjectsService = require("./service/projects_service");
 const TimeReportsService = require("./service/timereports_service");
 const PeopleService = require("./service/people_service");
 const LoginService = require("./service/login_service");
-const morgan = require("morgan");
+const PageService = require("./service/one_to_one_service");
 const integrationArgIndex = process.argv.indexOf("--integration");
 
 dotenv.config();
@@ -43,6 +44,7 @@ if (integrationArgIndex > -1) {
     console.error("Invalid internal token");
   }
   console.log("Valid internal token");
+  PageService.configure(Notion);
   UserService.configure(Notion);
   ProjectsService.configure(Notion);
   TimeReportsService.configure(Notion);
@@ -64,6 +66,7 @@ if (fs.existsSync(swaggerDocumentPath)) {
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 }
 
+app.use("/api", require("./routes/one_to_one_routes"));
 app.use("/api", require("./routes/users_routes"));
 app.use("/api", require("./routes/people_routes"));
 app.use("/api", require("./routes/timereports_routes"));
