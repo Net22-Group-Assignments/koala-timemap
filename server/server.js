@@ -15,6 +15,7 @@ const TimeReportsService = require("./service/timereports_service");
 const PeopleService = require("./service/people_service");
 const LoginService = require("./service/login_service");
 const PageService = require("./service/one_to_one_service");
+const axios = require("axios");
 const integrationArgIndex = process.argv.indexOf("--integration");
 
 dotenv.config();
@@ -27,7 +28,7 @@ let status = {
 
 if (integrationArgIndex > -1) {
   status.integration_type = process.argv[integrationArgIndex + 1];
-  process.env.INTEGRATION_TYPE = "internal";
+  process.env.INTEGRATION_TYPE = status.integration_type;
 }
 
 (async () => {
@@ -36,8 +37,32 @@ if (integrationArgIndex > -1) {
     process.exit(1);
   }
 
-  await db.config();
+  // test the internal token by notion api users/me with axios
+  const options = {
+    method: "GET",
+    url: "https://api.notion.com/v1/users/me",
+    headers: {
+      Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+      "Notion-Version": process.env.NOTION_API_VERSION,
+    },
+  };
+  try {
+    const response = await axios.request(options);
+    const botTokenUser = response.data;
+    const integrationType =
+      botTokenUser.bot.owner.type === "user" ? "public" : "internal";
+    console.log(
+      `Running with ${integrationType} access token ${botTokenUser.id}`
+    );
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
 
+  if (process.env.INTEGRATION_TYPE === "public") {
+    await db.config();
+  } else {
+  }
   // PageService.configure(Notion);
   // UserService.configure(clientPool);
   // ProjectsService.configure(Notion);
