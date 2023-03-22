@@ -13,6 +13,15 @@ function App() {
   const auth = useAuthUser();
   const isAuthenticated = useIsAuthenticated();
 
+  /*React will output following warning:
+    'Warning: Cannot update a component (`AuthProvider`)
+    while rendering a different component (`App`)'
+
+    The "autologin" that fires during rendering will be removed when
+    proper login is done so this warning will not
+    persist into production code.
+    */
+
   useEffect(() => {
     if (
       process.env.NODE_ENV !== "production" &&
@@ -38,7 +47,7 @@ function App() {
         });
       }
     }
-  }, [isAuthenticated]);
+  }, []);
 
   return (
     <>
