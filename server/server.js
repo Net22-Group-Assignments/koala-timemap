@@ -1,4 +1,5 @@
 const express = require("express");
+const db = require("./db");
 const apicache = require("apicache");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
@@ -34,36 +35,11 @@ if (integrationArgIndex > -1) {
     console.log("No internal access token in .env file");
     process.exit(1);
   }
-  // status.access_token = process.env.NOTION_API_KEY;
-  // console.log(`Access token: ${status.access_token}`);
-  // status.valid_token = await Notion.configure(
-  //   status.integration_type,
-  //   status.access_token
-  // );
-  // if (!status.valid_token) {
-  //   console.error("Invalid internal token");
-  // }
-  // console.log("Valid internal token");
-  const internalClient = Object.create(Notion);
-  await internalClient.configure(
-    "internal",
-    "secret_cp7SUD8JeowwuLXYF3ppbXYHAaXVKlV88Bo3gTk9CEb"
-  );
-  console.log(internalClient.integration);
-  const publicClient = Object.create(Notion);
-  await publicClient.configure(
-    "public",
-    "secret_KfTYjfYUheZ9vS9sAdUZ0Y00kTqx8pq8L8mCPdlN77L"
-  );
-  console.log(publicClient.integration);
-  console.log(internalClient.integration);
-  const initClients = { a: internalClient };
-  initClients["b"] = publicClient;
-  console.log(`initClients ${JSON.stringify(initClients)}`);
-  const clientPool = ClientPool(initClients);
 
-  PageService.configure(Notion);
-  UserService.configure(clientPool);
+  await db.config();
+
+  // PageService.configure(Notion);
+  // UserService.configure(clientPool);
   // ProjectsService.configure(Notion);
   // TimeReportsService.configure(Notion);
   // PeopleService.configure(Notion);
