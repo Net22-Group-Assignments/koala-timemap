@@ -40,7 +40,7 @@ export default function AddTime(props) {
         backdrop="static"
         keyboard={false}
       >
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>Add Time Report</Modal.Title>
         </Modal.Header>
         <Modal.Body>
