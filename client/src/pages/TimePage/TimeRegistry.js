@@ -6,7 +6,7 @@ import AddProject from "./AddProject";
 import AddTime from "./AddTime";
 
 export default function TimeRegistry() {
-  const [projects, setProjects] = useState();
+  const [projects, setProjects] = useState([]);
   const [showProject, setShowProject] = useState(false);
 
   function toggleShowProject() {
@@ -17,9 +17,10 @@ export default function TimeRegistry() {
     fetch("/api/projects")
       .then((response) => response.json())
       .then((data) => {
-        setProjects(data.projects);
+        setProjects(data.results);
       });
   }, []);
+
   function newProject(Projectname, Status, Hours, TimespanStart, TimespanEnd) {
     fetch("/api/projects", {
       method: "POST",
@@ -68,7 +69,7 @@ export default function TimeRegistry() {
       .then((data) => {
         toggleShowProject();
         console.log(data);
-        setProjects([...projects, data.projects]);
+        setProjects([...projects, data.results]);
       })
       .catch((e) => {
         console.log(e);
@@ -76,7 +77,7 @@ export default function TimeRegistry() {
   }
 
   // Here is Add time-registry for timeReportsDB
-  const [timeReport, setTimeReport] = useState();
+  const [timeReport, setTimeReport] = useState([]);
   const [showTime, setShowTime] = useState(false);
 
   function toggleShowTime() {
@@ -87,10 +88,11 @@ export default function TimeRegistry() {
     fetch("/api/timereports")
       .then((response) => response.json())
       .then((data) => {
-        setTimeReport(data.timeReport);
+        setTimeReport(data.results);
       });
   }, []);
-  function newTimeReport(Date, Person, Hours, Project, Note) {
+
+  function newTimeReport(Date, PersonId, Hours, ProjectId, Note) {
     fetch("/api/timereports", {
       method: "POST",
       headers: {
@@ -110,7 +112,7 @@ export default function TimeRegistry() {
           Person: {
             relation: [
               {
-                id: "245df54e41b946f8a13c142c6ee7c52f",
+                id: PersonId,
               },
             ],
           },
@@ -120,7 +122,7 @@ export default function TimeRegistry() {
           Project: {
             relation: [
               {
-                id: "864ab78911db478ea72d26cb458182a1",
+                id: ProjectId,
               },
             ],
           },
@@ -146,7 +148,7 @@ export default function TimeRegistry() {
       .then((data) => {
         toggleShowTime();
         console.log(data);
-        setTimeReport([...timeReport, data.timeReport]);
+        setTimeReport([...timeReport, data.results]);
       })
       .catch((e) => {
         console.log(e);
@@ -179,6 +181,7 @@ export default function TimeRegistry() {
         newTimeReport={newTimeReport}
         showTime={showTime}
         toggleShowTime={toggleShowTime}
+        projects={projects}
       />
     </>
   );

@@ -2,22 +2,28 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Select from "react-select";
+import { useAuthUser } from "react-auth-kit";
 
 export default function AddTime(props) {
+  const auth = useAuthUser();
   const [date, setDate] = useState("");
-  const [person, setPerson] = useState("");
+  const [person, setPerson] = useState(auth().person);
   const [hours, setHours] = useState("");
   const [project, setProject] = useState("");
   const [note, setNote] = useState("");
   const [showTime, setShowTime] = useState(props.show);
-
-  const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
-  ];
   const handleClose = () => setShowTime(false);
   const handleShow = () => setShowTime(true);
+  const projectOptions = props.projects.map((project) => ({
+    value: project.id,
+    label: project.properties.Projectname.title[0].text.content,
+  }));
+
+  const handleProjectChange = (selectedProject) => {
+    setProject(
+      props.projects.find((project) => project.id === selectedProject.value)
+    );
+  };
 
   return (
     <>
@@ -46,7 +52,7 @@ export default function AddTime(props) {
               setHours("");
               setProject("");
               setNote("");
-              props.newTimeReport(date, person, hours, project, note);
+              props.newTimeReport(date, person.id, hours, project.id, note);
             }}
             id="editmodal"
             className="w-full max-w-sm"
@@ -55,7 +61,7 @@ export default function AddTime(props) {
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  for="name"
+                  htmlFor="name"
                 >
                   Date
                 </label>
@@ -77,7 +83,7 @@ export default function AddTime(props) {
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  for="industry"
+                  htmlFor="industry"
                 >
                   Person
                 </label>
@@ -88,10 +94,11 @@ export default function AddTime(props) {
                   id="industry"
                   placeholder="Do not type anything"
                   type="text"
-                  value={person}
+                  value={person.name}
                   onChange={(e) => {
                     setPerson(e.target.value);
                   }}
+                  disabled={true}
                 />
               </div>
             </div>
@@ -99,7 +106,7 @@ export default function AddTime(props) {
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  for="industry"
+                  htmlFor="industry"
                 >
                   Hours
                 </label>
@@ -121,30 +128,23 @@ export default function AddTime(props) {
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  for="industry"
+                  htmlFor="industry"
                 >
                   Project
                 </label>
               </div>
               <div className="md:w-2/3">
-                <Select options={options} />
-                {/*<input*/}
-                {/*  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"*/}
-                {/*  id="industry"*/}
-                {/*  placeholder="Do not type anything"*/}
-                {/*  type="text"*/}
-                {/*  value={project}*/}
-                {/*  onChange={(e) => {*/}
-                {/*    setProject(e.target.value);*/}
-                {/*  }}*/}
-                {/*/>*/}
+                <Select
+                  options={projectOptions}
+                  onChange={handleProjectChange}
+                />
               </div>
             </div>
             <div className="md:flex md:items-center mb-6">
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  for="industry"
+                  htmlFor="industry"
                 >
                   Note
                 </label>
