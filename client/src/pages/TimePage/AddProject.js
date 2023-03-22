@@ -30,7 +30,7 @@ export default function AddProject(props) {
         backdrop="static"
         keyboard={false}
       >
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>Add Project</Modal.Title>
         </Modal.Header>
         <Modal.Body>
