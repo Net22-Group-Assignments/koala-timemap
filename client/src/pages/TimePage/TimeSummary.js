@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
 import EditProject from "./EditProject";
+import CheckProjectStatus from "./RadioButtons";
 
 export default function TimeSummary() {
   const [editProject, setEditProject] = useState([]);
@@ -66,7 +67,8 @@ export default function TimeSummary() {
   }
 
   return (
-    <div className="Table_container">
+    <div className="Table_container m-2">
+      <CheckProjectStatus />
       {/* Here is display for projects DB */}
       <div className="Project_container">
         <Table striped bordered hover>

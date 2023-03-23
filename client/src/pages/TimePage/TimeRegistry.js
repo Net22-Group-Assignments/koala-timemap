@@ -158,7 +158,7 @@ export default function TimeRegistry() {
   //End of add time-registry for timeReportsDB
 
   return (
-    <>
+    <div className="m-2">
       <h1>Here is our projects: </h1>
       {/* <ul>
         {projects
@@ -183,6 +183,6 @@ export default function TimeRegistry() {
         toggleShowTime={toggleShowTime}
         projects={projects}
       />
-    </>
+    </div>
   );
 }
