@@ -65,6 +65,7 @@ if (integrationArgIndex > -1) {
   } else {
     ClientPool = ClientPoolFactory();
   }
+
   UserService.configure(ClientPool);
   PageService.configure(ClientPool);
   ProjectsService.configure(ClientPool);

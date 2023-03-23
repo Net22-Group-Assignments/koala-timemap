@@ -1,4 +1,5 @@
 const { Client, LogLevel } = require("@notionhq/client");
+const db = require("./db");
 
 const ClientPoolFactory = (db = null) => {
   if (!db) {
@@ -23,13 +24,22 @@ const InternalClientPool = (token) => {
 const PublicClientPool = () => {
   const clients = {};
   return {
-    obtainClient: (botId) => {
+    obtainClient: async (botId) => {
       if (clients[botId]) {
         return clients[botId];
       }
-      console.error(`No client registered for user ${botId}`);
+      let tokenInfo = await db.getToken(botId);
+      if (!tokenInfo) {
+        console.error(`No client registered for user ${botId}`);
+      }
+      this.registerClient(botId, tokenInfo.integration_type, tokenInfo.token);
     },
-    registerClient: (botId, client) => {
+    registerClient: (botId, type, token) => {
+      const client = {
+        id: botId,
+        type: type,
+        client: new Client({ auth: token, logLevel: LogLevel.DEBUG }),
+      };
       clients[botId] = client;
     },
   };
