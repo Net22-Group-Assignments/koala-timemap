@@ -1,16 +1,16 @@
 const dotenv = require("dotenv");
 const TimeReport = require("../timemap_objects");
-const { Notion } = require("../notion_client");
 const PeopleService = require("./people_service");
 const ProjectService = require("./projects_service");
 dotenv.config();
 const timeReportsDB = process.env.TIMEREPORTS_DATABASE_ID;
 
 const TimeReportsService = {
-  configure: function (Notion) {
-    this.Notion = Notion;
+  configure: function (ClientPool) {
+    this.clientPool = ClientPool;
   },
-  getReports: async function () {
+  getReports: async function (botId) {
+    const Notion = this.clientPool.obtainClient(botId);
     try {
       return await Notion.client.databases.query({
         database_id: timeReportsDB,
@@ -19,10 +19,10 @@ const TimeReportsService = {
       console.error(e);
     }
   },
-  getCollatedReports: async function () {
-    const reports = await this.getReports();
-    const people = await PeopleService.getPeople(null, "notion");
-    const projects = await ProjectService.getProjects();
+  getCollatedReports: async function (botId) {
+    const reports = await this.getReports(botId);
+    const people = await PeopleService.getPeople(null, "notion", botId);
+    const projects = await ProjectService.getProjects(botId);
     const collatedReports = reports.results.map((report) => {
       const relatedPerson = report.properties.Person;
       const relatedPersonId = relatedPerson.relation[0].id;
@@ -45,9 +45,10 @@ const TimeReportsService = {
     reports.results = collatedReports;
     return reports;
   },
-  createReport: async function (bodyParams) {
+  createReport: async function (bodyParams, botId) {
+    const Notion = this.clientPool.obtainClient(botId);
     try {
-      return await this.Notion.client.pages.create(bodyParams);
+      return await Notion.client.pages.create(bodyParams);
     } catch (e) {
       console.error(e);
     }
@@ -57,7 +58,8 @@ const TimeReportsService = {
     personId,
     hours,
     projectId,
-    noteText
+    noteText,
+    botId
   ) {
     const timeReport = new TimeReport(
       new Date(date),
@@ -75,7 +77,7 @@ const TimeReportsService = {
       properties: timeReport,
     };
 
-    return await this.createReport(bodyParams);
+    return await this.createReport(bodyParams, botId);
   },
 };
 

@@ -68,7 +68,7 @@ if (integrationArgIndex > -1) {
   UserService.configure(ClientPool);
   PageService.configure(ClientPool);
   ProjectsService.configure(ClientPool);
-  // TimeReportsService.configure(Notion);
+  TimeReportsService.configure(ClientPool);
   // PeopleService.configure(Notion);
   // LoginService.configure(Notion);
 })();
