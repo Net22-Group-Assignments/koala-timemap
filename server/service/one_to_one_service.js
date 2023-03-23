@@ -1,21 +1,21 @@
 const PageService = {
-  configure: function (Notion) {
-    console.log(`pageservice client ${Notion.token}`);
-    this.Notion = Notion;
+  configure: function (ClientPool) {
+    this.clientPool = ClientPool;
   },
-  RetrievePage: async function (pageId) {
+  RetrievePage: async function (pageId, botId) {
     try {
-      const response = await this.Notion.client.pages.retrieve({
+      const Notion = this.clientPool.obtainClient(botId);
+      return Notion.client.pages.retrieve({
         page_id: pageId,
       });
-      return response;
     } catch (e) {
       console.error(e);
     }
   },
-  UpdatePage: async function (pageId, bodyParams) {
+  UpdatePage: async function (pageId, bodyParams, botId) {
+    const Notion = this.clientPool.obtainClient(botId);
     try {
-      return await this.Notion.client.pages.update({
+      return await Notion.client.pages.update({
         page_id: pageId,
         ...bodyParams,
       });

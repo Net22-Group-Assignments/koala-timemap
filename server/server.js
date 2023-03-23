@@ -20,7 +20,7 @@ dotenv.config();
 
 let status = {
   integration_type: null,
-  valid_token: false,
+  valid_internal_token: false,
 };
 
 if (integrationArgIndex > -1) {
@@ -51,6 +51,7 @@ if (integrationArgIndex > -1) {
     console.log(
       `Running with ${integrationType} access token ${botTokenUser.id}`
     );
+    status.valid_internal_token = true;
   } catch (error) {
     console.error(error);
     process.exit(1);
@@ -65,7 +66,7 @@ if (integrationArgIndex > -1) {
     ClientPool = ClientPoolFactory();
   }
   UserService.configure(ClientPool);
-  // PageService.configure(Notion);
+  PageService.configure(ClientPool);
   // ProjectsService.configure(Notion);
   // TimeReportsService.configure(Notion);
   // PeopleService.configure(Notion);
@@ -107,9 +108,4 @@ app.get("/api/status", (req, res) => {
 
 app.get("/api/clientId", (req, res) => {
   res.status(200).send(process.env.NOTION_OAUTH_CLIENT_ID);
-});
-
-// TODO Only for dev purpose, remove later.
-app.get("/api/accessToken", (req, res) => {
-  res.json({ accessToken: status.access_token });
 });
