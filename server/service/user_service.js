@@ -6,22 +6,24 @@ const UserService = {
     try {
       const Notion = this.clientPool.obtainClient(botId);
       const response = Notion.client.users.me();
-      if (Notion.integrationType === "public") return response.bot.owner.user;
+      if (Notion.type === "public") return response.bot.owner.user;
       return response;
     } catch (e) {
       console.error(e);
     }
   },
-  getNotionUserById: async function (userId) {
+  getNotionUserById: async function (userId, botId) {
     try {
-      return await this.Notion.client.users.retrieve({ user_id: userId });
+      const Notion = this.clientPool.obtainClient(botId);
+      return await Notion.client.users.retrieve({ user_id: userId });
     } catch (e) {
       console.error(e);
     }
   },
-  getNotionUsers: async function () {
+  getNotionUsers: async function (botId) {
     try {
-      return await this.Notion.client.users.list();
+      const Notion = this.clientPool.obtainClient(botId);
+      return await Notion.client.users.list();
     } catch (e) {
       console.error(e);
     }

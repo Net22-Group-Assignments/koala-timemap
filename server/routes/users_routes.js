@@ -5,13 +5,11 @@ const UserService = require("../service/user_service");
 
 const cache = apicache.middleware;
 
-router.get("users/users/me", async (req, res) => {
-  const botId = req.body.bot_id;
-  console.log(botId);
-  res.json(await UserService.getTokenBotUser(botId));
+router.get("users/me", async (req, res) => {
+  res.json(await UserService.getTokenBotUser());
 });
 
-router.get("/users/:userId", async (req, res) => {
+router.get("/users/:userId", cache("5 min"), async (req, res) => {
   const { userId } = req.params;
   res.json(await UserService.getNotionUserById(userId));
 });

@@ -1,14 +1,12 @@
 const express = require("express");
 const db = require("./db");
-const apicache = require("apicache");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const storage = require("node-persist");
 const swaggerUi = require("swagger-ui-express");
 const fs = require("fs");
 const swaggerDocumentPath = "./swagger.json";
-const { Notion, ClientPool } = require("./notion_client");
+const { ClientPoolFactory } = require("./notion_client");
 const UserService = require("./service/user_service");
 const ProjectsService = require("./service/projects_service");
 const TimeReportsService = require("./service/timereports_service");
@@ -22,7 +20,6 @@ dotenv.config();
 
 let status = {
   integration_type: null,
-  access_token: null,
   valid_token: false,
 };
 
@@ -59,12 +56,16 @@ if (integrationArgIndex > -1) {
     process.exit(1);
   }
 
+  let ClientPool = null;
+
   if (process.env.INTEGRATION_TYPE === "public") {
     await db.config();
+    ClientPool = ClientPoolFactory(db);
   } else {
+    ClientPool = ClientPoolFactory();
   }
+  UserService.configure(ClientPool);
   // PageService.configure(Notion);
-  // UserService.configure(clientPool);
   // ProjectsService.configure(Notion);
   // TimeReportsService.configure(Notion);
   // PeopleService.configure(Notion);
