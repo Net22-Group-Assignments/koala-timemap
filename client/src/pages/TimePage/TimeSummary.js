@@ -1,13 +1,20 @@
 import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
+import EditProject from "./EditProject";
 
 export default function TimeSummary() {
-  const [projectData, setProjectData] = useState(null);
+  const [editProject, setEditProject] = useState([]);
+  const [showEditProject, setShowEditProject] = useState(false);
+
+  function toggleShowEditProject() {
+    setShowEditProject(!showEditProject);
+  }
+  const [projects, setProjects] = useState([]);
   useEffect(() => {
     fetch("/api/projects")
       .then((res) => res.json())
-      .then((data) => setProjectData(data));
+      .then((data) => setProjects(data.results));
   }, []);
   const [peopleData, setPeopleData] = useState(null);
   useEffect(() => {
@@ -22,6 +29,42 @@ export default function TimeSummary() {
       .then((data) => setTimeData(data));
   }, []);
 
+  function projectEdit(ProjectId, Status, Hours) {
+    fetch("/api/pages/" + ProjectId, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        properties: {
+          Status: {
+            select: {
+              name: Status,
+            },
+          },
+          Hours: {
+            number: parseInt(Hours),
+          },
+        },
+      }),
+    })
+      .then((response) => {
+        console.log(response);
+        if (!response.ok) {
+          throw new Error("Something went wrong");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        toggleShowEditProject();
+        console.log(data);
+        setEditProject([...editProject, data.results]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
   return (
     <div className="Table_container">
       {/* Here is display for projects DB */}
@@ -32,13 +75,21 @@ export default function TimeSummary() {
               <th>Project Name</th>
               <th>Status</th>
               <th>Hours</th>
-              <th>Worked hours</th>
               <th>Estimated hours left</th>
-              <th>TimeSpan</th>
+              <th>Worked Hours</th>
+              <th>
+                TimeSpan
+                <EditProject
+                  projectEdit={projectEdit}
+                  showEditProject={showEditProject}
+                  toggleShowEditProject={toggleShowEditProject}
+                  projects={projects}
+                />
+              </th>
             </tr>
           </thead>
-          {projectData
-            ? projectData.results.map((project) => (
+          {projects
+            ? projects.map((project) => (
                 <tbody>
                   <tr>
                     <td>
