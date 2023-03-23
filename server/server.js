@@ -1,4 +1,5 @@
 const express = require("express");
+const bearerToken = require("express-bearer-token");
 const db = require("./db");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
@@ -77,7 +78,7 @@ if (integrationArgIndex > -1) {
 const PORT = 3001;
 
 const app = express();
-
+app.use(bearerToken());
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -94,6 +95,7 @@ app.use("/api", require("./routes/people_routes"));
 app.use("/api", require("./routes/timereports_routes"));
 app.use("/api", require("./routes/projects_routes"));
 app.use("/api", require("./routes/login_routes"));
+app.use("/api", require("./routes/test_routes"));
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

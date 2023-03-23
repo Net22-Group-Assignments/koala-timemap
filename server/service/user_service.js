@@ -4,12 +4,13 @@ const UserService = {
   },
   getTokenBotUser: async function (botId) {
     try {
-      const Notion = this.clientPool.obtainClient(botId);
+      const Notion = await this.clientPool.obtainClient(botId);
       const response = Notion.client.users.me();
       if (Notion.type === "public") return response.bot.owner.user;
       return response;
     } catch (e) {
       console.error(e);
+      throw e;
     }
   },
   getNotionUserById: async function (userId, botId) {

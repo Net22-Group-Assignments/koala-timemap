@@ -26,21 +26,24 @@ const PublicClientPool = () => {
   return {
     obtainClient: async (botId) => {
       if (clients[botId]) {
+        console.log("Client found in array");
         return clients[botId];
       }
-      let tokenInfo = await db.getToken(botId);
-      if (!tokenInfo) {
-        console.error(`No client registered for user ${botId}`);
+      let tokenInfo;
+      try {
+        tokenInfo = await db.getToken(botId);
+      } catch (error) {
+        console.error("no token found");
+        throw "UNREGISTERED_TOKEN";
       }
-      this.registerClient(botId, tokenInfo.integration_type, tokenInfo.token);
-    },
-    registerClient: (botId, type, token) => {
+
       const client = {
         id: botId,
-        type: type,
-        client: new Client({ auth: token, logLevel: LogLevel.DEBUG }),
+        type: tokenInfo.type,
+        client: new Client({ auth: tokenInfo.token, logLevel: LogLevel.DEBUG }),
       };
       clients[botId] = client;
+      return client;
     },
   };
 };
