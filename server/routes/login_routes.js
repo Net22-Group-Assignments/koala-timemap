@@ -3,7 +3,7 @@ const LoginService = require("../service/login_service");
 const router = express.Router();
 
 router.post("/login", async (req, res) => {
-  if (process.env.INTEGRATION_TYPE === "internal") {
+  if (process.env.INTEGRATION_TYPE === "internal-only") {
     res.json(await LoginService.createSignInResponse(process.env.GOD_ID));
   }
 });

@@ -42,6 +42,7 @@ const ClientPoolFactory = (db = null) => {
 };
 const InternalClientPool = (token) => {
   const client = {
+    id: process.env.NOTION_API_KEY_ID,
     type: "internal",
     client: new Client({ auth: token, logLevel: LogLevel.DEBUG }),
   };

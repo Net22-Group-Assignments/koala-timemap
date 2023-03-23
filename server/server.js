@@ -70,7 +70,7 @@ if (integrationArgIndex > -1) {
   ProjectsService.configure(ClientPool);
   TimeReportsService.configure(ClientPool);
   PeopleService.configure(ClientPool);
-  // LoginService.configure(Notion);
+  LoginService.configure(ClientPool);
 })();
 
 const PORT = 3001;
