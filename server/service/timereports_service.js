@@ -10,8 +10,8 @@ const TimeReportsService = {
     this.clientPool = ClientPool;
   },
   getReports: async function (botId) {
-    const Notion = this.clientPool.obtainClient(botId);
     try {
+      const Notion = this.clientPool.obtainClient(botId);
       return await Notion.client.databases.query({
         database_id: timeReportsDB,
       });
@@ -46,8 +46,8 @@ const TimeReportsService = {
     return reports;
   },
   createReport: async function (bodyParams, botId) {
-    const Notion = this.clientPool.obtainClient(botId);
     try {
+      const Notion = this.clientPool.obtainClient(botId);
       return await Notion.client.pages.create(bodyParams);
     } catch (e) {
       console.error(e);

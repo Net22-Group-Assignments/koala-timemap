@@ -3,8 +3,8 @@ const UserService = {
     this.clientPool = clientPool;
   },
   getTokenBotUser: async function (botId) {
-    const Notion = this.clientPool.obtainClient(botId);
     try {
+      const Notion = this.clientPool.obtainClient(botId);
       const response = Notion.client.users.me();
       if (Notion.type === "public") return response.bot.owner.user;
       return response;

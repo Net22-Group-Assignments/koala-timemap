@@ -3,16 +3,17 @@ dotenv.config();
 const peopleDB = process.env.PEOPLE_DATABASE_ID;
 
 const PeopleService = {
-  configure: function (Notion) {
-    this.Notion = Notion;
+  configure: function (ClientPool) {
+    this.clientPool = ClientPool;
   },
-  getPeople: async function (filter, schema = "notion") {
+  getPeople: async function (filter, schema = "notion", botId) {
     let query = { database_id: peopleDB };
     if (filter != null) {
       query = { ...query, filter };
     }
     try {
-      const response = await this.Notion.client.databases.query(query);
+      const Notion = this.clientPool.obtainClient(botId);
+      const response = await Notion.client.databases.query(query);
       if (schema === "native") {
         let people = [];
         response.results.map((person) => {
@@ -25,9 +26,10 @@ const PeopleService = {
       console.error(e);
     }
   },
-  getPeopleById: async function (peopleId, schema = "notion") {
+  getPeopleById: async function (peopleId, schema = "notion", botId) {
     try {
-      const person = await this.Notion.client.pages.retrieve({
+      const Notion = this.clientPool.obtainClient(botId);
+      const person = await Notion.client.pages.retrieve({
         page_id: peopleId,
       });
       if (schema === "native") {
