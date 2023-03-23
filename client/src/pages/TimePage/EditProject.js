@@ -6,10 +6,6 @@ export default function EditProject(props) {
   const [projectname, setProjectName] = useState("");
   const [status, setStatus] = useState("");
   const [hours, setHours] = useState("");
-  const [workedHours, setWorkedHours] = useState("");
-  const [hoursLeft, setHoursLeft] = useState("");
-  const [timespanStart, setTimespanStart] = useState("");
-  const [timespanEnd, setTimespanEnd] = useState("");
   const [showEditProject, setShowEditProject] = useState(props.show);
 
   const handleClose = () => setShowEditProject(false);
@@ -19,7 +15,7 @@ export default function EditProject(props) {
     <>
       <button
         onClick={props.toggleShowEditProject}
-        className="block mx-auto m-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+        className="m-2 px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
       >
         Update
       </button>
@@ -31,7 +27,7 @@ export default function EditProject(props) {
         keyboard={false}
       >
         <Modal.Header>
-          <Modal.Title>Add Project</Modal.Title>
+          <Modal.Title>Update Project Data</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form
@@ -40,17 +36,7 @@ export default function EditProject(props) {
               setProjectName("");
               setStatus("");
               setHours("");
-              setWorkedHours("");
-              setHoursLeft("");
-              setTimespanStart("");
-              setTimespanEnd("");
-              props.newProject(
-                projectname,
-                status,
-                hours,
-                timespanStart,
-                timespanEnd
-              );
+              props.newProject(projectname, status, hours);
             }}
             id="editmodal"
             className="w-full max-w-sm"
@@ -121,50 +107,6 @@ export default function EditProject(props) {
                 />
               </div>
             </div>
-            <div className="md:flex md:items-center mb-6">
-              <div className="md:w-1/3">
-                <label
-                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  for="industry"
-                >
-                  Timespan Start
-                </label>
-              </div>
-              <div className="md:w-2/3">
-                <input
-                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                  id="industry"
-                  placeholder="2000-00-00"
-                  type="date"
-                  value={timespanStart}
-                  onChange={(e) => {
-                    setTimespanStart(e.target.value);
-                  }}
-                />
-              </div>
-            </div>
-            <div className="md:flex md:items-center mb-6">
-              <div className="md:w-1/3">
-                <label
-                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  for="industry"
-                >
-                  Timespan End
-                </label>
-              </div>
-              <div className="md:w-2/3">
-                <input
-                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                  id="industry"
-                  placeholder="2000-00-00"
-                  type="date"
-                  value={timespanEnd}
-                  onChange={(e) => {
-                    setTimespanEnd(e.target.value);
-                  }}
-                />
-              </div>
-            </div>
           </form>
         </Modal.Body>
         <Modal.Footer>
@@ -178,7 +120,7 @@ export default function EditProject(props) {
             className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
             form="editmodal"
           >
-            Add
+            Save
           </button>
         </Modal.Footer>
       </Modal>
