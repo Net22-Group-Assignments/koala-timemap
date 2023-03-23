@@ -52,7 +52,7 @@ export default function EditProject(props) {
               setProjectName("");
               setStatus("");
               setHours("");
-              props.editProject(editProject.id, status, hours);
+              props.projectEdit(editProject.id, status, hours);
             }}
             id="editmodal"
             className="w-full max-w-sm"

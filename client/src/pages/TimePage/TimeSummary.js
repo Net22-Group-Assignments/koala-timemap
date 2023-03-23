@@ -29,42 +29,22 @@ export default function TimeSummary() {
       .then((data) => setTimeData(data));
   }, []);
 
-  function projectEdit(Hours, ProjectId, Status) {
-    fetch("/api/projects", {
+  function projectEdit(ProjectId, Status, Hours) {
+    fetch("/api/pages/" + ProjectId, {
       method: "PATCH",
       headers: {
         "Content-type": "application/json",
       },
       body: JSON.stringify({
-        parent: {
-          type: "database_id",
-          database_id: "3a6e6b4bbcab4f83a66750fc4313e44c",
-        },
         properties: {
-          Date: {
-            date: {
-              start: Date,
+          Status: {
+            select: {
+              name: Status,
             },
           },
-        },
-        Hours: {
-          number: parseInt(Hours),
-        },
-        Project: {
-          relation: [
-            {
-              id: ProjectId,
-            },
-          ],
-        },
-        Note: {
-          title: [
-            {
-              text: {
-                content: "Note",
-              },
-            },
-          ],
+          Hours: {
+            number: parseInt(Hours),
+          },
         },
       }),
     })
@@ -95,8 +75,8 @@ export default function TimeSummary() {
               <th>Project Name</th>
               <th>Status</th>
               <th>Hours</th>
-              <th>Worked hours</th>
               <th>Estimated hours left</th>
+              <th>Worked Hours</th>
               <th>
                 TimeSpan
                 <EditProject
