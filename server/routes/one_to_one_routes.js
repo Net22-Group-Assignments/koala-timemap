@@ -1,24 +1,18 @@
 const express = require("express");
-const PageService = require("../service/one_to_one_service");
 const router = express.Router();
+const apicache = require("apicache");
+const PageService = require("../service/one_to_one_service");
 
+const cache = apicache.middleware;
 router
-  .route("/pages/:pageId")
+  .route("/pages/:pageId", cache("5 minutes"))
   .get(async (req, res) => {
+    req.apicacheGroup = req.params.pageId;
     res.json(await PageService.RetrievePage(req.params.pageId));
   })
   .patch(async (req, res) => {
+    apicache.clear();
     res.json(await PageService.UpdatePage(req.params.pageId, req.body));
   });
-
-// router.post("/projects", async (req, res) => {
-//   res.json(await ProjectService.createProject(req.body));
-// });
-
-// router.get("/people/:peopleId", async (req, res) => {
-//   const { peopleId } = req.params;
-//   const { schema } = req.query;
-//   res.json(await PeopleService.getPeopleById(peopleId, schema));
-// });
 
 module.exports = router;

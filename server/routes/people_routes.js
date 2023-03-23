@@ -1,8 +1,10 @@
 const express = require("express");
-const PeopleService = require("../service/people_service");
 const router = express.Router();
+const apicache = require("apicache");
+const PeopleService = require("../service/people_service");
 
-router.get("/people", async (req, res) => {
+const cache = apicache.middleware;
+router.get("/people", cache("5 minutes"), async (req, res) => {
   const { schema } = req.query;
   res.json(await PeopleService.getPeople(null, schema));
 });

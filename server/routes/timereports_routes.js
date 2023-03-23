@@ -1,8 +1,12 @@
 const express = require("express");
-const TimeReportsService = require("../service/timereports_service");
 const router = express.Router();
+const apicache = require("apicache");
+const TimeReportsService = require("../service/timereports_service");
 
-router.get("/timereports", async (req, res) => {
+const cache = apicache.middleware;
+
+router.get("/timereports", cache("5 minutes"), async (req, res) => {
+  req.apicacheGroup = "timeReports";
   const { collated } = req.query;
   try {
     if (collated) {
@@ -30,6 +34,7 @@ router.post("/timereports", async (req, res) => {
   } else {
     response = await TimeReportsService.createReport(req.body);
   }
+  apicache.clear("timeReports");
   res.json(response);
 });
 
