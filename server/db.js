@@ -80,4 +80,39 @@ const config = async () => {
   };
 };
 
+// A function that connects to the database and returns a row from the tokens table depending on the bot_id
+const getToken = async (bot_id) => {
+  const db = new sqlite3.Database("./db/koala-timemap.db", (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log("Connected to the koala-timemap database.");
+  });
+
+  db.get(
+    "SELECT bot_id, token, integration_type FROM tokens WHERE bot_id = ?",
+    [bot_id],
+    (err, row) => {
+      if (err) {
+        console.error(err.message);
+      }
+      if (row) {
+        console.log("Token exists");
+        return row;
+      } else {
+        console.log("Token does not exist");
+        return null;
+      }
+    }
+  );
+
+  // Close the database connection
+  db.close((err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log("Close the database connection.");
+  });
+};
+
 module.exports = { config };
