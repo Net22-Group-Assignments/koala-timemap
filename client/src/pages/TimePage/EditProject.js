@@ -1,12 +1,28 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import Select from "react-select";
+import { useAuthUser } from "react-auth-kit";
 
 export default function EditProject(props) {
   const [projectname, setProjectName] = useState("");
+  const [project, setProject] = useState("");
   const [status, setStatus] = useState("");
   const [hours, setHours] = useState("");
+  const [editProject, setEditProject] = useState("");
   const [showEditProject, setShowEditProject] = useState(props.show);
+
+  console.log(props.projects);
+  const projectOptions = props.projects.map((project) => ({
+    value: project.id,
+    label: project.properties.Projectname.title[0].text.content,
+  }));
+
+  const handleEditProjectChange = (selectedProject) => {
+    setEditProject(
+      props.projects.find((project) => project.id === selectedProject.value)
+    );
+  };
 
   const handleClose = () => setShowEditProject(false);
   const handleShow = () => setShowEditProject(true);
@@ -36,7 +52,7 @@ export default function EditProject(props) {
               setProjectName("");
               setStatus("");
               setHours("");
-              props.newProject(projectname, status, hours);
+              props.editProject(editProject.id, status, hours);
             }}
             id="editmodal"
             className="w-full max-w-sm"
@@ -51,15 +67,9 @@ export default function EditProject(props) {
                 </label>
               </div>
               <div className="md:w-2/3">
-                <input
-                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                  id="name"
-                  placeholder="The bestest Project"
-                  type="text"
-                  value={projectname}
-                  onChange={(e) => {
-                    setProjectName(e.target.value);
-                  }}
+                <Select
+                  options={projectOptions}
+                  onChange={handleEditProjectChange}
                 />
               </div>
             </div>

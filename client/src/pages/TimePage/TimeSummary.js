@@ -10,11 +10,11 @@ export default function TimeSummary() {
   function toggleShowEditProject() {
     setShowEditProject(!showEditProject);
   }
-  const [projectData, setProjectData] = useState(null);
+  const [projects, setProjects] = useState([]);
   useEffect(() => {
     fetch("/api/projects")
       .then((res) => res.json())
-      .then((data) => setProjectData(data));
+      .then((data) => setProjects(data.results));
   }, []);
   const [peopleData, setPeopleData] = useState(null);
   useEffect(() => {
@@ -28,6 +28,62 @@ export default function TimeSummary() {
       .then((res) => res.json())
       .then((data) => setTimeData(data));
   }, []);
+
+  function projectEdit(Hours, ProjectId, Status) {
+    fetch("/api/projects", {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        parent: {
+          type: "database_id",
+          database_id: "3a6e6b4bbcab4f83a66750fc4313e44c",
+        },
+        properties: {
+          Date: {
+            date: {
+              start: Date,
+            },
+          },
+        },
+        Hours: {
+          number: parseInt(Hours),
+        },
+        Project: {
+          relation: [
+            {
+              id: ProjectId,
+            },
+          ],
+        },
+        Note: {
+          title: [
+            {
+              text: {
+                content: "Note",
+              },
+            },
+          ],
+        },
+      }),
+    })
+      .then((response) => {
+        console.log(response);
+        if (!response.ok) {
+          throw new Error("Something went wrong");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        toggleShowEditProject();
+        console.log(data);
+        setEditProject([...editProject, data.results]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
 
   return (
     <div className="Table_container">
@@ -44,15 +100,16 @@ export default function TimeSummary() {
               <th>
                 TimeSpan
                 <EditProject
-                  editProject={editProject}
+                  projectEdit={projectEdit}
                   showEditProject={showEditProject}
                   toggleShowEditProject={toggleShowEditProject}
+                  projects={projects}
                 />
               </th>
             </tr>
           </thead>
-          {projectData
-            ? projectData.results.map((project) => (
+          {projects
+            ? projects.map((project) => (
                 <tbody>
                   <tr>
                     <td>
