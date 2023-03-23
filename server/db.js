@@ -89,20 +89,89 @@ const getToken = async (bot_id) => {
     console.log("Connected to the koala-timemap database.");
   });
 
-  db.get(
-    "SELECT bot_id, token, integration_type FROM tokens WHERE bot_id = ?",
-    [bot_id],
-    (err, row) => {
+  return new Promise((resolve, reject) => {
+    db.get(
+      "SELECT bot_id, token, integration_type FROM tokens WHERE bot_id = ?",
+      [bot_id],
+      (err, row) => {
+        if (err) {
+          console.error(err.message);
+          reject(err);
+        }
+        if (row) {
+          console.log("Token exists");
+          resolve(row);
+        } else {
+          console.log("Token does not exist");
+          reject(null);
+        }
+      }
+    );
+  }).finally(() => {
+    // Close the database connection
+    db.close((err) => {
       if (err) {
         console.error(err.message);
       }
-      if (row) {
-        console.log("Token exists");
-        return row;
-      } else {
-        console.log("Token does not exist");
-        return null;
+      console.log("Close the database connection.");
+    });
+  });
+};
+
+// Return all rows from the tokens table as a promise
+const getAllTokens = async () => {
+  const db = new sqlite3.Database("./db/koala-timemap.db", (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log("Connected to the koala-timemap database.");
+  });
+
+  return new Promise((resolve, reject) => {
+    db.all(
+      "SELECT bot_id, token, integration_type FROM tokens",
+      (err, rows) => {
+        if (err) {
+          console.error(err.message);
+          reject(err);
+        }
+        if (rows) {
+          console.log("Tokens exist");
+          resolve(rows);
+        } else {
+          console.log("Tokens do not exist");
+          reject(null);
+        }
       }
+    );
+  }).finally(() => {
+    // Close the database connection
+    db.close((err) => {
+      if (err) {
+        console.error(err.message);
+      }
+      console.log("Close the database connection.");
+    });
+  });
+};
+
+// A function that connects to the database and inserts a row into the tokens table
+const insertToken = async (bot_id, token, integration_type) => {
+  const db = new sqlite3.Database("./db/koala-timemap.db", (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log("Connected to the koala-timemap database.");
+  });
+
+  db.run(
+    "INSERT INTO tokens (bot_id, token, integration_type) VALUES (?, ?, ?)",
+    [bot_id, token, integration_type],
+    (err) => {
+      if (err) {
+        console.error(err.message);
+      }
+      console.log("Inserted token into the tokens table");
     }
   );
 
@@ -115,4 +184,4 @@ const getToken = async (bot_id) => {
   });
 };
 
-module.exports = { config };
+module.exports = { config, getToken, getAllTokens };
