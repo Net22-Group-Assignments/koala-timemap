@@ -99,14 +99,24 @@ export default function TimeSummary() {
             ? projects.map((project) => (
                 <tbody>
                   <tr>
-                    <td>
+                    <td style={{ backgroundColor: color }}>
                       {project.properties.Projectname.title[0].text.content}
                     </td>
-                    <td>{project.properties.Status.select.name}</td>
-                    <td>{project.properties.Hours.number}</td>
-                    <td>{project.properties.HoursLeft.formula.number}</td>
-                    <td>{project.properties.WorkedHours.rollup.number}</td>
-                    <td>{project.properties.Timespan.date.start}</td>
+                    <td style={{ backgroundColor: color }}>
+                      {project.properties.Status.select.name}
+                    </td>
+                    <td style={{ backgroundColor: color }}>
+                      {project.properties.Hours.number}
+                    </td>
+                    <td style={{ backgroundColor: color }}>
+                      {project.properties.HoursLeft.formula.number}
+                    </td>
+                    <td style={{ backgroundColor: color }}>
+                      {project.properties.WorkedHours.rollup.number}
+                    </td>
+                    <td style={{ backgroundColor: color }}>
+                      {project.properties.Timespan.date.start}
+                    </td>
                   </tr>
                 </tbody>
               ))
