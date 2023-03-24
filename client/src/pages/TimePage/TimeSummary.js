@@ -1,13 +1,21 @@
 import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
+import EditProject from "./EditProject";
+import CheckProjectStatus from "../../components/RadioButtons";
 
 export default function TimeSummary() {
-  const [projectData, setProjectData] = useState(null);
+  const [editProject, setEditProject] = useState([]);
+  const [showEditProject, setShowEditProject] = useState(false);
+
+  function toggleShowEditProject() {
+    setShowEditProject(!showEditProject);
+  }
+  const [projects, setProjects] = useState([]);
   useEffect(() => {
     fetch("/api/projects")
       .then((res) => res.json())
-      .then((data) => setProjectData(data));
+      .then((data) => setProjects(data.results));
   }, []);
   const [peopleData, setPeopleData] = useState(null);
   useEffect(() => {
@@ -22,8 +30,57 @@ export default function TimeSummary() {
       .then((data) => setTimeData(data));
   }, []);
 
+  function projectEdit(ProjectId, Status, Hours) {
+    fetch("/api/pages/" + ProjectId, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        properties: {
+          Status: {
+            select: {
+              name: Status,
+            },
+          },
+          Hours: {
+            number: parseInt(Hours),
+          },
+        },
+      }),
+    })
+      .then((response) => {
+        console.log(response);
+        if (!response.ok) {
+          throw new Error("Something went wrong");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        toggleShowEditProject();
+        console.log(data);
+        setEditProject([...editProject, data.results]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
   return (
-    <div className="Table_container">
+    <div className="Table_container m-2">
+      <div className="flex justify-content: flex-end">
+        <div className="mx-10 my-2">
+          <CheckProjectStatus />
+        </div>
+        <div className="mx-10">
+          <EditProject
+            projectEdit={projectEdit}
+            showEditProject={showEditProject}
+            toggleShowEditProject={toggleShowEditProject}
+            projects={projects}
+          />
+        </div>
+      </div>
       {/* Here is display for projects DB */}
       <div className="Project_container">
         <Table striped bordered hover>
@@ -32,23 +89,34 @@ export default function TimeSummary() {
               <th>Project Name</th>
               <th>Status</th>
               <th>Hours</th>
-              <th>Worked hours</th>
               <th>Estimated hours left</th>
+              <th>Worked Hours</th>
+              <th>Worked Hours</th>
               <th>TimeSpan</th>
             </tr>
           </thead>
-          {projectData
-            ? projectData.results.map((project) => (
+          {projects
+            ? projects.map((project) => (
                 <tbody>
                   <tr>
-                    <td>
+                    <td style={{ backgroundColor: color }}>
                       {project.properties.Projectname.title[0].text.content}
                     </td>
-                    <td>{project.properties.Status.select.name}</td>
-                    <td>{project.properties.Hours.number}</td>
-                    <td>{project.properties.HoursLeft.formula.number}</td>
-                    <td>{project.properties.WorkedHours.rollup.number}</td>
-                    <td>{project.properties.Timespan.date.start}</td>
+                    <td style={{ backgroundColor: color }}>
+                      {project.properties.Status.select.name}
+                    </td>
+                    <td style={{ backgroundColor: color }}>
+                      {project.properties.Hours.number}
+                    </td>
+                    <td style={{ backgroundColor: color }}>
+                      {project.properties.HoursLeft.formula.number}
+                    </td>
+                    <td style={{ backgroundColor: color }}>
+                      {project.properties.WorkedHours.rollup.number}
+                    </td>
+                    <td style={{ backgroundColor: color }}>
+                      {project.properties.Timespan.date.start}
+                    </td>
                   </tr>
                 </tbody>
               ))
