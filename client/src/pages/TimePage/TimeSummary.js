@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
 import EditProject from "./EditProject";
+import CheckProjectStatus from "../../components/RadioButtons";
 
 export default function TimeSummary() {
   const [editProject, setEditProject] = useState([]);
@@ -66,7 +67,20 @@ export default function TimeSummary() {
   }
 
   return (
-    <div className="Table_container">
+    <div className="Table_container m-2">
+      <div className="flex justify-content: flex-end">
+        <div className="mx-10 my-2">
+          <CheckProjectStatus />
+        </div>
+        <div className="mx-10">
+          <EditProject
+            projectEdit={projectEdit}
+            showEditProject={showEditProject}
+            toggleShowEditProject={toggleShowEditProject}
+            projects={projects}
+          />
+        </div>
+      </div>
       {/* Here is display for projects DB */}
       <div className="Project_container">
         <Table striped bordered hover>
@@ -77,15 +91,8 @@ export default function TimeSummary() {
               <th>Hours</th>
               <th>Estimated hours left</th>
               <th>Worked Hours</th>
-              <th>
-                TimeSpan
-                <EditProject
-                  projectEdit={projectEdit}
-                  showEditProject={showEditProject}
-                  toggleShowEditProject={toggleShowEditProject}
-                  projects={projects}
-                />
-              </th>
+              <th>Worked Hours</th>
+              <th>TimeSpan</th>
             </tr>
           </thead>
           {projects
