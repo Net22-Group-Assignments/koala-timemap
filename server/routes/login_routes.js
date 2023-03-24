@@ -2,9 +2,15 @@ const express = require("express");
 const LoginService = require("../service/login_service");
 const router = express.Router();
 
-router.post("/login", async (req, res) => {
-  if (process.env.INTEGRATION_TYPE === "internal-only") {
-    res.json(await LoginService.createSignInResponse(process.env.GOD_ID));
+router.post("/login", async (req, res, next) => {
+  try {
+    if (process.env.INTEGRATION_TYPE === "internal-only") {
+      res.json(await LoginService.createSignInResponse(process.env.GOD_ID));
+    } else {
+      res.json(await LoginService.signIn(req.body.code));
+    }
+  } catch (e) {
+    next(e);
   }
 });
 

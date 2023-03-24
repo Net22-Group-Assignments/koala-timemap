@@ -7,12 +7,12 @@ const cache = apicache.middleware;
 
 router.get("/projects", cache("5 minutes"), async (req, res) => {
   req.apicacheGroup = "projects";
-  res.json(await ProjectService.getProjects());
+  res.json(await ProjectService.getProjects(req.token));
 });
 
 router.post("/projects", async (req, res) => {
   apicache.clear("projects");
-  res.json(await ProjectService.createProject(req.body));
+  res.json(await ProjectService.createProject(req.body, req.token));
 });
 
 module.exports = router;

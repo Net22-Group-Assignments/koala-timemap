@@ -3,25 +3,17 @@ const PageService = {
     this.clientPool = ClientPool;
   },
   RetrievePage: async function (pageId, botId) {
-    try {
-      const Notion = this.clientPool.obtainClient(botId);
-      return Notion.client.pages.retrieve({
-        page_id: pageId,
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    const Notion = await this.clientPool.obtainClient(botId);
+    return await Notion.client.pages.retrieve({
+      page_id: pageId,
+    });
   },
   UpdatePage: async function (pageId, bodyParams, botId) {
-    const Notion = this.clientPool.obtainClient(botId);
-    try {
-      return await Notion.client.pages.update({
-        page_id: pageId,
-        ...bodyParams,
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    const Notion = await this.clientPool.obtainClient(botId);
+    return await Notion.client.pages.update({
+      page_id: pageId,
+      ...bodyParams,
+    });
   },
 };
 

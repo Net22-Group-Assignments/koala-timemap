@@ -1,4 +1,4 @@
-const { Client, LogLevel } = require("@notionhq/client");
+const { Client, LogLevel, APIErrorCode } = require("@notionhq/client");
 const db = require("./db");
 
 const ClientPoolFactory = (db = null) => {
@@ -29,19 +29,30 @@ const PublicClientPool = () => {
         console.log("Client found in array");
         return clients[botId];
       }
-      let tokenInfo;
-      try {
-        tokenInfo = await db.getToken(botId);
-      } catch (error) {
-        console.error("no token found");
-        throw "UNREGISTERED_TOKEN";
+      const rows = await db.getToken(botId);
+      if (rows.length === 0) {
+        const error = new Error("Token not found");
+        error.statusCode = 401;
+        throw error;
       }
-
+      const tokenInfo = rows[0];
       const client = {
         id: botId,
         type: tokenInfo.type,
-        client: new Client({ auth: tokenInfo.token, logLevel: LogLevel.DEBUG }),
+        client: new Client({
+          auth: tokenInfo.token,
+          logLevel: LogLevel.DEBUG,
+        }),
       };
+      try {
+        await client.users.me();
+      } catch (error) {
+        if (error.code === APIErrorCode.Unauthorized) {
+          const error = new Error("Registered Token in database is invalid");
+          error.statusCode = 401;
+          throw error;
+        }
+      }
       clients[botId] = client;
       return client;
     },

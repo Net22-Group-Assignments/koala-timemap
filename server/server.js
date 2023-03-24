@@ -40,8 +40,9 @@ if (integrationArgIndex > -1) {
     method: "GET",
     url: "https://api.notion.com/v1/users/me",
     headers: {
-      Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+      accept: "application/json",
       "Notion-Version": process.env.NOTION_API_VERSION,
+      Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
     },
   };
   try {

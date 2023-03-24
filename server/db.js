@@ -21,7 +21,7 @@ const config = async () => {
       if (row) {
         console.log("Table tokens exists");
         db.get(
-          "SELECT bot_id, token, integration_type FROM tokens WHERE integration_type = 'internal'",
+          "SELECT bot_id, token, integration_type, user_id FROM tokens WHERE integration_type = 'internal'",
           (err, row) => {
             if (err) {
               console.error(err.message);
@@ -55,7 +55,7 @@ const config = async () => {
   // add a third column called integration_type of type text called integration_type
   const createTokenTable = () => {
     db.run(
-      "CREATE TABLE IF NOT EXISTS tokens (bot_id text PRIMARY KEY, token text, integration_type text)",
+      "CREATE TABLE IF NOT EXISTS tokens (bot_id text PRIMARY KEY, token text, integration_type text, user_id text)",
       (err) => {
         if (err) {
           console.error(err.message);
@@ -68,8 +68,13 @@ const config = async () => {
   // Insert a row into the tokens table
   const insertDefaultToken = () => {
     db.run(
-      "INSERT INTO tokens (bot_id, token, integration_type VALUES (?, ?, ?)",
-      [process.env.NOTION_API_KEY_ID, process.env.NOTION_API_KEY, "internal"],
+      "INSERT INTO tokens (bot_id, token, integration_type, user_id VALUES (?, ?, ?, ?)",
+      [
+        process.env.NOTION_API_KEY_ID,
+        process.env.NOTION_API_KEY,
+        "internal",
+        process.env.NOTION_API_KEY_ID,
+      ],
       (err) => {
         if (err) {
           console.error(err.message);
@@ -90,21 +95,15 @@ const getToken = async (bot_id) => {
   });
 
   return new Promise((resolve, reject) => {
-    db.get(
-      "SELECT bot_id, token, integration_type FROM tokens WHERE bot_id = ?",
+    db.all(
+      "SELECT DISTINCT * FROM tokens WHERE bot_id = ?",
       [bot_id],
       (err, row) => {
         if (err) {
           console.error(err.message);
           reject(err);
         }
-        if (row) {
-          console.log("Token exists");
-          resolve(row);
-        } else {
-          console.log("Token does not exist");
-          reject(null);
-        }
+        resolve(row);
       }
     );
   }).finally(() => {
@@ -129,7 +128,7 @@ const getAllTokens = async () => {
 
   return new Promise((resolve, reject) => {
     db.all(
-      "SELECT bot_id, token, integration_type FROM tokens",
+      "SELECT bot_id, token, integration_type, user_id FROM tokens",
       (err, rows) => {
         if (err) {
           console.error(err.message);
