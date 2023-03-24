@@ -91,7 +91,16 @@ export default function TimeSummary() {
               <th>Hours</th>
               <th>Estimated hours left</th>
               <th>Worked Hours</th>
-              <th>TimeSpan</th>
+              <th>Worked Hours</th>
+              <th>
+                TimeSpan
+                <EditProject
+                  projectEdit={projectEdit}
+                  showEditProject={showEditProject}
+                  toggleShowEditProject={toggleShowEditProject}
+                  projects={projects}
+                />
+              </th>
             </tr>
           </thead>
           {projects
