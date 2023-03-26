@@ -155,7 +155,7 @@ const getAllTokens = async () => {
 };
 
 // A function that connects to the database and inserts a row into the tokens table
-const insertToken = async (bot_id, token, integration_type) => {
+const insertToken = async (bot_id, token, integration_type, user_id) => {
   const db = new sqlite3.Database("./db/koala-timemap.db", (err) => {
     if (err) {
       console.error(err.message);
@@ -164,8 +164,8 @@ const insertToken = async (bot_id, token, integration_type) => {
   });
 
   db.run(
-    "INSERT INTO tokens (bot_id, token, integration_type) VALUES (?, ?, ?)",
-    [bot_id, token, integration_type],
+    "INSERT INTO tokens (bot_id, token, integration_type, user_id) VALUES (?, ?, ?, ?)",
+    [bot_id, token, integration_type, user_id],
     (err) => {
       if (err) {
         console.error(err.message);
@@ -183,4 +183,40 @@ const insertToken = async (bot_id, token, integration_type) => {
   });
 };
 
-module.exports = { config, getToken, getAllTokens };
+// A function that connects to the database and deletes all token rows except the internal token from the tokens table
+const deleteAllPublicTokens = async () => {
+  const db = new sqlite3.Database("./db/koala-timemap.db", (err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log("Connected to the koala-timemap database.");
+  });
+
+  db.run(
+    "DELETE FROM tokens WHERE integration_type != 'internal'",
+    function (err) {
+      if (err) {
+        console.error(err.message);
+      }
+      console.log(
+        `Deleted ${this.changes} public tokens from the tokens table`
+      );
+    }
+  );
+
+  // Close the database connection
+  db.close((err) => {
+    if (err) {
+      console.error(err.message);
+    }
+    console.log("Close the database connection.");
+  });
+};
+
+module.exports = {
+  config,
+  getToken,
+  getAllTokens,
+  insertToken,
+  deleteAllPublicTokens,
+};

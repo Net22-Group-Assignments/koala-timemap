@@ -20,11 +20,18 @@ const LoginService = {
     response.authState = await LoginService.getAuthenticatedUser(personId);
     return response;
   },
+
   // This function is the one that should be used when running with public integration
   signIn: async (botId) => {
+    const redirectUrl =
+      "https://api.notion.com/v1/oauth/authorize?client_id=dd6fae9a-921b-45b5-ab34-92e85932a89f&response_type=code&owner=user";
+    const response = Object.create(signInResponse);
     const rows = await db.getToken(botId);
     if (rows.length === 0) {
-      return null;
+      response.status = registerStatus.NOT_REGISTERED;
+      response.redirectUrl =
+        "http://localhost:3001/api/registertoken?code=hellofromsignin";
+      return response;
     }
     const tokenInfo = rows[0];
 
@@ -42,13 +49,17 @@ const LoginService = {
       const response = await axios.request(options);
     } catch (error) {
       console.error(error);
-      return null;
+      response.status = registerStatus.REGISTERED_INVALID;
+      response.redirectUrl = redirectUrl;
+      return response;
     }
 
     // Everything accepted so far now so if this is a public integration,
     // lets see if there is a People page in the Notion People Database
     // that is associated with the user id this bot id associates to
     const authUser = Object.create(authenticatedUser);
+    response.authState = authUser;
+
     if (tokenInfo.integration_type === "public") {
       console.log(tokenInfo);
       const person = await PeopleService.getPeopleByNotionId(
@@ -56,22 +67,65 @@ const LoginService = {
         "native",
         tokenInfo.bot_id
       );
+
       if (person == null) {
-        const error = new Error("No People page found for this user");
-        error.statusCode = 401;
-        throw error;
+        response.status = registerStatus.REGISTERED_NO_USER;
+      } else {
+        authUser.person = person;
+        response.status = registerStatus.REGISTERED_USER;
       }
-      authUser.person = person;
+
+      authUser.integration = {
+        id: tokenInfo.bot_id,
+        type: tokenInfo.integration_type,
+      };
+
+      response.token = tokenInfo.bot_id;
+      response.expiresIn = 60;
+      response.redirectUrl = "/";
+      return response;
     }
-    authUser.integration = {
-      id: tokenInfo.bot_id,
-      type: tokenInfo.integration_type,
+  },
+
+  // Call this function to register a public integration
+  registerToken: async (code) => {
+    const options = {
+      method: "POST",
+      url: "https://api.notion.com/v1/oauth/token",
+      auth: {
+        username: process.env.NOTION_OAUTH_CLIENT_ID,
+        password: process.env.NOTION_OAUTH_CLIENT_SECRET,
+      },
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      data: {
+        grant_type: "authorization_code",
+        code: code,
+      },
     };
-    const response = Object.create(signInResponse);
-    response.token = tokenInfo.bot_id;
-    response.expiresIn = 60;
-    response.authState = authUser;
-    return response;
+
+    const response = await axios.request(options);
+
+    const tokenInfo = {
+      bot_id: response.data.bot_id,
+      token: response.data.access_token,
+      user_id: response.data.owner.user.id,
+      integration_type: "public",
+    };
+
+    await db.insertToken(
+      tokenInfo.bot_id,
+      tokenInfo.token,
+      tokenInfo.integration_type,
+      tokenInfo.user_id
+    );
+
+    return tokenInfo;
+  },
+  deleteAllPublicTokens: async () => {
+    await db.deleteAllPublicTokens();
   },
 };
 
@@ -84,6 +138,15 @@ const signInResponse = {
   token: "",
   expiresIn: 0,
   authState: {},
+  redirectUrl: "",
+  status: null,
+};
+
+const registerStatus = {
+  NOT_REGISTERED: "NOT_REGISTERED",
+  REGISTERED_INVALID: "REGISTERED_INVALID",
+  REGISTERED_NO_USER: "REGISTERED_NO_USER",
+  REGISTERED_USER: "REGISTERED_USER",
 };
 
 module.exports = LoginService;
