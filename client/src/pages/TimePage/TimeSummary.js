@@ -7,6 +7,7 @@ import CheckProjectStatus from "../../components/RadioButtons";
 export default function TimeSummary() {
   const [editProject, setEditProject] = useState([]);
   const [showEditProject, setShowEditProject] = useState(false);
+  const [checkTime, setCheckTime] = useState("");
 
   function toggleShowEditProject() {
     setShowEditProject(!showEditProject);
@@ -66,11 +67,34 @@ export default function TimeSummary() {
       });
   }
 
+  useEffect(() => {
+    projects &&
+      projects.map((project) => {
+        if (parseInt(project.properties.HoursLeft.formula.number) < 0) {
+          console.log(
+            project.properties.HoursLeft.formula.number,
+            "hours left minus"
+          );
+          setCheckTime("lightpink");
+          console.log(checkTime, "red");
+        } else if (parseInt(project.properties.HoursLeft.formula.number) > 0) {
+          console.log(
+            project.properties.HoursLeft.formula.number,
+            "hours left plus"
+          );
+          setCheckTime("lightgreen");
+          console.log(checkTime, "lightgreen");
+        }
+      });
+  });
+
   return (
     <div className="Table_container m-2">
       <div className="flex justify-content: flex-end">
         <div className="mx-10 my-2">
-          <CheckProjectStatus />
+          <CheckProjectStatus
+            projectStatus={console.log(CheckProjectStatus.label)}
+          />
         </div>
         <div className="mx-10">
           <EditProject
@@ -99,24 +123,14 @@ export default function TimeSummary() {
             ? projects.map((project) => (
                 <tbody>
                   <tr>
-                    <td style={{ backgroundColor: color }}>
+                    <td style={{ backgroundColor: checkTime }}>
                       {project.properties.Projectname.title[0].text.content}
                     </td>
-                    <td style={{ backgroundColor: color }}>
-                      {project.properties.Status.select.name}
-                    </td>
-                    <td style={{ backgroundColor: color }}>
-                      {project.properties.Hours.number}
-                    </td>
-                    <td style={{ backgroundColor: color }}>
-                      {project.properties.HoursLeft.formula.number}
-                    </td>
-                    <td style={{ backgroundColor: color }}>
-                      {project.properties.WorkedHours.rollup.number}
-                    </td>
-                    <td style={{ backgroundColor: color }}>
-                      {project.properties.Timespan.date.start}
-                    </td>
+                    <td>{project.properties.Status.select.name}</td>
+                    <td>{project.properties.Hours.number}</td>
+                    <td>{project.properties.HoursLeft.formula.number}</td>
+                    <td>{project.properties.WorkedHours.rollup.number}</td>
+                    <td>{project.properties.Timespan.date.start}</td>
                   </tr>
                 </tbody>
               ))
