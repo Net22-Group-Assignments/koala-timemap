@@ -5,26 +5,22 @@ import EditProject from "./EditProject";
 import CheckProjectStatus from "../../components/RadioButtons";
 
 export default function TimeSummary() {
-  const [editProject, setEditProject] = useState([]);
+  //const [editProject, setEditProject] = useState([]); // Does it do anything?
   const [showEditProject, setShowEditProject] = useState(false);
-
+  const [projects, setProjects] = useState([]);
+  const [peopleData, setPeopleData] = useState(null);
+  const [timeData, setTimeData] = useState(null);
   function toggleShowEditProject() {
     setShowEditProject(!showEditProject);
   }
-  const [projects, setProjects] = useState([]);
+
   useEffect(() => {
     fetch("/api/projects")
       .then((res) => res.json())
       .then((data) => setProjects(data.results));
-  }, []);
-  const [peopleData, setPeopleData] = useState(null);
-  useEffect(() => {
     fetch("/api/people")
       .then((res) => res.json())
       .then((data) => setPeopleData(data));
-  }, []);
-  const [timeData, setTimeData] = useState(null);
-  useEffect(() => {
     fetch("/api/timereports?collated=true")
       .then((res) => res.json())
       .then((data) => setTimeData(data));
@@ -57,7 +53,12 @@ export default function TimeSummary() {
       })
       .then((data) => {
         toggleShowEditProject();
-        setEditProject([...editProject, data.results]);
+        //setEditProject([...editProject, data.results]); // Does it do anything?
+        //setProjects([...projects, data.results]);
+        const projectToUpdateIdx = projects.findIndex(
+          (project) => project.id === data.id
+        );
+        projects[projectToUpdateIdx] = data;
       })
       .catch((e) => {
         console.log(e);
