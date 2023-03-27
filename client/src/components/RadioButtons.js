@@ -1,9 +1,7 @@
 import { useState } from "react";
 import Form from "react-bootstrap/Form";
 
-function CheckProjectStatus(props) {
-  let label = "";
-
+function CheckProjectStatus() {
   return (
     <Form>
       {["radio"].map((type) => (
@@ -14,6 +12,7 @@ function CheckProjectStatus(props) {
             name="group1"
             type={type}
             id={`inline-${type}-1`}
+            onChange={""}
           />
           <Form.Check
             inline
@@ -21,9 +20,7 @@ function CheckProjectStatus(props) {
             name="group1"
             type={type}
             id={`inline-${type}-2`}
-            onChange={() => {
-              return label;
-            }}
+            onChange={""}
           />
           <Form.Check
             inline
@@ -31,9 +28,7 @@ function CheckProjectStatus(props) {
             name="group1"
             type={type}
             id={`inline-${type}-3`}
-            onChange={() => {
-              return label;
-            }}
+            onChange={""}
           />
         </div>
       ))}
