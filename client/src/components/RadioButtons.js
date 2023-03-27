@@ -1,8 +1,10 @@
 import { useState } from "react";
 import Form from "react-bootstrap/Form";
 
-function CheckProjectStatus(props) {
+export default function CheckProjectStatus(props) {
   const [selectedRadioBtn, setSelectedRadioBtn] = useState("");
+
+  console.log(selectedRadioBtn, "CheckProjectStatus");
 
   return (
     <Form>
@@ -49,5 +51,3 @@ function CheckProjectStatus(props) {
     </Form>
   );
 }
-
-export default CheckProjectStatus;

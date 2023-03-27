@@ -73,7 +73,7 @@ export default function TimeSummary(props) {
     <div className="Table_container m-2">
       <div className="flex justify-content: flex-end">
         <div className="mx-10 my-2">
-          <CheckProjectStatus TimeSummary={TimeSummary} />
+          <CheckProjectStatus />
         </div>
         <div className="mx-10">
           <EditProject
@@ -111,6 +111,7 @@ export default function TimeSummary(props) {
                       }}
                     >
                       {project.properties.Projectname.title[0].text.content}
+                      {props.children}
                     </td>
                     <td>{project.properties.Status.select.name}</td>
                     <td>{project.properties.Hours.number}</td>
