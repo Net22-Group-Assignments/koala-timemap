@@ -95,6 +95,7 @@ const getToken = async (bot_id) => {
   });
 
   return new Promise((resolve, reject) => {
+    console.log("bot_id to select from: " + bot_id);
     db.all(
       "SELECT DISTINCT * FROM tokens WHERE bot_id = ?",
       [bot_id],

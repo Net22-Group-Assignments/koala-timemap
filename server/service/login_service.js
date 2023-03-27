@@ -23,18 +23,19 @@ const LoginService = {
 
   // This function is the one that should be used when running with public integration
   signIn: async (botId) => {
-    const redirectUrl =
-      "https://api.notion.com/v1/oauth/authorize?client_id=dd6fae9a-921b-45b5-ab34-92e85932a89f&response_type=code&owner=user";
+    const notionOAuthRedirectUrl =
+      "https://api.notion.com/v1/oauth/authorize?client_id=c572edd7-44b3-40e6-af1f-0a0f92c2a7d1&response_type=code&owner=user";
     const response = Object.create(signInResponse);
     const rows = await db.getToken(botId);
     if (rows.length === 0) {
+      console.log("Not registered yet");
       response.status = registerStatus.NOT_REGISTERED;
-      response.redirectUrl =
-        "http://localhost:3001/api/registertoken?code=hellofromsignin";
+      response.redirectUrl = notionOAuthRedirectUrl;
       return response;
     }
     const tokenInfo = rows[0];
-
+    console.log("Token info from database");
+    console.log(tokenInfo);
     // use tokenInfo.token with axios to connect to Notion API https://api.notion.com/v1/users/me
     const options = {
       method: "GET",
@@ -47,10 +48,12 @@ const LoginService = {
     };
     try {
       const response = await axios.request(options);
+      console.log("User info from Notion API");
+      console.log(response.data);
     } catch (error) {
       console.error(error);
       response.status = registerStatus.REGISTERED_INVALID;
-      response.redirectUrl = redirectUrl;
+      response.redirectUrl = notionOAuthRedirectUrl;
       return response;
     }
 
@@ -69,8 +72,10 @@ const LoginService = {
       );
 
       if (person == null) {
+        console.log("No person found for this user id");
         response.status = registerStatus.REGISTERED_NO_USER;
       } else {
+        console.log("Person found for this user id");
         authUser.person = person;
         response.status = registerStatus.REGISTERED_USER;
       }
@@ -81,7 +86,7 @@ const LoginService = {
       };
 
       response.token = tokenInfo.bot_id;
-      response.expiresIn = 60;
+      response.expiresIn = 60 * 60 * 24 * 365;
       response.redirectUrl = "/";
       return response;
     }

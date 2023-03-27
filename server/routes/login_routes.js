@@ -7,7 +7,10 @@ router.post("/login", async (req, res, next) => {
     if (process.env.INTEGRATION_TYPE === "internal-only") {
       res.json(await LoginService.createSignInResponse(process.env.GOD_ID));
     } else {
-      res.json(await LoginService.signIn(req.body.code));
+      const signInResponse = await LoginService.signIn(req.query.code);
+      console.log("Sign in response");
+      console.log(signInResponse);
+      res.json(signInResponse);
     }
   } catch (e) {
     next(e);
@@ -17,11 +20,12 @@ router.post("/login", async (req, res, next) => {
 router.get("/registertoken", async (req, res, next) => {
   console.log(req.query.code);
   try {
-    //const tokenInfo = LoginService.registerToken(req.query.code);
-    //res.redirect(`http://localhost:3000?code=${tokenInfo.bot_id}`);
-    res.redirect(
-      `http://localhost:3000?code=helloafterregistering&code=${req.query.code}`
-    );
+    const tokenInfo = await LoginService.registerToken(req.query.code);
+    res.redirect(`http://localhost:3000?code=${tokenInfo.bot_id}`);
+    // TODO - this is a hack to test to get the code to be passed back to the client. Remove this when done.
+    // res.redirect(
+    //   `http://localhost:3000?code=helloafterregistering&code=${req.query.code}`
+    // );
   } catch (e) {
     next(e);
   }
