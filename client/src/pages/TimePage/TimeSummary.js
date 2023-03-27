@@ -7,7 +7,7 @@ import CheckProjectStatus from "../../components/RadioButtons";
 export default function TimeSummary() {
   const [editProject, setEditProject] = useState([]);
   const [showEditProject, setShowEditProject] = useState(false);
-  const [checkTime, setCheckTime] = useState("");
+  const [checkTime, setCheckTime] = useState("lightgreen");
 
   function toggleShowEditProject() {
     setShowEditProject(!showEditProject);
@@ -67,27 +67,6 @@ export default function TimeSummary() {
       });
   }
 
-  useEffect(() => {
-    projects &&
-      projects.map((project) => {
-        if (parseInt(project.properties.HoursLeft.formula.number) < 0) {
-          console.log(
-            project.properties.HoursLeft.formula.number,
-            "hours left minus"
-          );
-          setCheckTime("lightpink");
-          console.log(checkTime, "red");
-        } else if (parseInt(project.properties.HoursLeft.formula.number) > 0) {
-          console.log(
-            project.properties.HoursLeft.formula.number,
-            "hours left plus"
-          );
-          setCheckTime("lightgreen");
-          console.log(checkTime, "lightgreen");
-        }
-      });
-  });
-
   return (
     <div className="Table_container m-2">
       <div className="flex justify-content: flex-end">
@@ -123,7 +102,14 @@ export default function TimeSummary() {
             ? projects.map((project) => (
                 <tbody>
                   <tr>
-                    <td style={{ backgroundColor: checkTime }}>
+                    <td
+                      style={{
+                        color:
+                          project.properties.HoursLeft.formula.number < 0
+                            ? "red"
+                            : "green",
+                      }}
+                    >
                       {project.properties.Projectname.title[0].text.content}
                     </td>
                     <td>{project.properties.Status.select.name}</td>
