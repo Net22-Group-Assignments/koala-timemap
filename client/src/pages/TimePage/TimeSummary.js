@@ -50,7 +50,6 @@ export default function TimeSummary() {
       }),
     })
       .then((response) => {
-        console.log(response);
         if (!response.ok) {
           throw new Error("Something went wrong");
         }
@@ -58,7 +57,6 @@ export default function TimeSummary() {
       })
       .then((data) => {
         toggleShowEditProject();
-        console.log(data);
         setEditProject([...editProject, data.results]);
       })
       .catch((e) => {
@@ -91,7 +89,6 @@ export default function TimeSummary() {
               <th>Hours</th>
               <th>Estimated hours left</th>
               <th>Worked Hours</th>
-              <th>Worked Hours</th>
               <th>TimeSpan</th>
             </tr>
           </thead>
@@ -102,21 +99,11 @@ export default function TimeSummary() {
                     <td>
                       {project.properties.Projectname.title[0].text.content}
                     </td>
-                    <td>
-                      {project.properties.Status.select.name}
-                    </td>
-                    <td>
-                      {project.properties.Hours.number}
-                    </td>
-                    <td>
-                      {project.properties.HoursLeft.formula.number}
-                    </td>
-                    <td>
-                      {project.properties.WorkedHours.rollup.number}
-                    </td>
-                    <td>
-                      {project.properties.Timespan.date.start}
-                    </td>
+                    <td>{project.properties.Status.select.name}</td>
+                    <td>{project.properties.Hours.number}</td>
+                    <td>{project.properties.HoursLeft.formula.number}</td>
+                    <td>{project.properties.WorkedHours.rollup.number}</td>
+                    <td>{project.properties.Timespan.date.start}</td>
                   </tr>
                 </tbody>
               ))
