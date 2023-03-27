@@ -11,6 +11,7 @@ export default function TimeSummary() {
   const [projects, setProjects] = useState([]);
   const [peopleData, setPeopleData] = useState(null);
   const [timeData, setTimeData] = useState(null);
+  const [updated, setUpdated] = useState(false);
   function toggleShowEditProject() {
     setShowEditProject(!showEditProject);
   }
@@ -19,9 +20,15 @@ export default function TimeSummary() {
     fetch("/api/projects")
       .then((res) => res.json())
       .then((data) => setProjects(data.results));
+  }, [updated]);
+
+  useEffect(() => {
     fetch("/api/people")
       .then((res) => res.json())
       .then((data) => setPeopleData(data));
+  }, []);
+
+  useEffect(() => {
     fetch("/api/timereports?collated=true")
       .then((res) => res.json())
       .then((data) => setTimeData(data));
@@ -56,10 +63,15 @@ export default function TimeSummary() {
         toggleShowEditProject();
         //setEditProject([...editProject, data.results]); // Does it do anything?
         //setProjects([...projects, data.results]);
+        console.log(data);
+        console.log(data.id);
         const projectToUpdateIdx = projects.findIndex(
           (project) => project.id === data.id
         );
+        console.log(projectToUpdateIdx);
         projects[projectToUpdateIdx] = data;
+        setProjects(projects);
+        setUpdated(!updated);
       })
       .catch((e) => {
         console.log(e);
