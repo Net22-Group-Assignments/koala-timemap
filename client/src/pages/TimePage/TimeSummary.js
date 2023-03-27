@@ -104,10 +104,10 @@ export default function TimeSummary() {
                   <tr>
                     <td
                       style={{
-                        color:
+                        backgroundColor:
                           project.properties.HoursLeft.formula.number < 0
-                            ? "red"
-                            : "green",
+                            ? "lightpink"
+                            : "lightgreen",
                       }}
                     >
                       {project.properties.Projectname.title[0].text.content}
