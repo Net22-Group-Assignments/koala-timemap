@@ -1,30 +1,41 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
 import EditProject from "./EditProject";
 import CheckProjectStatus from "../../components/RadioButtons";
 
 export default function TimeSummary(props) {
-  const [editProject, setEditProject] = useState([]);
+  //const [editProject, setEditProject] = useState([]); // Does it do anything?
   const [showEditProject, setShowEditProject] = useState(false);
   const [checkTime, setCheckTime] = useState("lightgreen");
+  const [projects, setProjects] = useState([]);
+  const [peopleData, setPeopleData] = useState(null);
+  const [timeData, setTimeData] = useState(null);
+  const [projectRefetch, toggleProjectRefetch] = useReducer((previousValue) => {
+    console.log("before:" + previousValue);
+    return !previousValue;
+  }, false);
 
   function toggleShowEditProject() {
     setShowEditProject(!showEditProject);
   }
-  const [projects, setProjects] = useState([]);
+
   useEffect(() => {
-    fetch("/api/projects")
+    fetch("/api/projects", { cache: "no-cache" })
       .then((res) => res.json())
-      .then((data) => setProjects(data.results));
-  }, []);
-  const [peopleData, setPeopleData] = useState(null);
+      .then((data) => {
+        console.log("data:");
+        console.log(data.results);
+        setProjects(data.results);
+      });
+  }, [projectRefetch]);
+
   useEffect(() => {
     fetch("/api/people")
       .then((res) => res.json())
       .then((data) => setPeopleData(data));
   }, []);
-  const [timeData, setTimeData] = useState(null);
+
   useEffect(() => {
     fetch("/api/timereports?collated=true")
       .then((res) => res.json())
@@ -51,7 +62,6 @@ export default function TimeSummary(props) {
       }),
     })
       .then((response) => {
-        console.log(response);
         if (!response.ok) {
           throw new Error("Something went wrong");
         }
@@ -59,8 +69,8 @@ export default function TimeSummary(props) {
       })
       .then((data) => {
         toggleShowEditProject();
-        console.log(data);
-        setEditProject([...editProject, data.results]);
+        //setEditProject([...editProject, data.results]); // Does it do anything?
+        toggleProjectRefetch();
       })
       .catch((e) => {
         console.log(e);
