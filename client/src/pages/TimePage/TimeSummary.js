@@ -85,7 +85,6 @@ export default function TimeSummary() {
       <div className="flex justify-content: flex-end">
         <div className="mx-10 my-2">
           <CheckProjectStatus setSelectedRadioBtn={setSelectedRadioBtn} />
-          <p>{selectedRadioBtn}</p>
         </div>
         <div className="mx-10">
           <EditProject
