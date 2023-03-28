@@ -2,6 +2,10 @@ import { useState } from "react";
 import Form from "react-bootstrap/Form";
 
 export default function CheckProjectStatus(props) {
+  const [selectedRadioBtn, setSelectedRadioBtn] = useState("");
+
+  console.log(selectedRadioBtn, "CheckProjectStatus");
+
   return (
     <Form
       onChange={(e) => {
@@ -17,6 +21,10 @@ export default function CheckProjectStatus(props) {
             value="Active"
             type={type}
             id={`inline-${type}-1`}
+            onChange={(e) => {
+              setSelectedRadioBtn(e.target.value);
+              props.TimeSummary(selectedRadioBtn);
+            }}
           />
           <Form.Check
             inline
