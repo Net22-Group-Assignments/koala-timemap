@@ -4,10 +4,13 @@ import Table from "react-bootstrap/Table";
 import EditProject from "./EditProject";
 import CheckProjectStatus from "../../components/RadioButtons";
 
-export default function TimeSummary(props) {
+export default function TimeSummary() {
   const [editProject, setEditProject] = useState([]);
   const [showEditProject, setShowEditProject] = useState(false);
   const [checkTime, setCheckTime] = useState("lightgreen");
+  const [projectStatus, setProjectStatus] = useState("");
+  const [selectedRadioBtn, setSelectedRadioBtn] = useState("Active");
+  const [filteredProjects, setFilteredProjects] = useState([]);
 
   function toggleShowEditProject() {
     setShowEditProject(!showEditProject);
@@ -67,9 +70,13 @@ export default function TimeSummary(props) {
       });
   }
 
-  function projectStatusChecked(selectedRadioBtn) {
-    return console.log(selectedRadioBtn);
-  }
+  // function filterProjects() {
+  //   projects
+  //     ? projects.filter((project) => {
+  //         setFilteredProjects(...filteredProjects, project);
+  //       })
+  //     : null;
+  // }
 
   let timeProject = "";
 
@@ -77,7 +84,8 @@ export default function TimeSummary(props) {
     <div className="Table_container m-2">
       <div className="flex justify-content: flex-end">
         <div className="mx-10 my-2">
-          <CheckProjectStatus projectStatusChecked={projectStatusChecked} />
+          <CheckProjectStatus setSelectedRadioBtn={setSelectedRadioBtn} />
+          <p>{selectedRadioBtn}</p>
         </div>
         <div className="mx-10">
           <EditProject
@@ -103,43 +111,48 @@ export default function TimeSummary(props) {
             </tr>
           </thead>
           {projects
-            ? projects.map((project) => (
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        backgroundColor:
+            ? projects
+                .filter((status) =>
+                  status.properties.Status.select.name.includes(
+                    selectedRadioBtn
+                  )
+                )
+                .map((project) => (
+                  <tbody>
+                    <tr>
+                      <td
+                        style={{
+                          backgroundColor:
+                            project.properties.HoursLeft.formula.number < 0
+                              ? "lightpink"
+                              : "lightgreen",
+                        }}
+                      >
+                        {project.properties.Projectname.title[0].text.content}
+                      </td>
+                      <td>{project.properties.Status.select.name}</td>
+                      <td>{project.properties.Hours.number}</td>
+                      <td
+                        style={{
+                          backgroundColor:
+                            project.properties.HoursLeft.formula.number < 0
+                              ? "lightpink"
+                              : "",
+                        }}
+                        value={
                           project.properties.HoursLeft.formula.number < 0
-                            ? "lightpink"
-                            : "lightgreen",
-                      }}
-                    >
-                      {project.properties.Projectname.title[0].text.content}
-                      {props.children}
-                    </td>
-                    <td>{project.properties.Status.select.name}</td>
-                    <td>{project.properties.Hours.number}</td>
-                    <td
-                      style={{
-                        backgroundColor:
-                          project.properties.HoursLeft.formula.number < 0
-                            ? "lightpink"
-                            : "",
-                      }}
-                      value={
-                        project.properties.HoursLeft.formula.number < 0
-                          ? (timeProject = "WARNING")
-                          : (timeProject = "")
-                      }
-                    >
-                      {project.properties.HoursLeft.formula.number}{" "}
-                      {timeProject}
-                    </td>
-                    <td>{project.properties.WorkedHours.rollup.number}</td>
-                    <td>{project.properties.Timespan.date.start}</td>
-                  </tr>
-                </tbody>
-              ))
+                            ? (timeProject = "WARNING")
+                            : (timeProject = "")
+                        }
+                      >
+                        {project.properties.HoursLeft.formula.number}{" "}
+                        {timeProject}
+                      </td>
+                      <td>{project.properties.WorkedHours.rollup.number}</td>
+                      <td>{project.properties.Timespan.date.start}</td>
+                    </tr>
+                  </tbody>
+                ))
             : null}
         </Table>
       </div>
