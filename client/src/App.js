@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/NavBar-folder/Navbar";
+import FrontPage from "./pages/FrontPage/FrontPage";
 import Projects from "./pages/Project";
 import TimeRegistry from "./pages/TimePage/TimeRegistry";
 import TimeSummary from "./pages/TimePage/TimeSummary";
@@ -58,7 +59,7 @@ function App() {
         </p>
       )}
       <Routes>
-        <Route path="/" element={<TimeSummary />} />
+        <Route path="/" element={<FrontPage />} />
         <Route path="/Timesummary" element={<TimeSummary />} />
         <Route path="/timeregistry" element={<TimeRegistry />} />
         <Route path="/projects" element={<Projects />} />
