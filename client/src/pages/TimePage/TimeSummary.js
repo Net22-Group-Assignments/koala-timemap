@@ -1,29 +1,41 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
 import EditProject from "./EditProject";
 import CheckProjectStatus from "../../components/RadioButtons";
 
 export default function TimeSummary() {
-  const [editProject, setEditProject] = useState([]);
+  //const [editProject, setEditProject] = useState([]); // Does it do anything?
   const [showEditProject, setShowEditProject] = useState(false);
+  const [checkTime, setCheckTime] = useState("");
+  const [projects, setProjects] = useState([]);
+  const [peopleData, setPeopleData] = useState(null);
+  const [timeData, setTimeData] = useState(null);
+  const [projectRefetch, toggleProjectRefetch] = useReducer((previousValue) => {
+    console.log("before:" + previousValue);
+    return !previousValue;
+  }, false);
 
   function toggleShowEditProject() {
     setShowEditProject(!showEditProject);
   }
-  const [projects, setProjects] = useState([]);
+
   useEffect(() => {
-    fetch("/api/projects")
+    fetch("/api/projects", { cache: "no-cache" })
       .then((res) => res.json())
-      .then((data) => setProjects(data.results));
-  }, []);
-  const [peopleData, setPeopleData] = useState(null);
+      .then((data) => {
+        console.log("data:");
+        console.log(data.results);
+        setProjects(data.results);
+      });
+  }, [projectRefetch]);
+
   useEffect(() => {
     fetch("/api/people")
       .then((res) => res.json())
       .then((data) => setPeopleData(data));
   }, []);
-  const [timeData, setTimeData] = useState(null);
+
   useEffect(() => {
     fetch("/api/timereports?collated=true")
       .then((res) => res.json())
@@ -57,7 +69,8 @@ export default function TimeSummary() {
       })
       .then((data) => {
         toggleShowEditProject();
-        setEditProject([...editProject, data.results]);
+        //setEditProject([...editProject, data.results]); // Does it do anything?
+        toggleProjectRefetch();
       })
       .catch((e) => {
         console.log(e);
@@ -68,7 +81,9 @@ export default function TimeSummary() {
     <div className="Table_container m-2">
       <div className="flex justify-content: flex-end">
         <div className="mx-10 my-2">
-          <CheckProjectStatus />
+          <CheckProjectStatus
+            projectStatus={console.log(CheckProjectStatus.label)}
+          />
         </div>
         <div className="mx-10">
           <EditProject
@@ -76,7 +91,9 @@ export default function TimeSummary() {
             showEditProject={showEditProject}
             toggleShowEditProject={toggleShowEditProject}
             projects={projects}
+            toggleProjectRefetch={toggleProjectRefetch}
           />
+          {/*<button onClick={toggleProjectRefetch}>Edit Project</button>*/}
         </div>
       </div>
       {/* Here is display for projects DB */}
@@ -96,7 +113,14 @@ export default function TimeSummary() {
             ? projects.map((project) => (
                 <tbody>
                   <tr>
-                    <td>
+                    <td
+                      style={{
+                        backgroundColor:
+                          project.properties.HoursLeft.formula.number < 0
+                            ? "lightpink"
+                            : "lightgreen",
+                      }}
+                    >
                       {project.properties.Projectname.title[0].text.content}
                     </td>
                     <td>{project.properties.Status.select.name}</td>

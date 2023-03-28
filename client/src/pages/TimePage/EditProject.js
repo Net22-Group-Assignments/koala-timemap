@@ -12,7 +12,7 @@ export default function EditProject(props) {
   const [editProject, setEditProject] = useState("");
   const [showEditProject, setShowEditProject] = useState(props.show);
 
-  console.log(props.projects);
+  //console.log(props.projects);
   const projectOptions = props.projects.map((project) => ({
     value: project.id,
     label: project.properties.Projectname.title[0].text.content,
