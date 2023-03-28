@@ -7,9 +7,10 @@ import CheckProjectStatus from "../../components/RadioButtons";
 import timesumsCss from "./TimeSummary.css";
 
 export default function TimeSummary(props) {
-  //const [editProject, setEditProject] = useState([]); // Does it do anything?
+  const [editProject, setEditProject] = useState([]);
   const [showEditProject, setShowEditProject] = useState(false);
-  const [checkTime, setCheckTime] = useState("lightgreen");
+  const [SelectedRadioBtn, setSelectedRadioBtn] = useState("Active");
+
   const [projects, setProjects] = useState([]);
   const [peopleData, setPeopleData] = useState(null);
   const [timeData, setTimeData] = useState(null);
@@ -110,45 +111,51 @@ export default function TimeSummary(props) {
             </tr>
           </thead>
           {projects
-            ? projects.map((project) => (
-                <tbody>
-                  <tr>
-                    <td
-                      className="project_status"
-                      id={project.properties.Status.select.name}
-                      style={{
-                        backgroundColor:
-                          project.properties.Status.select.name == "Active"
-                            ? "yellow"
-                            : "",
-                      }}
-                    >
-                      {project.properties.Projectname.title[0].text.content}
-                      {props.children}
-                    </td>
-                    <td>{project.properties.Status.select.name}</td>
-                    <td>{project.properties.Hours.number}</td>
-                    <td
-                      style={{
-                        backgroundColor:
+            ? projects
+                .filter((status) =>
+                  status.properties.Status.select.name.includes(
+                    SelectedRadioBtn
+                  )
+                )
+                .map((project) => (
+                  <tbody>
+                    <tr>
+                      <td
+                        className="project_status"
+                        id={project.properties.Status.select.name}
+                        style={{
+                          backgroundColor:
+                            project.properties.Status.select.name == "Active"
+                              ? "yellow"
+                              : "",
+                        }}
+                      >
+                        {project.properties.Projectname.title[0].text.content}
+                        {props.children}
+                      </td>
+                      <td>{project.properties.Status.select.name}</td>
+                      <td>{project.properties.Hours.number}</td>
+                      <td
+                        style={{
+                          backgroundColor:
+                            project.properties.HoursLeft.formula.number < 0
+                              ? "lightpink"
+                              : "",
+                        }}
+                        value={
                           project.properties.HoursLeft.formula.number < 0
-                            ? "lightpink"
-                            : "",
-                      }}
-                      value={
-                        project.properties.HoursLeft.formula.number < 0
-                          ? (timeProject = "WARNING")
-                          : (timeProject = "")
-                      }
-                    >
-                      {project.properties.HoursLeft.formula.number}{" "}
-                      {timeProject}
-                    </td>
-                    <td>{project.properties.WorkedHours.rollup.number}</td>
-                    <td>{project.properties.Timespan.date.start}</td>
-                  </tr>
-                </tbody>
-              ))
+                            ? (timeProject = "WARNING")
+                            : (timeProject = "")
+                        }
+                      >
+                        {project.properties.HoursLeft.formula.number}{" "}
+                        {timeProject}
+                      </td>
+                      <td>{project.properties.WorkedHours.rollup.number}</td>
+                      <td>{project.properties.Timespan.date.start}</td>
+                    </tr>
+                  </tbody>
+                ))
             : null}
         </Table>
       </div>
