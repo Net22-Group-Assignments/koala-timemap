@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
 import EditProject from "./EditProject";
@@ -11,16 +11,24 @@ export default function TimeSummary() {
   const [projects, setProjects] = useState([]);
   const [peopleData, setPeopleData] = useState(null);
   const [timeData, setTimeData] = useState(null);
-  const [updated, setUpdated] = useState(false);
+  const [projectRefetch, toggleProjectRefetch] = useReducer((previousValue) => {
+    console.log("before:" + previousValue);
+    return !previousValue;
+  }, false);
+
   function toggleShowEditProject() {
     setShowEditProject(!showEditProject);
   }
 
   useEffect(() => {
-    fetch("/api/projects")
+    fetch("/api/projects", { cache: "no-cache" })
       .then((res) => res.json())
-      .then((data) => setProjects(data.results));
-  }, [updated]);
+      .then((data) => {
+        console.log("data:");
+        console.log(data.results);
+        setProjects(data.results);
+      });
+  }, [projectRefetch]);
 
   useEffect(() => {
     fetch("/api/people")
@@ -62,16 +70,7 @@ export default function TimeSummary() {
       .then((data) => {
         toggleShowEditProject();
         //setEditProject([...editProject, data.results]); // Does it do anything?
-        //setProjects([...projects, data.results]);
-        console.log(data);
-        console.log(data.id);
-        const projectToUpdateIdx = projects.findIndex(
-          (project) => project.id === data.id
-        );
-        console.log(projectToUpdateIdx);
-        projects[projectToUpdateIdx] = data;
-        setProjects(projects);
-        setUpdated(!updated);
+        toggleProjectRefetch();
       })
       .catch((e) => {
         console.log(e);
@@ -92,7 +91,9 @@ export default function TimeSummary() {
             showEditProject={showEditProject}
             toggleShowEditProject={toggleShowEditProject}
             projects={projects}
+            toggleProjectRefetch={toggleProjectRefetch}
           />
+          {/*<button onClick={toggleProjectRefetch}>Edit Project</button>*/}
         </div>
       </div>
       {/* Here is display for projects DB */}
