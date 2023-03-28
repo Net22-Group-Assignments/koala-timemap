@@ -1,5 +1,6 @@
 import { Routes, Route, useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "./components/NavBar-folder/Navbar";
+import FrontPage from "./pages/FrontPage/FrontPage";
 import Projects from "./pages/Project";
 import TimeRegistry from "./pages/TimePage/TimeRegistry";
 import TimeSummary from "./pages/TimePage/TimeSummary";
@@ -111,7 +112,7 @@ function App() {
         Current User: {auth().person.name} Current Role: {auth().person.role}
       </p>
       <Routes>
-        <Route path="/" element={<TimeSummary />} />
+        <Route path="/" element={<FrontPage />} />
         <Route path="/Timesummary" element={<TimeSummary />} />
         <Route path="/timeregistry" element={<TimeRegistry />} />
         <Route path="/projects" element={<Projects />} />

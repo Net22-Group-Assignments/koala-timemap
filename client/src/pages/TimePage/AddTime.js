@@ -54,7 +54,7 @@ export default function AddTime(props) {
               setNote("");
               props.newTimeReport(date, person.id, hours, project.id, note);
             }}
-            id="editmodal"
+            id="addmodal"
             className="w-full max-w-sm"
           >
             <div className="md:flex md:items-center mb-6">

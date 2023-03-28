@@ -97,7 +97,6 @@ export default function TimeRegistry() {
       .then((data) => {
         toggleShowProject();
         console.log(data);
-        setProjects([...projects, data.results]);
       })
       .catch((e) => {
         console.log(e);
