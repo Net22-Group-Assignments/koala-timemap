@@ -62,7 +62,6 @@ export default function TimeSummary() {
       })
       .then((data) => {
         toggleShowEditProject();
-        console.log(data);
         setEditProject([...editProject, data.results]);
       })
       .catch((e) => {
