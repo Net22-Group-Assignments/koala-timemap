@@ -76,11 +76,14 @@ function App() {
           //.post(`/api/login?code=${searchParams.get("code")}`)
           .then((res) => {
             console.log(res.data);
-            if (!searchParams.get("code")) {
-              console.log("No code found, redirecting to login");
+            if (
+              res.data.registerStatus === "NOT_REGISTERED" ||
+              res.data.registerStatus === "REGISTERED_INVALID"
+            ) {
+              console.log("Not registered, redirecting to register page");
               window.location.replace(res.data.redirectUrl);
             } else {
-              if (res.data.status === "REGISTERED_USER") {
+              if (res.data.registerStatus === "REGISTERED_USER") {
                 signIn({
                   token: res.data.token,
                   expiresIn: res.data.expiresIn,

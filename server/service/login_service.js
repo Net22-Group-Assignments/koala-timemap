@@ -29,7 +29,7 @@ const LoginService = {
     const rows = await db.getToken(botId);
     if (rows.length === 0) {
       console.log("Not registered yet");
-      response.status = registerStatus.NOT_REGISTERED;
+      response.registerStatus = registerStatus.NOT_REGISTERED;
       response.redirectUrl = notionOAuthRedirectUrl;
       return response;
     }
@@ -52,7 +52,7 @@ const LoginService = {
       console.log(response.data);
     } catch (error) {
       console.error(error);
-      response.status = registerStatus.REGISTERED_INVALID;
+      response.registerStatus = registerStatus.REGISTERED_INVALID;
       response.redirectUrl = notionOAuthRedirectUrl;
       return response;
     }
@@ -73,11 +73,11 @@ const LoginService = {
 
       if (person == null) {
         console.log("No person found for this user id");
-        response.status = registerStatus.REGISTERED_NO_USER;
+        response.registerStatus = registerStatus.REGISTERED_NO_USER;
       } else {
         console.log("Person found for this user id");
         authUser.person = person;
-        response.status = registerStatus.REGISTERED_USER;
+        response.registerStatus = registerStatus.REGISTERED_USER;
       }
 
       authUser.integration = {
@@ -144,7 +144,7 @@ const signInResponse = {
   expiresIn: 0,
   authState: {},
   redirectUrl: "",
-  status: null,
+  registerStatus: null,
 };
 
 const registerStatus = {

@@ -10,14 +10,10 @@ const TimeReportsService = {
     this.clientPool = ClientPool;
   },
   getReports: async function (botId) {
-    try {
-      const Notion = this.clientPool.obtainClient(botId);
-      return await Notion.client.databases.query({
-        database_id: timeReportsDB,
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    const Notion = await this.clientPool.obtainClient(botId);
+    return await Notion.client.databases.query({
+      database_id: timeReportsDB,
+    });
   },
   getCollatedReports: async function (botId) {
     const reports = await this.getReports(botId);
@@ -47,7 +43,7 @@ const TimeReportsService = {
   },
   createReport: async function (bodyParams, botId) {
     try {
-      const Notion = this.clientPool.obtainClient(botId);
+      const Notion = await this.clientPool.obtainClient(botId);
       return await Notion.client.pages.create(bodyParams);
     } catch (e) {
       console.error(e);

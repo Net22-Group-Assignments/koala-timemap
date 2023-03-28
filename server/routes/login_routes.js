@@ -17,6 +17,8 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
+// The public integration is set to redirect to this route after the user has registered the integration
+// with its Notion account. The code is passed as a query parameter.
 router.get("/registertoken", async (req, res, next) => {
   console.log(req.query.code);
   try {

@@ -3,22 +3,14 @@ const ProjectsService = {
     this.clientPool = ClientPool;
   },
   getProjects: async function (botId) {
-    const Notion = this.clientPool.obtainClient(botId);
-    try {
-      return await Notion.client.databases.query({
-        database_id: process.env.PROJECT_DATABASE_ID,
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    const Notion = await this.clientPool.obtainClient(botId);
+    return await Notion.client.databases.query({
+      database_id: process.env.PROJECT_DATABASE_ID,
+    });
   },
   createProject: async function (bodyParams, botId) {
-    const Notion = this.clientPool.obtainClient(botId);
-    try {
-      return await Notion.client.pages.create(bodyParams);
-    } catch (e) {
-      console.error(e);
-    }
+    const Notion = await this.clientPool.obtainClient(botId);
+    return await Notion.client.pages.create(bodyParams);
   },
 };
 
