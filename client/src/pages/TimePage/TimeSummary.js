@@ -4,6 +4,8 @@ import Table from "react-bootstrap/Table";
 import EditProject from "./EditProject";
 import CheckProjectStatus from "../../components/RadioButtons";
 
+import timesumsCss from "./TimeSummary.css";
+
 export default function TimeSummary(props) {
   //const [editProject, setEditProject] = useState([]); // Does it do anything?
   const [showEditProject, setShowEditProject] = useState(false);
@@ -105,7 +107,6 @@ export default function TimeSummary(props) {
               <th>Estimated hours left</th>
               <th>Worked Hours</th>
               <th>Worked Hours</th>
-              <th>TimeSpan</th>
             </tr>
           </thead>
           {projects
@@ -113,11 +114,13 @@ export default function TimeSummary(props) {
                 <tbody>
                   <tr>
                     <td
+                      className="project_status"
+                      id={project.properties.Status.select.name}
                       style={{
                         backgroundColor:
-                          project.properties.HoursLeft.formula.number < 0
-                            ? "lightpink"
-                            : "lightgreen",
+                          project.properties.Status.select.name == "Active"
+                            ? "yellow"
+                            : "",
                       }}
                     >
                       {project.properties.Projectname.title[0].text.content}

@@ -1,0 +1,9 @@
+#Active{
+    background-color: yellow !important;
+}
+#Done{
+    background-color: lightgreen !important;
+}
+#Next-Up{
+    background-color: lightblue;
+}
