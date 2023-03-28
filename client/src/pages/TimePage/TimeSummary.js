@@ -67,13 +67,17 @@ export default function TimeSummary(props) {
       });
   }
 
+  function projectStatusChecked(selectedRadioBtn) {
+    return console.log(selectedRadioBtn);
+  }
+
   let timeProject = "";
 
   return (
     <div className="Table_container m-2">
       <div className="flex justify-content: flex-end">
         <div className="mx-10 my-2">
-          <CheckProjectStatus />
+          <CheckProjectStatus projectStatusChecked={projectStatusChecked} />
         </div>
         <div className="mx-10">
           <EditProject

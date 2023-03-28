@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 export default function CheckProjectStatus(props) {
   const [selectedRadioBtn, setSelectedRadioBtn] = useState("");
 
-  console.log(selectedRadioBtn, "CheckProjectStatus");
+  // console.log(selectedRadioBtn, "CheckProjectStatus");
 
   return (
     <Form>
@@ -19,7 +19,7 @@ export default function CheckProjectStatus(props) {
             id={`inline-${type}-1`}
             onChange={(e) => {
               setSelectedRadioBtn(e.target.value);
-              props.TimeSummary(selectedRadioBtn);
+              props.projectStatusChecked(selectedRadioBtn);
             }}
           />
           <Form.Check
@@ -31,7 +31,7 @@ export default function CheckProjectStatus(props) {
             id={`inline-${type}-2`}
             onChange={(e) => {
               setSelectedRadioBtn(e.target.value);
-              props.TimeSummary(selectedRadioBtn);
+              props.projectStatusChecked(selectedRadioBtn);
             }}
           />
           <Form.Check
@@ -43,7 +43,7 @@ export default function CheckProjectStatus(props) {
             id={`inline-${type}-3`}
             onChange={(e) => {
               setSelectedRadioBtn(e.target.value);
-              props.TimeSummary(selectedRadioBtn);
+              props.projectStatusChecked(selectedRadioBtn);
             }}
           />
         </div>
