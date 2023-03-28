@@ -70,14 +70,6 @@ export default function TimeSummary() {
       });
   }
 
-  // function filterProjects() {
-  //   projects
-  //     ? projects.filter((project) => {
-  //         setFilteredProjects(...filteredProjects, project);
-  //       })
-  //     : null;
-  // }
-
   let timeProject = "";
 
   return (
