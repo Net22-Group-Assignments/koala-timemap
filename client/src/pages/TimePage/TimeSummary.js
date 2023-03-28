@@ -1,29 +1,41 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
 import EditProject from "./EditProject";
 import CheckProjectStatus from "../../components/RadioButtons";
 
-export default function TimeSummary() {
-  const [editProject, setEditProject] = useState([]);
+export default function TimeSummary(props) {
+  //const [editProject, setEditProject] = useState([]); // Does it do anything?
   const [showEditProject, setShowEditProject] = useState(false);
+  const [checkTime, setCheckTime] = useState("lightgreen");
+  const [projects, setProjects] = useState([]);
+  const [peopleData, setPeopleData] = useState(null);
+  const [timeData, setTimeData] = useState(null);
+  const [projectRefetch, toggleProjectRefetch] = useReducer((previousValue) => {
+    console.log("before:" + previousValue);
+    return !previousValue;
+  }, false);
 
   function toggleShowEditProject() {
     setShowEditProject(!showEditProject);
   }
-  const [projects, setProjects] = useState([]);
+
   useEffect(() => {
-    fetch("/api/projects")
+    fetch("/api/projects", { cache: "no-cache" })
       .then((res) => res.json())
-      .then((data) => setProjects(data.results));
-  }, []);
-  const [peopleData, setPeopleData] = useState(null);
+      .then((data) => {
+        console.log("data:");
+        console.log(data.results);
+        setProjects(data.results);
+      });
+  }, [projectRefetch]);
+
   useEffect(() => {
     fetch("/api/people")
       .then((res) => res.json())
       .then((data) => setPeopleData(data));
   }, []);
-  const [timeData, setTimeData] = useState(null);
+
   useEffect(() => {
     fetch("/api/timereports?collated=true")
       .then((res) => res.json())
@@ -50,7 +62,6 @@ export default function TimeSummary() {
       }),
     })
       .then((response) => {
-        console.log(response);
         if (!response.ok) {
           throw new Error("Something went wrong");
         }
@@ -58,13 +69,15 @@ export default function TimeSummary() {
       })
       .then((data) => {
         toggleShowEditProject();
-        console.log(data);
-        setEditProject([...editProject, data.results]);
+        //setEditProject([...editProject, data.results]); // Does it do anything?
+        toggleProjectRefetch();
       })
       .catch((e) => {
         console.log(e);
       });
   }
+
+  let timeProject = "";
 
   return (
     <div className="Table_container m-2">
@@ -91,7 +104,6 @@ export default function TimeSummary() {
               <th>Hours</th>
               <th>Estimated hours left</th>
               <th>Worked Hours</th>
-              <th>Worked Hours</th>
               <th>TimeSpan</th>
             </tr>
           </thead>
@@ -99,12 +111,35 @@ export default function TimeSummary() {
             ? projects.map((project) => (
                 <tbody>
                   <tr>
-                    <td>
+                    <td
+                      style={{
+                        backgroundColor:
+                          project.properties.HoursLeft.formula.number < 0
+                            ? "lightpink"
+                            : "lightgreen",
+                      }}
+                    >
                       {project.properties.Projectname.title[0].text.content}
+                      {props.children}
                     </td>
                     <td>{project.properties.Status.select.name}</td>
                     <td>{project.properties.Hours.number}</td>
-                    <td>{project.properties.HoursLeft.formula.number}</td>
+                    <td
+                      style={{
+                        backgroundColor:
+                          project.properties.HoursLeft.formula.number < 0
+                            ? "lightpink"
+                            : "",
+                      }}
+                      value={
+                        project.properties.HoursLeft.formula.number < 0
+                          ? (timeProject = "WARNING")
+                          : (timeProject = "")
+                      }
+                    >
+                      {project.properties.HoursLeft.formula.number}{" "}
+                      {timeProject}
+                    </td>
                     <td>{project.properties.WorkedHours.rollup.number}</td>
                     <td>{project.properties.Timespan.date.start}</td>
                   </tr>

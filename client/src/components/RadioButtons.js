@@ -1,14 +1,10 @@
 import { useState } from "react";
 import Form from "react-bootstrap/Form";
 
-function CheckProjectStatus(props) {
-  const [checkActive, setCheckActive] = useState();
-  const [checkDone, setCheckDone] = useState();
-  const [checkNextUp, setCheckNextUp] = useState();
+export default function CheckProjectStatus(props) {
+  const [selectedRadioBtn, setSelectedRadioBtn] = useState("");
 
-  const toConsole = () => {
-    return console.log("Success");
-  };
+  console.log(selectedRadioBtn, "CheckProjectStatus");
 
   return (
     <Form>
@@ -18,39 +14,36 @@ function CheckProjectStatus(props) {
             inline
             label="Active"
             name="group1"
+            value="Active"
             type={type}
             id={`inline-${type}-1`}
-            value={checkActive}
             onChange={(e) => {
-              e.preventDefault();
-              setCheckActive("");
-              props.TimeSummary();
+              setSelectedRadioBtn(e.target.value);
+              props.TimeSummary(selectedRadioBtn);
             }}
           />
           <Form.Check
             inline
             label="Done"
             name="group1"
+            value="Done"
             type={type}
             id={`inline-${type}-2`}
-            value={checkDone}
             onChange={(e) => {
-              e.preventDefault();
-              setCheckDone("");
-              props.TimeSummary();
+              setSelectedRadioBtn(e.target.value);
+              props.TimeSummary(selectedRadioBtn);
             }}
           />
           <Form.Check
             inline
             label="Next Up"
             name="group1"
+            value="Next Up"
             type={type}
             id={`inline-${type}-3`}
-            value={checkNextUp}
             onChange={(e) => {
-              e.preventDefault();
-              setCheckNextUp("");
-              props.TimeSummary();
+              setSelectedRadioBtn(e.target.value);
+              props.TimeSummary(selectedRadioBtn);
             }}
           />
         </div>
@@ -58,5 +51,3 @@ function CheckProjectStatus(props) {
     </Form>
   );
 }
-
-export default CheckProjectStatus;
