@@ -143,7 +143,7 @@ export default function TimeSummary(props) {
                         id={project.properties.Status.select.name}
                         style={{
                           backgroundColor:
-                            project.properties.Status.select.name == "Active"
+                            project.properties.Status.select.name === "Active"
                               ? "yellow"
                               : "",
                         }}
