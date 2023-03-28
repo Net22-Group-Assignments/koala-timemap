@@ -51,5 +51,3 @@ export default function CheckProjectStatus(props) {
     </Form>
   );
 }
-
-export default CheckProjectStatus;
