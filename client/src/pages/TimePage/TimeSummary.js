@@ -4,10 +4,10 @@ import Table from "react-bootstrap/Table";
 import EditProject from "./EditProject";
 import CheckProjectStatus from "../../components/RadioButtons";
 
-export default function TimeSummary() {
+export default function TimeSummary(props) {
   //const [editProject, setEditProject] = useState([]); // Does it do anything?
   const [showEditProject, setShowEditProject] = useState(false);
-  const [checkTime, setCheckTime] = useState("");
+  const [checkTime, setCheckTime] = useState("lightgreen");
   const [projects, setProjects] = useState([]);
   const [peopleData, setPeopleData] = useState(null);
   const [timeData, setTimeData] = useState(null);
@@ -77,13 +77,13 @@ export default function TimeSummary() {
       });
   }
 
+  let timeProject = "";
+
   return (
     <div className="Table_container m-2">
       <div className="flex justify-content: flex-end">
         <div className="mx-10 my-2">
-          <CheckProjectStatus
-            projectStatus={console.log(CheckProjectStatus.label)}
-          />
+          <CheckProjectStatus />
         </div>
         <div className="mx-10">
           <EditProject
@@ -91,9 +91,7 @@ export default function TimeSummary() {
             showEditProject={showEditProject}
             toggleShowEditProject={toggleShowEditProject}
             projects={projects}
-            toggleProjectRefetch={toggleProjectRefetch}
           />
-          {/*<button onClick={toggleProjectRefetch}>Edit Project</button>*/}
         </div>
       </div>
       {/* Here is display for projects DB */}
@@ -105,6 +103,7 @@ export default function TimeSummary() {
               <th>Status</th>
               <th>Hours</th>
               <th>Estimated hours left</th>
+              <th>Worked Hours</th>
               <th>Worked Hours</th>
               <th>TimeSpan</th>
             </tr>
@@ -122,10 +121,26 @@ export default function TimeSummary() {
                       }}
                     >
                       {project.properties.Projectname.title[0].text.content}
+                      {props.children}
                     </td>
                     <td>{project.properties.Status.select.name}</td>
                     <td>{project.properties.Hours.number}</td>
-                    <td>{project.properties.HoursLeft.formula.number}</td>
+                    <td
+                      style={{
+                        backgroundColor:
+                          project.properties.HoursLeft.formula.number < 0
+                            ? "lightpink"
+                            : "",
+                      }}
+                      value={
+                        project.properties.HoursLeft.formula.number < 0
+                          ? (timeProject = "WARNING")
+                          : (timeProject = "")
+                      }
+                    >
+                      {project.properties.HoursLeft.formula.number}{" "}
+                      {timeProject}
+                    </td>
                     <td>{project.properties.WorkedHours.rollup.number}</td>
                     <td>{project.properties.Timespan.date.start}</td>
                   </tr>
