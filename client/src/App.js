@@ -70,18 +70,22 @@ function App() {
        * authenticate and save an authstate in localstorage
        * */
       if (!isAuthenticated()) {
-        console.log("tempCode: " + searchParams);
         axios
-          .post(`/api/login?code=f2bb83cf-6da0-4f00-9bd8-dc6cfa6940f7`)
-          //.post(`/api/login?code=${searchParams.get("code")}`)
+          //.post(`/api/login?code=f2bb83cf-6da0-4f00-9bd8-dc6cfa6940f7`)
+          .post(`/api/login?code=${searchParams.get("code")}`)
           .then((res) => {
             console.log(res.data);
             if (
               res.data.registerStatus === "NOT_REGISTERED" ||
               res.data.registerStatus === "REGISTERED_INVALID"
             ) {
-              console.log("Not registered, redirecting to register page");
-              window.location.replace(res.data.redirectUrl);
+              // This should be replaced with a better modal.
+              const tempCode = prompt(
+                "Enter temporary code, cancel to register."
+              );
+              if (!tempCode) {
+                window.location.replace(res.data.redirectUrl);
+              }
             } else {
               if (res.data.registerStatus === "REGISTERED_USER") {
                 signIn({

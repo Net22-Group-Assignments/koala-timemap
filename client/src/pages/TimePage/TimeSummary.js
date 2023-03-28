@@ -3,8 +3,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
 import EditProject from "./EditProject";
 import CheckProjectStatus from "../../components/RadioButtons";
+import { useAuthHeader } from "react-auth-kit";
 
 export default function TimeSummary(props) {
+  const authHeader = useAuthHeader();
+
   //const [editProject, setEditProject] = useState([]); // Does it do anything?
   const [showEditProject, setShowEditProject] = useState(false);
   const [checkTime, setCheckTime] = useState("lightgreen");
@@ -21,7 +24,13 @@ export default function TimeSummary(props) {
   }
 
   useEffect(() => {
-    fetch("/api/projects", { cache: "no-cache" })
+    console.log(authHeader());
+    fetch("/api/projects", {
+      headers: {
+        Authorization: authHeader(),
+        cache: "no-cache",
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         console.log("data:");
@@ -31,13 +40,23 @@ export default function TimeSummary(props) {
   }, [projectRefetch]);
 
   useEffect(() => {
-    fetch("/api/people")
+    fetch("/api/people", {
+      headers: {
+        Authorization: authHeader(),
+        cache: "no-cache",
+      },
+    })
       .then((res) => res.json())
       .then((data) => setPeopleData(data));
   }, []);
 
   useEffect(() => {
-    fetch("/api/timereports?collated=true")
+    fetch("/api/timereports?collated=true", {
+      headers: {
+        Authorization: authHeader(),
+        cache: "no-cache",
+      },
+    })
       .then((res) => res.json())
       .then((data) => setTimeData(data));
   }, []);
@@ -47,6 +66,7 @@ export default function TimeSummary(props) {
       method: "PATCH",
       headers: {
         "Content-type": "application/json",
+        Authorization: authHeader(),
       },
       body: JSON.stringify({
         properties: {
