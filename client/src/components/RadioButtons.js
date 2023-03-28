@@ -21,10 +21,6 @@ export default function CheckProjectStatus(props) {
             value="Active"
             type={type}
             id={`inline-${type}-1`}
-            onChange={(e) => {
-              setSelectedRadioBtn(e.target.value);
-              props.TimeSummary(selectedRadioBtn);
-            }}
           />
           <Form.Check
             inline
