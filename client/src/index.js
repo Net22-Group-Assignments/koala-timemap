@@ -9,10 +9,10 @@ import { AuthProvider } from "react-auth-kit";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 console.log("integrationtype " + process.env.REACT_APP_INTEGRATION_TYPE);
 console.log("clean " + process.env.REACT_APP_CLEAN);
-// if (!process.env.REACT_APP_CLEAN) {
-//   console.log("cleared local storage");
-//   localStorage.clear();
-// }
+if (process.env.REACT_APP_CLEAN) {
+  console.log("cleared local storage");
+  localStorage.clear();
+}
 root.render(
   // <React.StrictMode>
   <AuthProvider authType="localstorage" authName="_auth">
