@@ -1,61 +1,86 @@
 const express = require("express");
-const apicache = require("apicache");
+const bearerToken = require("express-bearer-token");
+const db = require("./db");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const storage = require("node-persist");
 const swaggerUi = require("swagger-ui-express");
 const fs = require("fs");
 const swaggerDocumentPath = "./swagger.json";
-const { Notion } = require("./notion_client");
+const { ClientPoolFactory } = require("./notion_client");
 const UserService = require("./service/user_service");
 const ProjectsService = require("./service/projects_service");
 const TimeReportsService = require("./service/timereports_service");
 const PeopleService = require("./service/people_service");
 const LoginService = require("./service/login_service");
 const PageService = require("./service/one_to_one_service");
+const axios = require("axios");
+const { createHttpTerminator } = require("http-terminator");
 const integrationArgIndex = process.argv.indexOf("--integration");
 
 dotenv.config();
 
 let status = {
   integration_type: null,
-  access_token: null,
-  valid_token: false,
+  valid_internal_token: false,
 };
 
 if (integrationArgIndex > -1) {
   status.integration_type = process.argv[integrationArgIndex + 1];
-  process.env.INTEGRATION_TYPE = "internal";
+  process.env.INTEGRATION_TYPE = status.integration_type;
 }
 
 (async () => {
-  if (status.integration_type !== "internal" && !process.env.NOTION_API_KEY) {
+  if (!process.env.NOTION_API_KEY) {
     console.log("No internal access token in .env file");
     process.exit(1);
   }
-  status.access_token = process.env.NOTION_API_KEY;
-  console.log(`Access token: ${status.access_token}`);
-  status.valid_token = await Notion.configure(
-    status.integration_type,
-    status.access_token
-  );
-  if (!status.valid_token) {
-    console.error("Invalid internal token");
+
+  // test the internal token by notion api users/me with axios
+  const options = {
+    method: "GET",
+    url: "https://api.notion.com/v1/users/me",
+    headers: {
+      accept: "application/json",
+      "Notion-Version": process.env.NOTION_API_VERSION,
+      Authorization: `Bearer ${process.env.NOTION_API_KEY}`,
+    },
+  };
+  try {
+    const response = await axios.request(options);
+    const botTokenUser = response.data;
+    const integrationType =
+      botTokenUser.bot.owner.type === "user" ? "public" : "internal";
+    console.log(
+      `Running with ${integrationType} access token ${botTokenUser.id}`
+    );
+    status.valid_internal_token = true;
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
   }
-  console.log("Valid internal token");
-  PageService.configure(Notion);
-  UserService.configure(Notion);
-  ProjectsService.configure(Notion);
-  TimeReportsService.configure(Notion);
-  PeopleService.configure(Notion);
-  LoginService.configure(Notion);
+
+  let ClientPool = null;
+
+  if (process.env.INTEGRATION_TYPE === "public") {
+    await db.config();
+    ClientPool = ClientPoolFactory(db);
+  } else {
+    ClientPool = ClientPoolFactory();
+  }
+
+  UserService.configure(ClientPool);
+  PageService.configure(ClientPool);
+  ProjectsService.configure(ClientPool);
+  TimeReportsService.configure(ClientPool);
+  PeopleService.configure(ClientPool);
+  LoginService.configure(ClientPool);
 })();
 
 const PORT = 3001;
 
 const app = express();
-
+app.use(bearerToken());
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -72,11 +97,14 @@ app.use("/api", require("./routes/people_routes"));
 app.use("/api", require("./routes/timereports_routes"));
 app.use("/api", require("./routes/projects_routes"));
 app.use("/api", require("./routes/login_routes"));
+app.use("/api", require("./routes/test_routes"));
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
   console.log(`Running with ${status.integration_type} Notion integration`);
 });
+
+const httpTerminator = createHttpTerminator({ server });
 
 app.get("/api/status", (req, res) => {
   res.json({
@@ -87,9 +115,4 @@ app.get("/api/status", (req, res) => {
 
 app.get("/api/clientId", (req, res) => {
   res.status(200).send(process.env.NOTION_OAUTH_CLIENT_ID);
-});
-
-// TODO Only for dev purpose, remove later.
-app.get("/api/accessToken", (req, res) => {
-  res.json({ accessToken: status.access_token });
 });

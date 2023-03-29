@@ -1,22 +1,17 @@
 const ProjectsService = {
-  configure: function (Notion) {
-    this.Notion = Notion;
+  configure: function (ClientPool) {
+    this.clientPool = ClientPool;
   },
-  getProjects: async function () {
-    try {
-      return await this.Notion.client.databases.query({
-        database_id: process.env.PROJECT_DATABASE_ID,
-      });
-    } catch (e) {
-      console.error(e);
-    }
+  getProjects: async function (botId) {
+    const Notion = await this.clientPool.obtainClient(botId);
+    return await Notion.client.databases.query({
+      database_id: process.env.PROJECT_DATABASE_ID,
+      sorts: [{ property: "Timespan", direction: "descending" }],
+    });
   },
-  createProject: async function (bodyParams) {
-    try {
-      return await this.Notion.client.pages.create(bodyParams);
-    } catch (e) {
-      console.error(e);
-    }
+  createProject: async function (bodyParams, botId) {
+    const Notion = await this.clientPool.obtainClient(botId);
+    return await Notion.client.pages.create(bodyParams);
   },
 };
 

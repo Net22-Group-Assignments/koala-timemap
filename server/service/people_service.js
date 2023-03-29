@@ -3,43 +3,46 @@ dotenv.config();
 const peopleDB = process.env.PEOPLE_DATABASE_ID;
 
 const PeopleService = {
-  configure: function (Notion) {
-    this.Notion = Notion;
+  configure: function (ClientPool) {
+    this.clientPool = ClientPool;
   },
-  getPeople: async function (filter, schema = "notion") {
+  getPeople: async function (filter, schema = "notion", botId) {
     let query = { database_id: peopleDB };
     if (filter != null) {
       query = { ...query, filter };
     }
-    try {
-      const response = await this.Notion.client.databases.query(query);
-      if (schema === "native") {
-        let people = [];
-        response.results.map((person) => {
-          people = [...people, filterPeople(person)];
-        });
-        return people;
-      }
-      return response;
-    } catch (e) {
-      console.error(e);
-    }
-  },
-  getPeopleById: async function (peopleId, schema = "notion") {
-    try {
-      const person = await this.Notion.client.pages.retrieve({
-        page_id: peopleId,
+    const Notion = await this.clientPool.obtainClient(botId);
+    const response = await Notion.client.databases.query(query);
+    if (schema === "native") {
+      let people = [];
+      response.results.map((person) => {
+        people = [...people, filterPeople(person)];
       });
-      if (schema === "native") {
-        return filterPeople(person);
-      }
-      return person;
-    } catch (e) {
-      console.error(e);
+      return people;
     }
+    return response;
+  },
+  getPeopleById: async function (peopleId, schema = "notion", botId) {
+    const Notion = this.clientPool.obtainClient(botId);
+    const person = await Notion.client.pages.retrieve({
+      page_id: peopleId,
+    });
+    if (schema === "native") {
+      return filterPeople(person);
+    }
+    return person;
+  },
+  getPeopleByNotionId: async function (notionUserId, schema = "notion", botId) {
+    const filter = {
+      property: "Notion User",
+      people: {
+        contains: notionUserId,
+      },
+    };
+    const personArray = await this.getPeople(filter, schema, botId);
+    return personArray[0];
   },
 };
-
 const filterPeople = (person) => {
   const { id, properties } = person;
   const notionUser = properties["Notion User"]?.people[0];

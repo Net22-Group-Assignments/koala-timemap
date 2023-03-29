@@ -5,14 +5,22 @@ const ProjectService = require("../service/projects_service");
 
 const cache = apicache.middleware;
 
-router.get("/projects", cache("5 minutes"), async (req, res) => {
+router.get("/projects", cache("5 minutes"), async (req, res, next) => {
   req.apicacheGroup = "projects";
-  res.json(await ProjectService.getProjects());
+  try {
+    res.json(await ProjectService.getProjects(req.token));
+  } catch (e) {
+    next(e);
+  }
 });
 
-router.post("/projects", async (req, res) => {
+router.post("/projects", async (req, res, next) => {
   apicache.clear("projects");
-  res.json(await ProjectService.createProject(req.body));
+  try {
+    res.json(await ProjectService.createProject(req.body, req.token));
+  } catch (e) {
+    next(e);
+  }
 });
 
 module.exports = router;
