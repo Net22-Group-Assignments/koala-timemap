@@ -6,6 +6,7 @@ const ProjectsService = {
     const Notion = await this.clientPool.obtainClient(botId);
     return await Notion.client.databases.query({
       database_id: process.env.PROJECT_DATABASE_ID,
+      sorts: [{ property: "Timespan", direction: "descending" }],
     });
   },
   createProject: async function (bodyParams, botId) {

@@ -126,7 +126,8 @@ export default function TimeSummary(props) {
               <th>Hours</th>
               <th>Estimated hours left</th>
               <th>Worked Hours</th>
-              <th>TimeSpan</th>
+              <th>Start-Date</th>
+              <th>End-Date</th>
             </tr>
           </thead>
           {projects

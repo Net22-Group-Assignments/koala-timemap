@@ -13,6 +13,7 @@ const TimeReportsService = {
     const Notion = await this.clientPool.obtainClient(botId);
     return await Notion.client.databases.query({
       database_id: timeReportsDB,
+      sorts: [{ property: "Date", direction: "descending" }],
     });
   },
   getCollatedReports: async function (botId) {
