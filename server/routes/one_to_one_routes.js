@@ -6,13 +6,19 @@ const PageService = require("../service/one_to_one_service");
 const cache = apicache.middleware;
 router
   .route("/pages/:pageId", cache("5 minutes"))
-  .get(async (req, res) => {
+  .get(async (req, res, next) => {
     req.apicacheGroup = req.params.pageId;
-    res.json(await PageService.RetrievePage(req.params.pageId));
+    try {
+      res.json(await PageService.RetrievePage(req.params.pageId, req.token));
+    } catch (e) {
+      next(e);
+    }
   })
   .patch(async (req, res) => {
     apicache.clear();
-    res.json(await PageService.UpdatePage(req.params.pageId, req.body));
+    res.json(
+      await PageService.UpdatePage(req.params.pageId, req.body, req.token)
+    );
   });
 
 module.exports = router;

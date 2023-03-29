@@ -21,10 +21,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "set REACT_APP_INTEGRATION_TYPE=internal&& set REACT_APP_CLEAN=true&& react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev-public": "set REACT_APP_INTEGRATION_TYPE=public&& react-scripts start",
+    "dev-public-clean": "set REACT_APP_INTEGRATION_TYPE=public&& set REACT_APP_CLEAN=true&& react-scripts start"
   },
   "eslintConfig": {
     "extends": [

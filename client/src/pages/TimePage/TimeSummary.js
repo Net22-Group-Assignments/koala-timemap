@@ -3,14 +3,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
 import EditProject from "./EditProject";
 import CheckProjectStatus from "../../components/RadioButtons";
+import { useAuthHeader } from "react-auth-kit";
 
 import timesumsCss from "./TimeSummary.css";
 
 export default function TimeSummary(props) {
+  const authHeader = useAuthHeader();
   const [editProject, setEditProject] = useState([]);
   const [showEditProject, setShowEditProject] = useState(false);
   const [SelectedRadioBtn, setSelectedRadioBtn] = useState("Active");
-
   const [projects, setProjects] = useState([]);
   const [peopleData, setPeopleData] = useState(null);
   const [timeData, setTimeData] = useState(null);
@@ -24,7 +25,13 @@ export default function TimeSummary(props) {
   }
 
   useEffect(() => {
-    fetch("/api/projects", { cache: "no-cache" })
+    console.log(authHeader());
+    fetch("/api/projects", {
+      cache: "no-cache",
+      headers: {
+        Authorization: authHeader(),
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         console.log("data:");
@@ -34,13 +41,24 @@ export default function TimeSummary(props) {
   }, [projectRefetch]);
 
   useEffect(() => {
-    fetch("/api/people")
+    fetch("/api/people", {
+      cache: "no-cache",
+      headers: {
+        Authorization: authHeader(),
+      },
+    })
       .then((res) => res.json())
       .then((data) => setPeopleData(data));
   }, []);
 
   useEffect(() => {
-    fetch("/api/timereports?collated=true")
+    fetch("/api/timereports?collated=true", {
+      cache: "no-cache",
+      headers: {
+        Authorization: authHeader(),
+        cache: "no-cache",
+      },
+    })
       .then((res) => res.json())
       .then((data) => setTimeData(data));
   }, []);
@@ -50,6 +68,7 @@ export default function TimeSummary(props) {
       method: "PATCH",
       headers: {
         "Content-type": "application/json",
+        Authorization: authHeader(),
       },
       body: JSON.stringify({
         properties: {
@@ -107,7 +126,8 @@ export default function TimeSummary(props) {
               <th>Hours</th>
               <th>Estimated hours left</th>
               <th>Worked Hours</th>
-              <th>Worked Hours</th>
+              <th>Start-Date</th>
+              <th>End-Date</th>
             </tr>
           </thead>
           {projects
@@ -125,7 +145,7 @@ export default function TimeSummary(props) {
                         id={project.properties.Status.select.name}
                         style={{
                           backgroundColor:
-                            project.properties.Status.select.name == "Active"
+                            project.properties.Status.select.name === "Active"
                               ? "yellow"
                               : "",
                         }}

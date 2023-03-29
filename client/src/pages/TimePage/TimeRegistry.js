@@ -4,20 +4,48 @@ import Modal from "react-bootstrap/Modal";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import AddProject from "./AddProject";
 import AddTime from "./AddTime";
+import { useAuthHeader } from "react-auth-kit";
 
 export default function TimeRegistry() {
+  const authHeader = useAuthHeader();
   const [projects, setProjects] = useState([]);
   const [showProject, setShowProject] = useState(false);
+  // Here is Add time-registry for timeReportsDB
+  const [timeReport, setTimeReport] = useState([]);
+  const [showTime, setShowTime] = useState(false);
 
   function toggleShowProject() {
     setShowProject(!showProject);
   }
 
+  function toggleShowTime() {
+    setShowTime(!showTime);
+  }
+
   useEffect(() => {
-    fetch("/api/projects")
+    fetch("/api/projects", {
+      cache: "no-cache",
+      headers: {
+        Authorization: authHeader(),
+        cache: "no-cache",
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         setProjects(data.results);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/timereports", {
+      cache: "no-cache",
+      headers: {
+        Authorization: authHeader(),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setTimeReport(data.results);
       });
   }, []);
 
@@ -26,6 +54,7 @@ export default function TimeRegistry() {
       method: "POST",
       headers: {
         "Content-type": "application/json",
+        Authorization: authHeader(),
       },
       body: JSON.stringify({
         parent: {
@@ -75,27 +104,12 @@ export default function TimeRegistry() {
       });
   }
 
-  // Here is Add time-registry for timeReportsDB
-  const [timeReport, setTimeReport] = useState([]);
-  const [showTime, setShowTime] = useState(false);
-
-  function toggleShowTime() {
-    setShowTime(!showTime);
-  }
-
-  useEffect(() => {
-    fetch("/api/timereports")
-      .then((response) => response.json())
-      .then((data) => {
-        setTimeReport(data.results);
-      });
-  }, []);
-
   function newTimeReport(Date, PersonId, Hours, ProjectId, Note) {
     fetch("/api/timereports", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
+        Authorization: authHeader(),
       },
       body: JSON.stringify({
         parent: {

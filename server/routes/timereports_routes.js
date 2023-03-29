@@ -10,9 +10,9 @@ router.get("/timereports", cache("5 minutes"), async (req, res) => {
   const { collated } = req.query;
   try {
     if (collated) {
-      res.json(await TimeReportsService.getCollatedReports());
+      res.json(await TimeReportsService.getCollatedReports(req.token));
     } else {
-      res.json(await TimeReportsService.getReports());
+      res.json(await TimeReportsService.getReports(req.token));
     }
   } catch (error) {
     console.error(error);
@@ -29,10 +29,11 @@ router.post("/timereports", async (req, res) => {
       person_id,
       hours,
       project_id,
-      note
+      note,
+      req.token
     );
   } else {
-    response = await TimeReportsService.createReport(req.body);
+    response = await TimeReportsService.createReport(req.body, req.token);
   }
   apicache.clear("timeReports");
   res.json(response);

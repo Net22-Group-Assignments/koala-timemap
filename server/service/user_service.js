@@ -1,30 +1,20 @@
 const UserService = {
-  configure: function (Notion) {
-    this.Notion = Notion;
+  configure: function (ClientPool) {
+    this.clientPool = ClientPool;
   },
-  getTokenBotUser: async function () {
-    try {
-      const response = this.Notion.client.users.me();
-      if (this.Notion.integrationType === "public")
-        return response.bot.owner.user;
-      return response;
-    } catch (e) {
-      console.error(e);
-    }
+  getTokenBotUser: async function (botId) {
+    const Notion = await this.clientPool.obtainClient(botId);
+    const response = await Notion.client.users.me();
+    if (Notion.type === "public") return response.bot.owner.user;
+    return response;
   },
-  getNotionUserById: async function (userId) {
-    try {
-      return await this.Notion.client.users.retrieve({ user_id: userId });
-    } catch (e) {
-      console.error(e);
-    }
+  getNotionUserById: async function (userId, botId) {
+    const Notion = this.clientPool.obtainClient(botId);
+    return await Notion.client.users.retrieve({ user_id: userId });
   },
-  getNotionUsers: async function () {
-    try {
-      return await this.Notion.client.users.list();
-    } catch (e) {
-      console.error(e);
-    }
+  getNotionUsers: async function (botId) {
+    const Notion = this.clientPool.obtainClient(botId);
+    return await Notion.client.users.list();
   },
 };
 
