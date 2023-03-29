@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "react-auth-kit";
+import { TreasureProvider as Provider } from "react-treasure";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 console.log("integrationtype " + process.env.REACT_APP_INTEGRATION_TYPE);
@@ -16,9 +17,11 @@ if (process.env.REACT_APP_CLEAN) {
 root.render(
   // <React.StrictMode>
   <AuthProvider authType="localstorage" authName="_auth">
-    <Router>
-      <App />
-    </Router>
+    <Provider>
+      <Router>
+        <App />
+      </Router>
+    </Provider>
   </AuthProvider>
   // </React.StrictMode>
 );
