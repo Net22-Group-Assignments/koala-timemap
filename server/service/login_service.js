@@ -132,6 +132,11 @@ const LoginService = {
   deleteAllPublicTokens: async () => {
     await db.deleteAllPublicTokens();
   },
+  // Returns all the tokens in the database
+  getAllTokens: async () => {
+    const rows = await db.getAllTokens();
+    return rows;
+  },
 };
 
 const authenticatedUser = {

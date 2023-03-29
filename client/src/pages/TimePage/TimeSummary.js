@@ -27,9 +27,9 @@ export default function TimeSummary(props) {
   useEffect(() => {
     console.log(authHeader());
     fetch("/api/projects", {
+      cache: "no-cache",
       headers: {
         Authorization: authHeader(),
-        cache: "no-cache",
       },
     })
       .then((res) => res.json())
@@ -42,9 +42,9 @@ export default function TimeSummary(props) {
 
   useEffect(() => {
     fetch("/api/people", {
+      cache: "no-cache",
       headers: {
         Authorization: authHeader(),
-        cache: "no-cache",
       },
     })
       .then((res) => res.json())
@@ -53,6 +53,7 @@ export default function TimeSummary(props) {
 
   useEffect(() => {
     fetch("/api/timereports?collated=true", {
+      cache: "no-cache",
       headers: {
         Authorization: authHeader(),
         cache: "no-cache",

@@ -7,7 +7,7 @@ router.post("/login", async (req, res, next) => {
     if (process.env.INTEGRATION_TYPE === "internal-only") {
       res.json(await LoginService.createSignInResponse(process.env.GOD_ID));
     } else {
-      const signInResponse = await LoginService.signIn(req.query.code);
+      const signInResponse = await LoginService.signIn(req.body.code);
       console.log("Sign in response");
       console.log(signInResponse);
       res.json(signInResponse);
@@ -37,6 +37,15 @@ router.get("/registertoken", async (req, res, next) => {
 router.delete("/deletepublictokens", async (req, res, next) => {
   try {
     res.json(await LoginService.deleteAllPublicTokens());
+  } catch (e) {
+    next(e);
+  }
+});
+
+// Route to list all tokens
+router.get("/listtokens", async (req, res, next) => {
+  try {
+    res.json(await LoginService.getAllTokens());
   } catch (e) {
     next(e);
   }

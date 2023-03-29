@@ -24,6 +24,7 @@ export default function TimeRegistry() {
 
   useEffect(() => {
     fetch("/api/projects", {
+      cache: "no-cache",
       headers: {
         Authorization: authHeader(),
         cache: "no-cache",
@@ -37,9 +38,9 @@ export default function TimeRegistry() {
 
   useEffect(() => {
     fetch("/api/timereports", {
+      cache: "no-cache",
       headers: {
         Authorization: authHeader(),
-        cache: "no-cache",
       },
     })
       .then((response) => response.json())

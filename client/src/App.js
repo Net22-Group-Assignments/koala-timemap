@@ -6,7 +6,7 @@ import TimeRegistry from "./pages/TimePage/TimeRegistry";
 import TimeSummary from "./pages/TimePage/TimeSummary";
 import Dev from "./pages/Dev";
 import { useAuthUser, useSignIn, useIsAuthenticated } from "react-auth-kit";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 function App() {
@@ -15,6 +15,7 @@ function App() {
   const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [tempCode, setTempCode] = useState(null);
   /*React will output following warning:
     'Warning: Cannot update a component (`AuthProvider`)
     while rendering a different component (`App`)'
@@ -73,7 +74,9 @@ function App() {
       if (!isAuthenticated()) {
         axios
           //.post(`/api/login?code=f2bb83cf-6da0-4f00-9bd8-dc6cfa6940f7`)
-          .post(`/api/login?code=${searchParams.get("code")}`)
+          .post("/api/login", {
+            code: tempCode || searchParams.get("code"),
+          })
           .then((res) => {
             console.log(res.data);
             if (
@@ -81,12 +84,11 @@ function App() {
               res.data.registerStatus === "REGISTERED_INVALID"
             ) {
               // This should be replaced with a better modal.
-              const tempCode = prompt(
-                "Enter temporary code, cancel to register."
-              );
-              if (!tempCode) {
+              const tc = prompt("Enter temporary code, cancel to register.");
+              if (!tc) {
                 window.location.replace(res.data.redirectUrl);
               }
+              setTempCode(tc);
             } else {
               if (res.data.registerStatus === "REGISTERED_USER") {
                 signIn({
