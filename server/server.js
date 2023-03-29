@@ -15,6 +15,7 @@ const PeopleService = require("./service/people_service");
 const LoginService = require("./service/login_service");
 const PageService = require("./service/one_to_one_service");
 const axios = require("axios");
+const { createHttpTerminator } = require("http-terminator");
 const integrationArgIndex = process.argv.indexOf("--integration");
 
 dotenv.config();
@@ -98,10 +99,12 @@ app.use("/api", require("./routes/projects_routes"));
 app.use("/api", require("./routes/login_routes"));
 app.use("/api", require("./routes/test_routes"));
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
   console.log(`Running with ${status.integration_type} Notion integration`);
 });
+
+const httpTerminator = createHttpTerminator({ server });
 
 app.get("/api/status", (req, res) => {
   res.json({

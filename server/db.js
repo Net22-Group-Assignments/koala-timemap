@@ -1,20 +1,30 @@
 const sqlite3 = require("sqlite3");
 const dotenv = require("dotenv");
+const fs = require("fs");
 
 dotenv.config();
 
 const config = async () => {
+  try {
+    if (!fs.existsSync("./db")) {
+      fs.mkdirSync("./db");
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
   const db = new sqlite3.Database("./db/koala-timemap.db", (err) => {
     if (err) {
-      console.error(err.message);
+      console.error(err);
+    } else {
+      console.log("Connected to the koala-timemap database.");
     }
-    console.log("Connected to the koala-timemap database.");
   });
 
   // check if the tokens table exists and that it has the correct columns and contains at least one row
   db.get(
     "SELECT name FROM sqlite_master WHERE type='table' AND name='tokens'",
-    (err, row) => {
+    async (err, row) => {
       if (err) {
         console.error(err.message);
       }
@@ -36,8 +46,7 @@ const config = async () => {
         );
       } else {
         console.log("Table tokens does not exist");
-        createTokenTable();
-        insertDefaultToken();
+        await createTokenTable();
       }
     }
   );
@@ -46,8 +55,9 @@ const config = async () => {
   db.close((err) => {
     if (err) {
       console.error(err.message);
+    } else {
+      console.log("Close the database connection.");
     }
-    console.log("Close the database connection.");
   });
 
   // Create a table with a primary key column bot_id of type text called bot_id,
@@ -59,8 +69,10 @@ const config = async () => {
       (err) => {
         if (err) {
           console.error(err.message);
+        } else {
+          console.log("Created table tokens");
+          insertDefaultToken();
         }
-        console.log("Created table tokens");
       }
     );
   };
@@ -68,7 +80,7 @@ const config = async () => {
   // Insert a row into the tokens table
   const insertDefaultToken = () => {
     db.run(
-      "INSERT INTO tokens (bot_id, token, integration_type, user_id VALUES (?, ?, ?, ?)",
+      "INSERT INTO tokens (bot_id, token, integration_type, user_id) VALUES (?, ?, ?, ?)",
       [
         process.env.NOTION_API_KEY_ID,
         process.env.NOTION_API_KEY,
@@ -78,8 +90,9 @@ const config = async () => {
       (err) => {
         if (err) {
           console.error(err.message);
+        } else {
+          console.log("Inserted internal key into the tokens table");
         }
-        console.log("Inserted internal key into the tokens table");
       }
     );
   };
@@ -160,8 +173,9 @@ const insertToken = async (bot_id, token, integration_type, user_id) => {
   const db = new sqlite3.Database("./db/koala-timemap.db", (err) => {
     if (err) {
       console.error(err.message);
+    } else {
+      console.log("Connected to the koala-timemap database.");
     }
-    console.log("Connected to the koala-timemap database.");
   });
 
   db.run(
@@ -170,8 +184,9 @@ const insertToken = async (bot_id, token, integration_type, user_id) => {
     (err) => {
       if (err) {
         console.error(err.message);
+      } else {
+        console.log("Inserted token into the tokens table");
       }
-      console.log("Inserted token into the tokens table");
     }
   );
 
@@ -179,8 +194,9 @@ const insertToken = async (bot_id, token, integration_type, user_id) => {
   db.close((err) => {
     if (err) {
       console.error(err.message);
+    } else {
+      console.log("Close the database connection.");
     }
-    console.log("Close the database connection.");
   });
 };
 
@@ -198,10 +214,11 @@ const deleteAllPublicTokens = async () => {
     function (err) {
       if (err) {
         console.error(err.message);
+      } else {
+        console.log(
+          `Deleted ${this.changes} public tokens from the tokens table`
+        );
       }
-      console.log(
-        `Deleted ${this.changes} public tokens from the tokens table`
-      );
     }
   );
 
@@ -209,8 +226,9 @@ const deleteAllPublicTokens = async () => {
   db.close((err) => {
     if (err) {
       console.error(err.message);
+    } else {
+      console.log("Close the database connection.");
     }
-    console.log("Close the database connection.");
   });
 };
 
