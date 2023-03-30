@@ -6,6 +6,7 @@ import CheckProjectStatus from "../../components/RadioButtons";
 import { useAuthHeader } from "react-auth-kit";
 
 import timesumsCss from "./TimeSummary.css";
+import { useTreasure } from "react-treasure";
 
 export default function TimeSummary(props) {
   const authHeader = useAuthHeader();
@@ -16,9 +17,29 @@ export default function TimeSummary(props) {
   const [peopleData, setPeopleData] = useState(null);
   const [timeData, setTimeData] = useState(null);
   const [projectRefetch, toggleProjectRefetch] = useReducer((previousValue) => {
-    console.log("before:" + previousValue);
     return !previousValue;
   }, false);
+  const [peopleRefetch, togglePeopleRefetch] = useReducer((previousValue) => {
+    return !previousValue;
+  }, false);
+  const [timereportRefetch, toggleTimereportRefetch] = useReducer(
+    (previousValue) => {
+      return !previousValue;
+    },
+    false
+  );
+  const [storedProjectRefetch, toggleStoredProjectRefetch] = useTreasure(
+    "project-refetch",
+    toggleProjectRefetch
+  );
+  const [storedPeopleRefetch, toggleStoredPeopleRefetch] = useTreasure(
+    "people-refetch",
+    togglePeopleRefetch
+  );
+  const [storedTimeReportRefetch, toggleStoredTimeReportRefetch] = useTreasure(
+    "timereport-refetch",
+    toggleTimereportRefetch
+  );
 
   function toggleShowEditProject() {
     setShowEditProject(!showEditProject);
@@ -27,7 +48,7 @@ export default function TimeSummary(props) {
   useEffect(() => {
     console.log(authHeader());
     fetch("/api/projects", {
-      cache: "no-cache",
+      cache: "reload",
       headers: {
         Authorization: authHeader(),
       },
@@ -42,26 +63,25 @@ export default function TimeSummary(props) {
 
   useEffect(() => {
     fetch("/api/people", {
-      cache: "no-cache",
+      cache: "reload",
       headers: {
         Authorization: authHeader(),
       },
     })
       .then((res) => res.json())
       .then((data) => setPeopleData(data));
-  }, []);
+  }, [peopleRefetch]);
 
   useEffect(() => {
     fetch("/api/timereports?collated=true", {
-      cache: "no-cache",
+      cache: "reload",
       headers: {
         Authorization: authHeader(),
-        cache: "no-cache",
       },
     })
       .then((res) => res.json())
       .then((data) => setTimeData(data));
-  }, []);
+  }, [timereportRefetch]);
 
   function projectEdit(ProjectId, Status, Hours) {
     fetch("/api/pages/" + ProjectId, {
@@ -173,6 +193,7 @@ export default function TimeSummary(props) {
                       </td>
                       <td>{project.properties.WorkedHours.rollup.number}</td>
                       <td>{project.properties.Timespan.date.start}</td>
+                      <td>{project.properties.Timespan.date.end}</td>
                     </tr>
                   </tbody>
                 ))

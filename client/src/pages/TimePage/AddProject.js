@@ -1,19 +1,28 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { StatusSelect } from "../../components/StatusSelect";
 
 export default function AddProject(props) {
   const [projectname, setProjectName] = useState("");
-  const [status, setStatus] = useState("");
-  const [hours, setHours] = useState("");
+  const [status, setStatus] = useState("Next-Up");
+  const [hours, setHours] = useState("0");
   const [workedHours, setWorkedHours] = useState("");
   const [hoursLeft, setHoursLeft] = useState("");
-  const [timespanStart, setTimespanStart] = useState("");
-  const [timespanEnd, setTimespanEnd] = useState("");
+  const [timespanStart, setTimespanStart] = useState(
+    new Date().toISOString().slice(0, 10)
+  );
+  const [timespanEnd, setTimespanEnd] = useState(
+    new Date().toISOString().slice(0, 10)
+  );
   const [showProject, setShowProject] = useState(props.show);
 
   const handleClose = () => setShowProject(false);
   const handleShow = () => setShowProject(true);
+
+  const handleStatusChange = (selectedStatus) => {
+    setStatus(selectedStatus.value);
+  };
 
   return (
     <>
@@ -59,7 +68,7 @@ export default function AddProject(props) {
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  for="name"
+                  htmlFor="name"
                 >
                   Project Name
                 </label>
@@ -74,6 +83,7 @@ export default function AddProject(props) {
                   onChange={(e) => {
                     setProjectName(e.target.value);
                   }}
+                  required={true}
                 />
               </div>
             </div>
@@ -87,23 +97,14 @@ export default function AddProject(props) {
                 </label>
               </div>
               <div className="md:w-2/3">
-                <input
-                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                  id="industry"
-                  placeholder="Active, Done, Next up"
-                  type="text"
-                  value={status}
-                  onChange={(e) => {
-                    setStatus(e.target.value);
-                  }}
-                />
+                <StatusSelect value={status} onChange={handleStatusChange} />
               </div>
             </div>
             <div className="md:flex md:items-center mb-6">
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  for="industry"
+                  htmlFor="industry"
                 >
                   Hours
                 </label>
@@ -125,9 +126,9 @@ export default function AddProject(props) {
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  for="industry"
+                  htmlFor="industry"
                 >
-                  Timespan Start
+                  Project Start
                 </label>
               </div>
               <div className="md:w-2/3">
@@ -147,9 +148,9 @@ export default function AddProject(props) {
               <div className="md:w-1/3">
                 <label
                   className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  for="industry"
+                  htmlFor="industry"
                 >
-                  Timespan End
+                  Project End
                 </label>
               </div>
               <div className="md:w-2/3">
