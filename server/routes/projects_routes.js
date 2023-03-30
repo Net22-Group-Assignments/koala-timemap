@@ -23,4 +23,13 @@ router.post("/projects", async (req, res, next) => {
   }
 });
 
+router.get("/projects/statusvalues", async (req, res, next) => {
+  req.apicacheGroup = "projects";
+  try {
+    res.json(await ProjectService.getProjectStatusValues());
+  } catch (e) {
+    next(e);
+  }
+});
+
 module.exports = router;

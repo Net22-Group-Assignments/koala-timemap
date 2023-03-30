@@ -14,11 +14,15 @@ router
       next(e);
     }
   })
-  .patch(async (req, res) => {
+  .patch(async (req, res, next) => {
     apicache.clear();
-    res.json(
-      await PageService.UpdatePage(req.params.pageId, req.body, req.token)
-    );
+    try {
+      res.json(
+        await PageService.UpdatePage(req.params.pageId, req.body, req.token)
+      );
+    } catch (e) {
+      next(e);
+    }
   });
 
 module.exports = router;

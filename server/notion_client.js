@@ -18,6 +18,9 @@ const InternalClientPool = (token) => {
     obtainClient: () => {
       return client;
     },
+    obtainInternalClient: () => {
+      return client;
+    },
   };
 };
 
@@ -55,6 +58,9 @@ const PublicClientPool = () => {
       }
       clients[botId] = client;
       return client;
+    },
+    obtainInternalClient: async () => {
+      return await this.obtainClient(process.env.NOTION_API_KEY_ID);
     },
   };
 };
