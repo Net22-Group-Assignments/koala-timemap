@@ -6,10 +6,10 @@ import { useAuthUser } from "react-auth-kit";
 
 export default function AddTime(props) {
   const auth = useAuthUser();
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [person, setPerson] = useState(auth().person);
-  const [hours, setHours] = useState("");
-  const [project, setProject] = useState("");
+  const [hours, setHours] = useState("0");
+  const [project, setProject] = useState(null);
   const [note, setNote] = useState("");
   const [showTime, setShowTime] = useState(props.show);
   const handleClose = () => setShowTime(false);
@@ -23,6 +23,10 @@ export default function AddTime(props) {
     setProject(
       props.projects.find((project) => project.id === selectedProject.value)
     );
+  };
+
+  const onShowHandler = () => {
+    setProject(props.projects[0]);
   };
 
   return (
@@ -39,6 +43,7 @@ export default function AddTime(props) {
         onHide={handleClose}
         backdrop="static"
         keyboard={false}
+        onShow={onShowHandler}
       >
         <Modal.Header>
           <Modal.Title>Add Time Report</Modal.Title>
@@ -46,13 +51,13 @@ export default function AddTime(props) {
         <Modal.Body>
           <form
             onSubmit={(e) => {
-              e.preventDefault();
-              setDate("");
-              setPerson("");
-              setHours("");
-              setProject("");
+              setDate(new Date().toISOString().slice(0, 10));
+              //setPerson(useState(auth().person));
+              setHours("1");
+              setProject(props.projects[0]);
               setNote("");
               props.newTimeReport(date, person.id, hours, project.id, note);
+              e.preventDefault();
             }}
             id="addmodal"
             className="w-full max-w-sm"
@@ -136,7 +141,11 @@ export default function AddTime(props) {
               <div className="md:w-2/3">
                 <Select
                   options={projectOptions}
+                  defaultValue={projectOptions[0]}
+                  // value={projectOptions[0]}
                   onChange={handleProjectChange}
+                  isSearchable={true}
+                  required={true}
                 />
               </div>
             </div>

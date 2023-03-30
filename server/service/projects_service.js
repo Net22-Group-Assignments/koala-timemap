@@ -13,6 +13,13 @@ const ProjectsService = {
     const Notion = await this.clientPool.obtainClient(botId);
     return await Notion.client.pages.create(bodyParams);
   },
+  getProjectStatusValues: async function () {
+    const Notion = await this.clientPool.obtainInternalClient();
+    const response = await Notion.client.databases.retrieve({
+      database_id: process.env.PROJECT_DATABASE_ID,
+    });
+    return response.properties.Status.select.options;
+  },
 };
 
 module.exports = ProjectsService;

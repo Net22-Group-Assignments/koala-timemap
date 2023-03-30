@@ -1,27 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Select from "react-select";
 import { useAuthUser } from "react-auth-kit";
+import { useTreasure } from "react-treasure";
+import { StatusSelect } from "../../components/StatusSelect";
 
 export default function EditProject(props) {
+  const [editProject, setEditProject] = useState(null);
   const [projectname, setProjectName] = useState("");
+  // editProject.properties.Projectname.title[0].text.content
   const [project, setProject] = useState("");
   const [status, setStatus] = useState("");
+  // editProject.properties.Status.select.name
   const [hours, setHours] = useState("");
-  const [editProject, setEditProject] = useState("");
+  // editProject.properties.Hours.number
   const [showEditProject, setShowEditProject] = useState(props.show);
 
-  //console.log(props.projects);
   const projectOptions = props.projects.map((project) => ({
     value: project.id,
     label: project.properties.Projectname.title[0].text.content,
   }));
 
   const handleEditProjectChange = (selectedProject) => {
-    setEditProject(
-      props.projects.find((project) => project.id === selectedProject.value)
+    const projectToUpdate = props.projects.find(
+      (project) => project.id === selectedProject.value
     );
+    setEditProject(projectToUpdate);
+    setStatus(projectToUpdate.properties.Status.select.name);
+    setHours(projectToUpdate.properties.Hours.number);
+  };
+
+  const handleStatusChange = (selectedStatus) => {
+    console.log(selectedStatus.value);
+    setStatus(selectedStatus.value);
+  };
+
+  const onShowHandler = () => {
+    setEditProject(props.projects[0]);
+    setStatus(props.projects[0].properties.Status.select.name);
+    setHours(props.projects[0].properties.Hours.number);
   };
 
   const handleClose = () => setShowEditProject(false);
@@ -41,6 +59,7 @@ export default function EditProject(props) {
         onHide={handleClose}
         backdrop="static"
         keyboard={false}
+        onShow={onShowHandler}
       >
         <Modal.Header>
           <Modal.Title>Update Project Data</Modal.Title>
@@ -48,11 +67,11 @@ export default function EditProject(props) {
         <Modal.Body>
           <form
             onSubmit={(e) => {
+              props.projectEdit(editProject.id, status, hours);
               e.preventDefault();
-              setProjectName("");
+              setEditProject(null);
               setStatus("");
               setHours("");
-              props.projectEdit(editProject.id, status, hours);
             }}
             id="editmodal"
             className="w-full max-w-sm"
@@ -68,6 +87,8 @@ export default function EditProject(props) {
               </div>
               <div className="md:w-2/3">
                 <Select
+                  autoFocus={true}
+                  defaultValue={projectOptions[0]}
                   options={projectOptions}
                   onChange={handleEditProjectChange}
                 />
@@ -83,16 +104,7 @@ export default function EditProject(props) {
                 </label>
               </div>
               <div className="md:w-2/3">
-                <input
-                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                  id="industry"
-                  placeholder="Active, Done, Next up"
-                  type="text"
-                  value={status}
-                  onChange={(e) => {
-                    setStatus(e.target.value);
-                  }}
-                />
+                <StatusSelect value={status} onChange={handleStatusChange} />
               </div>
             </div>
             <div className="md:flex md:items-center mb-6">

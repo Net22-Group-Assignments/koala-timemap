@@ -5,6 +5,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import AddProject from "./AddProject";
 import AddTime from "./AddTime";
 import { useAuthHeader } from "react-auth-kit";
+import { useTreasure } from "react-treasure";
 
 export default function TimeRegistry() {
   const authHeader = useAuthHeader();
@@ -13,6 +14,9 @@ export default function TimeRegistry() {
   // Here is Add time-registry for timeReportsDB
   const [timeReport, setTimeReport] = useState([]);
   const [showTime, setShowTime] = useState(false);
+  const [toggleProjectRefetch] = useTreasure("project-refetch");
+  const [toggleTimeReportRefetch] = useTreasure("timereport-refetch");
+  const [togglePeopleRefetch] = useTreasure("people-refetch");
 
   function toggleShowProject() {
     setShowProject(!showProject);
@@ -24,10 +28,9 @@ export default function TimeRegistry() {
 
   useEffect(() => {
     fetch("/api/projects", {
-      cache: "no-cache",
+      cache: "reload",
       headers: {
         Authorization: authHeader(),
-        cache: "no-cache",
       },
     })
       .then((response) => response.json())
@@ -38,7 +41,7 @@ export default function TimeRegistry() {
 
   useEffect(() => {
     fetch("/api/timereports", {
-      cache: "no-cache",
+      cache: "reload",
       headers: {
         Authorization: authHeader(),
       },
@@ -97,7 +100,8 @@ export default function TimeRegistry() {
       })
       .then((data) => {
         toggleShowProject();
-        console.log(data);
+        //console.log(data);
+        toggleProjectRefetch();
       })
       .catch((e) => {
         console.log(e);
@@ -152,7 +156,7 @@ export default function TimeRegistry() {
       }),
     })
       .then((response) => {
-        console.log(response);
+        //console.log(response);
         if (!response.ok) {
           throw new Error("Something went wrong");
         }
@@ -160,8 +164,9 @@ export default function TimeRegistry() {
       })
       .then((data) => {
         toggleShowTime();
-        console.log(data);
         setTimeReport([...timeReport, data.results]);
+        toggleTimeReportRefetch();
+        togglePeopleRefetch();
       })
       .catch((e) => {
         console.log(e);

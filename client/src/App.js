@@ -8,14 +8,17 @@ import Dev from "./pages/Dev";
 import { useAuthUser, useSignIn, useIsAuthenticated } from "react-auth-kit";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useTreasure } from "react-treasure";
 
 function App() {
   const signIn = useSignIn();
   const auth = useAuthUser();
+  const authHeader = useAuthUser();
   const isAuthenticated = useIsAuthenticated();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [tempCode, setTempCode] = useState(null);
+  const [statusValues, setStatusValues] = useTreasure("status-values");
   /*React will output following warning:
     'Warning: Cannot update a component (`AuthProvider`)
     while rendering a different component (`App`)'
@@ -53,14 +56,12 @@ function App() {
             },
           },
         });
-        //) {
-        //console.log("Login success");
-        //console.log(auth());
-        //} else {
-        //console.error("Login failed");
-        //}
-        //}
-        //});
+        fetch("/api/timereports?collated=true", {
+          headers: {
+            Authorization: authHeader(),
+            cache: "no-cache",
+          },
+        });
       }
     } else {
       /*
@@ -101,6 +102,12 @@ function App() {
             }
           });
       }
+    }
+    // Check if statusValues is set, if not fetch them from the server
+    if (!statusValues) {
+      axios.get("/api/projects/statusvalues").then((res) => {
+        setStatusValues(res.data);
+      });
     }
   }, [auth]);
 
