@@ -14,6 +14,22 @@ const TimeReportsService = {
     return await Notion.client.databases.query({
       database_id: timeReportsDB,
       sorts: [{ property: "Date", direction: "descending" }],
+      filter: {
+        and: [
+          {
+            property: "Person",
+            relation: {
+              is_not_empty: true,
+            },
+          },
+          {
+            property: "Project",
+            relation: {
+              is_not_empty: true,
+            },
+          },
+        ],
+      },
     });
   },
   getCollatedReports: async function (botId) {
