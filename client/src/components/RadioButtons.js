@@ -39,6 +39,7 @@ export default function CheckProjectStatus(props) {
             id={`inline-${type}-3`}
           />
           <Form.Check
+            checked
             inline
             label="All projects"
             name="group1"
