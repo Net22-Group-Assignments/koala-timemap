@@ -22,7 +22,7 @@ export default function TimeSummary(props) {
   const { newProject } = useNewProject();
   const [editProject, setEditProject] = useState([]);
   const [showEditProject, setShowEditProject] = useState(false);
-  const [SelectedRadioBtn, setSelectedRadioBtn] = useState("Active");
+  const [SelectedRadioBtn, setSelectedRadioBtn] = useState("");
   const [projects, setProjects] = useState([]);
   const [peopleData, setPeopleData] = useState(null);
   const [timeData, setTimeData] = useState(null);
