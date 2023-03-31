@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const apicache = require("apicache");
+// const apicache = require("apicache");
 const UserService = require("../service/user_service");
 
-const cache = apicache.middleware;
+// const cache = apicache.middleware;
 
 router.get("users/me", async (req, res, next) => {
   try {

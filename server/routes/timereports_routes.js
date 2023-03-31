@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const apicache = require("apicache");
+// const apicache = require("apicache");
 const TimeReportsService = require("../service/timereports_service");
 
-const cache = apicache.middleware;
+// const cache = apicache.middleware;
 
 router.get(
   "/timereports", //cache("5 minutes"),
   async (req, res) => {
-    req.apicacheGroup = "timeReports";
+    // req.apicacheGroup = "timeReports";
     const { collated } = req.query;
     try {
       if (collated) {
@@ -23,7 +23,7 @@ router.get(
 );
 
 router.post("/timereports", async (req, res) => {
-  apicache.clear();
+  // apicache.clear();
   const { schema } = req.query;
   let response;
   if (schema === "native") {

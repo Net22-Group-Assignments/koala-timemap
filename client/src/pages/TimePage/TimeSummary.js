@@ -156,7 +156,9 @@ export default function TimeSummary(props) {
             showTime={showTimeModal}
             toggleShowTime={toggleShowTimeModal}
             projects={projects}
-            refetch={toggleAllRefetch}
+            timeReports={timeData}
+            updateTimeReports={setTimeData}
+            refetch={toggleTimereportRefetch}
           />
         </div>
       </div>

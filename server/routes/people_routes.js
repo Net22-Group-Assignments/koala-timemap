@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const apicache = require("apicache");
+// const apicache = require("apicache");
 const PeopleService = require("../service/people_service");
 
-const cache = apicache.middleware;
+// const cache = apicache.middleware;
 router.get("/people", async (req, res, next) => {
   // req.apiCacheGroup = "people";
   const { schema } = req.query;
