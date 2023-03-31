@@ -5,7 +5,9 @@ const PageService = require("../service/one_to_one_service");
 
 const cache = apicache.middleware;
 router
-  .route("/pages/:pageId", cache("5 minutes"))
+  .route(
+    "/pages/:pageId" //cache("5 minutes")
+  )
   .get(async (req, res, next) => {
     req.apicacheGroup = req.params.pageId;
     try {
