@@ -108,6 +108,9 @@ export default function TimeSummary(props) {
 
   const getFilteredProjects = () => {
     if (timeData && projects) {
+      if (auth().person.role !== "User") {
+        return projects;
+      }
       const filteredTimeData = timeData.results.filter(
         (timeReport) =>
           timeReport.properties.Person.relation[0].id === auth().person.id
