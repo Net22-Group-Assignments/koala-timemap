@@ -77,6 +77,7 @@ export default function TimeSummary(props) {
   }, [projectRefetch]);
 
   useEffect(() => {
+    console.log("PeopleRefetch ran inside useEffect:");
     fetch("/api/people", {
       cache: "reload",
       headers: {
@@ -104,6 +105,31 @@ export default function TimeSummary(props) {
   }, [timereportRefetch]);
 
   let timeProject = "";
+
+  const getFilteredProjects = () => {
+    if (timeData && projects) {
+      const filteredTimeData = timeData.results.filter(
+        (timeReport) =>
+          timeReport.properties.Person.relation[0].id === auth().person.id
+      );
+
+      console.log(filteredTimeData, "filtered time data");
+
+      const filteredProjects = projects.filter((project) => {
+        return filteredTimeData.some(
+          (timeReport) =>
+            timeReport.properties.Project.relation[0].id === project.id
+        )
+          ? project
+          : null;
+      });
+
+      console.log(filteredProjects, "filtered project");
+      return filteredProjects;
+    } else {
+      return [];
+    }
+  };
 
   return (
     <div className="Table_container m-2">
@@ -148,8 +174,8 @@ export default function TimeSummary(props) {
               <th>End-Date</th>
             </tr>
           </thead>
-          {projects
-            ? projects
+          {projects && timeData
+            ? getFilteredProjects()
                 .filter((status) =>
                   status.properties.Status.select.name.includes(
                     SelectedRadioBtn

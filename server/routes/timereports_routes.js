@@ -20,9 +20,7 @@ router.get("/timereports", cache("5 minutes"), async (req, res) => {
 });
 
 router.post("/timereports", async (req, res) => {
-  apicache.clear("timeReports");
-  apicache.clear("projects");
-  apicache.clear("people");
+  apicache.clear();
   const { schema } = req.query;
   let response;
   if (schema === "native") {
