@@ -33,9 +33,9 @@ export default function AddTime(props) {
     <>
       <button
         onClick={props.toggleShowTime}
-        className="block mx-auto m-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+        className="m-2 px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
       >
-        + Add Time Report
+        Report Time
       </button>
 
       <Modal
@@ -51,13 +51,18 @@ export default function AddTime(props) {
         <Modal.Body>
           <form
             onSubmit={(e) => {
+              try {
+                props.newTimeReport(date, person.id, hours, project.id, note);
+                props.refetch();
+              } catch (e) {}
+
+              e.preventDefault();
               setDate(new Date().toISOString().slice(0, 10));
               //setPerson(useState(auth().person));
               setHours("1");
               setProject(props.projects[0]);
               setNote("");
-              props.newTimeReport(date, person.id, hours, project.id, note);
-              e.preventDefault();
+              props.toggleShowTime();
             }}
             id="addmodal"
             className="w-full max-w-sm"

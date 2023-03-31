@@ -28,9 +28,9 @@ export default function AddProject(props) {
     <>
       <button
         onClick={props.toggleShowProject}
-        className="block mx-auto m-2 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+        className="m-2 px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
       >
-        + Add Data
+        Add Project
       </button>
 
       <Modal
@@ -45,21 +45,29 @@ export default function AddProject(props) {
         <Modal.Body>
           <form
             onSubmit={(e) => {
+              try {
+                props.newProject(
+                  projectname,
+                  status,
+                  hours,
+                  timespanStart,
+                  timespanEnd
+                );
+                console.log("Project added");
+                console.log("run refetch");
+                props.refetch();
+              } catch (e) {
+                console.error(e);
+              }
               e.preventDefault();
               setProjectName("");
-              setStatus("");
-              setHours("");
-              setWorkedHours("");
-              setHoursLeft("");
-              setTimespanStart("");
-              setTimespanEnd("");
-              props.newProject(
-                projectname,
-                status,
-                hours,
-                timespanStart,
-                timespanEnd
-              );
+              setStatus("Next-Up");
+              setHours("0");
+              setWorkedHours("0");
+              setHoursLeft("0");
+              setTimespanStart(new Date().toISOString().slice(0, 10));
+              setTimespanEnd(new Date().toISOString().slice(0, 10));
+              props.toggleShowProject();
             }}
             id="editmodal"
             className="w-full max-w-sm"

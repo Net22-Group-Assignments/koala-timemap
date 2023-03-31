@@ -1,13 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const apicache = require("apicache");
+// const apicache = require("apicache");
 const PageService = require("../service/one_to_one_service");
 
-const cache = apicache.middleware;
+// const cache = apicache.middleware;
 router
-  .route("/pages/:pageId", cache("5 minutes"))
+  .route(
+    "/pages/:pageId" //cache("5 minutes")
+  )
   .get(async (req, res, next) => {
-    req.apicacheGroup = req.params.pageId;
+    //req.apicacheGroup = req.params.pageId;
     try {
       res.json(await PageService.RetrievePage(req.params.pageId, req.token));
     } catch (e) {
@@ -15,7 +17,7 @@ router
     }
   })
   .patch(async (req, res, next) => {
-    apicache.clear();
+    //apicache.clear();
     try {
       res.json(
         await PageService.UpdatePage(req.params.pageId, req.body, req.token)

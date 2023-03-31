@@ -1,25 +1,29 @@
 const express = require("express");
 const router = express.Router();
-const apicache = require("apicache");
+// const apicache = require("apicache");
 const TimeReportsService = require("../service/timereports_service");
 
-const cache = apicache.middleware;
+// const cache = apicache.middleware;
 
-router.get("/timereports", cache("5 minutes"), async (req, res) => {
-  req.apicacheGroup = "timeReports";
-  const { collated } = req.query;
-  try {
-    if (collated) {
-      res.json(await TimeReportsService.getCollatedReports(req.token));
-    } else {
-      res.json(await TimeReportsService.getReports(req.token));
+router.get(
+  "/timereports", //cache("5 minutes"),
+  async (req, res) => {
+    // req.apicacheGroup = "timeReports";
+    const { collated } = req.query;
+    try {
+      if (collated) {
+        res.json(await TimeReportsService.getCollatedReports(req.token));
+      } else {
+        res.json(await TimeReportsService.getReports(req.token));
+      }
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
   }
-});
+);
 
 router.post("/timereports", async (req, res) => {
+  // apicache.clear();
   const { schema } = req.query;
   let response;
   if (schema === "native") {
@@ -35,7 +39,6 @@ router.post("/timereports", async (req, res) => {
   } else {
     response = await TimeReportsService.createReport(req.body, req.token);
   }
-  apicache.clear("timeReports");
   res.json(response);
 });
 

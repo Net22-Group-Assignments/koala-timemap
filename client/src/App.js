@@ -47,12 +47,12 @@ function App() {
               type: "internal",
             },
             person: {
-              id: "be285041-8cd0-4899-9f2d-c3867a3e3821",
-              name: "Super Koala",
-              role: "Super",
-              notion_id: "0b4dd050-dd0e-4264-805e-5438e57b5c71",
-              notion_name: "Koala Superuser",
-              notion_email: "bjorn.agnemo@edu.edugrade.se",
+              id: "245df54e-41b9-46f8-a13c-142c6ee7c52f",
+              name: "Oskar Åhling",
+              role: "Big Boss",
+              notion_id: "901e01bb-f221-48dd-a233-b368a1c004f8",
+              notion_name: "Oskar",
+              notion_email: "oskar.ahling@edu.edugrade.se",
             },
           },
         });
@@ -123,7 +123,7 @@ function App() {
       <Routes>
         <Route path="/" element={<FrontPage />} />
         <Route path="/Timesummary" element={<TimeSummary />} />
-        <Route path="/timeregistry" element={<TimeRegistry />} />
+        {/*<Route path="/timeregistry" element={<TimeRegistry />} />*/}
         <Route path="/projects" element={<Projects />} />
         <Route path="/dev" element={<Dev />} />
       </Routes>
