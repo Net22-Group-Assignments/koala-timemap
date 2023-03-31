@@ -7,7 +7,7 @@ import "./Navbar.css";
 
 const navigation = [
   { name: "Time Summary", href: "/timesummary" },
-  { name: "Time Registry", href: "/timeregistry" },
+  // { name: "Time Registry", href: "/timeregistry" },
   { name: "Projects", href: "/projects" },
   { name: "Other", href: "/other" },
   { name: "Dev", href: "/dev" },

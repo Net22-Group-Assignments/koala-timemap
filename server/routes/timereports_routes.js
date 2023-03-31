@@ -20,6 +20,9 @@ router.get("/timereports", cache("5 minutes"), async (req, res) => {
 });
 
 router.post("/timereports", async (req, res) => {
+  apicache.clear("timeReports");
+  apicache.clear("projects");
+  apicache.clear("people");
   const { schema } = req.query;
   let response;
   if (schema === "native") {
@@ -35,7 +38,6 @@ router.post("/timereports", async (req, res) => {
   } else {
     response = await TimeReportsService.createReport(req.body, req.token);
   }
-  apicache.clear("timeReports");
   res.json(response);
 });
 

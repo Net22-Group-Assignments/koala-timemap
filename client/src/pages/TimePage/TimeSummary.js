@@ -1,21 +1,34 @@
-import { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
 import EditProject from "./EditProject";
 import CheckProjectStatus from "../../components/RadioButtons";
-import { useAuthHeader } from "react-auth-kit";
+import { useAuthHeader, useAuthUser } from "react-auth-kit";
 
 import timesumsCss from "./TimeSummary.css";
-import { useTreasure } from "react-treasure";
+import {
+  useNewProject,
+  useNewTimeReport,
+  useProjectEdit,
+} from "../../utilities/fetchFunctions";
+import AddProject from "./AddProject";
+import AddTime from "./AddTime";
 
 export default function TimeSummary(props) {
+  const auth = useAuthUser();
   const authHeader = useAuthHeader();
+  const { newTimeReport } = useNewTimeReport();
+  const { ProjectEdit } = useProjectEdit();
+  const { newProject } = useNewProject();
   const [editProject, setEditProject] = useState([]);
   const [showEditProject, setShowEditProject] = useState(false);
   const [SelectedRadioBtn, setSelectedRadioBtn] = useState("Active");
   const [projects, setProjects] = useState([]);
   const [peopleData, setPeopleData] = useState(null);
   const [timeData, setTimeData] = useState(null);
+  const [showTimeModal, setShowTimeModal] = useState(false);
+  const [showProjectModal, setShowProjectModal] = useState(false);
+
   const [projectRefetch, toggleProjectRefetch] = useReducer((previousValue) => {
     return !previousValue;
   }, false);
@@ -28,25 +41,27 @@ export default function TimeSummary(props) {
     },
     false
   );
-  const [storedProjectRefetch, toggleStoredProjectRefetch] = useTreasure(
-    "project-refetch",
-    toggleProjectRefetch
-  );
-  const [storedPeopleRefetch, toggleStoredPeopleRefetch] = useTreasure(
-    "people-refetch",
-    togglePeopleRefetch
-  );
-  const [storedTimeReportRefetch, toggleStoredTimeReportRefetch] = useTreasure(
-    "timereport-refetch",
-    toggleTimereportRefetch
-  );
 
   function toggleShowEditProject() {
     setShowEditProject(!showEditProject);
   }
 
+  function toggleShowProjectModal() {
+    setShowProjectModal(!showProjectModal);
+  }
+
+  function toggleShowTimeModal() {
+    setShowTimeModal(!showTimeModal);
+  }
+
+  function toggleAllRefetch() {
+    toggleProjectRefetch();
+    togglePeopleRefetch();
+    toggleTimereportRefetch();
+  }
+
   useEffect(() => {
-    console.log(authHeader());
+    console.log("projectRefetch ran inside useEffect:");
     fetch("/api/projects", {
       cache: "reload",
       headers: {
@@ -73,6 +88,7 @@ export default function TimeSummary(props) {
   }, [peopleRefetch]);
 
   useEffect(() => {
+    console.log("TimeReportRefetch ran inside useEffect:");
     fetch("/api/timereports?collated=true", {
       cache: "reload",
       headers: {
@@ -80,44 +96,12 @@ export default function TimeSummary(props) {
       },
     })
       .then((res) => res.json())
-      .then((data) => setTimeData(data));
-  }, [timereportRefetch]);
-
-  function projectEdit(ProjectId, Status, Hours) {
-    fetch("/api/pages/" + ProjectId, {
-      method: "PATCH",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: authHeader(),
-      },
-      body: JSON.stringify({
-        properties: {
-          Status: {
-            select: {
-              name: Status,
-            },
-          },
-          Hours: {
-            number: parseInt(Hours),
-          },
-        },
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Something went wrong");
-        }
-        return response.json();
-      })
       .then((data) => {
-        toggleShowEditProject();
-        //setEditProject([...editProject, data.results]); // Does it do anything?
-        toggleProjectRefetch();
-      })
-      .catch((e) => {
-        console.log(e);
+        console.log("timedata:");
+        console.log(data);
+        setTimeData(data);
       });
-  }
+  }, [timereportRefetch]);
 
   let timeProject = "";
 
@@ -129,10 +113,24 @@ export default function TimeSummary(props) {
         </div>
         <div className="mx-10">
           <EditProject
-            projectEdit={projectEdit}
+            projectEdit={ProjectEdit}
             showEditProject={showEditProject}
             toggleShowEditProject={toggleShowEditProject}
             projects={projects}
+            refetch={toggleProjectRefetch}
+          />
+          <AddProject
+            newProject={newProject}
+            showProject={showProjectModal}
+            toggleShowProject={toggleShowProjectModal}
+            refetch={toggleProjectRefetch}
+          />
+          <AddTime
+            newTimeReport={newTimeReport}
+            showTime={showTimeModal}
+            toggleShowTime={toggleShowTimeModal}
+            projects={projects}
+            refetch={toggleAllRefetch}
           />
         </div>
       </div>

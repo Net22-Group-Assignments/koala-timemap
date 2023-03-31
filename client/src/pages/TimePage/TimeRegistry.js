@@ -5,7 +5,10 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import AddProject from "./AddProject";
 import AddTime from "./AddTime";
 import { useAuthHeader } from "react-auth-kit";
-import { useTreasure } from "react-treasure";
+import {
+  useNewProject,
+  useNewTimeReport,
+} from "../../utilities/fetchFunctions";
 
 export default function TimeRegistry() {
   const authHeader = useAuthHeader();
@@ -14,9 +17,8 @@ export default function TimeRegistry() {
   // Here is Add time-registry for timeReportsDB
   const [timeReport, setTimeReport] = useState([]);
   const [showTime, setShowTime] = useState(false);
-  const [toggleProjectRefetch] = useTreasure("project-refetch");
-  const [toggleTimeReportRefetch] = useTreasure("timereport-refetch");
-  const [togglePeopleRefetch] = useTreasure("people-refetch");
+  const newProject = useNewProject();
+  const newTimeReport = useNewTimeReport();
 
   function toggleShowProject() {
     setShowProject(!showProject);
@@ -52,126 +54,123 @@ export default function TimeRegistry() {
       });
   }, []);
 
-  function newProject(Projectname, Status, Hours, TimespanStart, TimespanEnd) {
-    fetch("/api/projects", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: authHeader(),
-      },
-      body: JSON.stringify({
-        parent: {
-          type: "database_id",
-          database_id: "3a6e6b4bbcab4f83a66750fc4313e44c",
-        },
-        properties: {
-          Hours: {
-            number: parseInt(Hours),
-          },
-          Status: {
-            select: {
-              name: Status,
-            },
-          },
-          Timespan: {
-            date: {
-              start: TimespanStart,
-              end: TimespanEnd,
-            },
-          },
-          Projectname: {
-            title: [
-              {
-                text: {
-                  content: Projectname,
-                },
-              },
-            ],
-          },
-        },
-      }),
-    })
-      .then((response) => {
-        console.log(response);
-        if (!response.ok) {
-          throw new Error("Something went wrong");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        toggleShowProject();
-        //console.log(data);
-        toggleProjectRefetch();
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }
+  // function newProject(Projectname, Status, Hours, TimespanStart, TimespanEnd) {
+  //   fetch("/api/projects", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-type": "application/json",
+  //       Authorization: authHeader(),
+  //     },
+  //     body: JSON.stringify({
+  //       parent: {
+  //         type: "database_id",
+  //         database_id: "3a6e6b4bbcab4f83a66750fc4313e44c",
+  //       },
+  //       properties: {
+  //         Hours: {
+  //           number: parseInt(Hours),
+  //         },
+  //         Status: {
+  //           select: {
+  //             name: Status,
+  //           },
+  //         },
+  //         Timespan: {
+  //           date: {
+  //             start: TimespanStart,
+  //             end: TimespanEnd,
+  //           },
+  //         },
+  //         Projectname: {
+  //           title: [
+  //             {
+  //               text: {
+  //                 content: Projectname,
+  //               },
+  //             },
+  //           ],
+  //         },
+  //       },
+  //     }),
+  //   })
+  //     .then((response) => {
+  //       console.log(response);
+  //       if (!response.ok) {
+  //         throw new Error("Something went wrong");
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       toggleShowProject();
+  //       //console.log(data);
+  //       toggleProjectRefetch();
+  //     })
+  //     .catch((e) => {
+  //       console.log(e);
+  //     });
+  // }
 
-  function newTimeReport(Date, PersonId, Hours, ProjectId, Note) {
-    fetch("/api/timereports", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: authHeader(),
-      },
-      body: JSON.stringify({
-        parent: {
-          type: "database_id",
-          database_id: "32d3152bf0ff4036b38598308527c376",
-        },
-        properties: {
-          Date: {
-            date: {
-              start: Date,
-            },
-          },
-          Person: {
-            relation: [
-              {
-                id: PersonId,
-              },
-            ],
-          },
-          Hours: {
-            number: parseInt(Hours),
-          },
-          Project: {
-            relation: [
-              {
-                id: ProjectId,
-              },
-            ],
-          },
-          Note: {
-            title: [
-              {
-                text: {
-                  content: Note,
-                },
-              },
-            ],
-          },
-        },
-      }),
-    })
-      .then((response) => {
-        //console.log(response);
-        if (!response.ok) {
-          throw new Error("Something went wrong");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        toggleShowTime();
-        setTimeReport([...timeReport, data.results]);
-        toggleTimeReportRefetch();
-        togglePeopleRefetch();
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }
+  // function newTimeReport(Date, PersonId, Hours, ProjectId, Note) {
+  //   fetch("/api/timereports", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-type": "application/json",
+  //       Authorization: authHeader(),
+  //     },
+  //     body: JSON.stringify({
+  //       parent: {
+  //         type: "database_id",
+  //         database_id: "32d3152bf0ff4036b38598308527c376",
+  //       },
+  //       properties: {
+  //         Date: {
+  //           date: {
+  //             start: Date,
+  //           },
+  //         },
+  //         Person: {
+  //           relation: [
+  //             {
+  //               id: PersonId,
+  //             },
+  //           ],
+  //         },
+  //         Hours: {
+  //           number: parseInt(Hours),
+  //         },
+  //         Project: {
+  //           relation: [
+  //             {
+  //               id: ProjectId,
+  //             },
+  //           ],
+  //         },
+  //         Note: {
+  //           title: [
+  //             {
+  //               text: {
+  //                 content: Note,
+  //               },
+  //             },
+  //           ],
+  //         },
+  //       },
+  //     }),
+  //   })
+  //     .then((response) => {
+  //       //console.log(response);
+  //       if (!response.ok) {
+  //         throw new Error("Something went wrong");
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       return data;
+  //     })
+  //     .catch((e) => {
+  //       console.log(e);
+  //     });
+  // }
 
   //End of add time-registry for timeReportsDB
 

@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Select from "react-select";
-import { useAuthUser } from "react-auth-kit";
-import { useTreasure } from "react-treasure";
 import { StatusSelect } from "../../components/StatusSelect";
 
 export default function EditProject(props) {
@@ -67,11 +65,17 @@ export default function EditProject(props) {
         <Modal.Body>
           <form
             onSubmit={(e) => {
-              props.projectEdit(editProject.id, status, hours);
+              try {
+                props.projectEdit(editProject.id, status, hours);
+                props.refetch();
+              } catch (e) {
+                console.error(e);
+              }
               e.preventDefault();
               setEditProject(null);
               setStatus("");
               setHours("");
+              props.toggleShowEditProject();
             }}
             id="editmodal"
             className="w-full max-w-sm"
