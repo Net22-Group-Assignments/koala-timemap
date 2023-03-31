@@ -63,7 +63,7 @@ export default function TimeSummary(props) {
   useEffect(() => {
     console.log("projectRefetch ran inside useEffect:");
     fetch("/api/projects", {
-      cache: "reload",
+      cache: "no-cache",
       headers: {
         Authorization: authHeader(),
       },
@@ -79,7 +79,7 @@ export default function TimeSummary(props) {
   useEffect(() => {
     console.log("PeopleRefetch ran inside useEffect:");
     fetch("/api/people", {
-      cache: "reload",
+      cache: "no-cache",
       headers: {
         Authorization: authHeader(),
       },
@@ -91,7 +91,7 @@ export default function TimeSummary(props) {
   useEffect(() => {
     console.log("TimeReportRefetch ran inside useEffect:");
     fetch("/api/timereports?collated=true", {
-      cache: "reload",
+      cache: "no-cache",
       headers: {
         Authorization: authHeader(),
       },
