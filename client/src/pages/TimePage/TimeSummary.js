@@ -136,33 +136,35 @@ export default function TimeSummary(props) {
 
   return (
     <div className="Table_container m-2">
-      <div className="flex justify-content: flex-end">
-        <div className="mx-10 my-2">
-          <CheckProjectStatus setSelectedRadioBtn={setSelectedRadioBtn} />
-        </div>
-        <div className="mx-10">
-          <EditProject
-            projectEdit={ProjectEdit}
-            showEditProject={showEditProject}
-            toggleShowEditProject={toggleShowEditProject}
-            projects={projects}
-            refetch={toggleProjectRefetch}
-          />
-          <AddProject
-            newProject={newProject}
-            showProject={showProjectModal}
-            toggleShowProject={toggleShowProjectModal}
-            refetch={toggleProjectRefetch}
-          />
-          <AddTime
-            newTimeReport={newTimeReport}
-            showTime={showTimeModal}
-            toggleShowTime={toggleShowTimeModal}
-            projects={projects}
-            timeReports={timeData}
-            updateTimeReports={setTimeData}
-            refetch={toggleTimereportRefetch}
-          />
+      <div container className="RadioBtn_container">
+        <div className="flex justify-content: flex-end">
+          <div className="mx-10 my-2">
+            <CheckProjectStatus setSelectedRadioBtn={setSelectedRadioBtn} />
+          </div>
+          <div className="mx-10">
+            <EditProject
+              projectEdit={ProjectEdit}
+              showEditProject={showEditProject}
+              toggleShowEditProject={toggleShowEditProject}
+              projects={projects}
+              refetch={toggleProjectRefetch}
+            />
+            <AddProject
+              newProject={newProject}
+              showProject={showProjectModal}
+              toggleShowProject={toggleShowProjectModal}
+              refetch={toggleProjectRefetch}
+            />
+            <AddTime
+              newTimeReport={newTimeReport}
+              showTime={showTimeModal}
+              toggleShowTime={toggleShowTimeModal}
+              projects={projects}
+              timeReports={timeData}
+              updateTimeReports={setTimeData}
+              refetch={toggleTimereportRefetch}
+            />
+          </div>
         </div>
       </div>
       {/* Here is display for projects DB */}

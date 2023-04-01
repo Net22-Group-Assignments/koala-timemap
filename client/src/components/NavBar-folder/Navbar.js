@@ -15,7 +15,7 @@ const navigation = [
 export default function Navbar() {
   return (
     <>
-      <Disclosure as="nav" className="bg-gray-800">
+      <Disclosure as="nav" className="bg-pink-900">
         {({ open }) => (
           <>
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -38,14 +38,15 @@ export default function Navbar() {
                         <NavLink
                           key={item.name}
                           to={item.href}
-                          className={({ isActive }) => {
-                            return (
-                              "px-3 py-2 text-gray-400 rounded-md text-sm font-medium no-underline" +
-                              (!isActive
-                                ? "text-gray-300 hover:bg-gray-700 hover:text-white"
-                                : "bg-gray-900 text-white")
-                            );
-                          }}
+                          className={"NavBar_text"}
+                          // className={({ isActive }) => {
+                          //   return (
+                          //     "px-3 py-2 text-gray-400 rounded-md text-sm font-medium no-underline" +
+                          //     (!isActive
+                          //       ? "text-gray-300 hover:bg-gray-700 hover:text-white"
+                          //       : "bg-gray-900 text-white")
+                          //   );
+                          // }}
                         >
                           {item.name}
                         </NavLink>
@@ -62,14 +63,15 @@ export default function Navbar() {
                   <NavLink
                     key={item.name}
                     to={item.href}
-                    className={({ isActive }) => {
-                      return (
-                        "block rounded-md px-3 py-2 text-base font-medium no-underline" +
-                        (!isActive
-                          ? "text-gray-300 hover:bg-gray-700 hover:text-white"
-                          : "bg-gray-900 text-white")
-                      );
-                    }}
+                    className={"NavBar_folded_text"}
+                    // className={({ isActive }) => {
+                    //   return (
+                    //     "block rounded-md px-3 py-2 text-base font-medium no-underline" +
+                    //     (!isActive
+                    //       ? "text-gray-300 hover:bg-gray-700 hover:text-white"
+                    //       : "bg-gray-900 text-white")
+                    //   );
+                    // }}
                   >
                     {item.name}
                   </NavLink>
