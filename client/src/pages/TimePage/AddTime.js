@@ -17,6 +17,8 @@ export default function AddTime(props) {
   const [showTime, setShowTime] = useState(props.show);
   const handleClose = () => setShowTime(false);
   const handleShow = () => setShowTime(true);
+  const [timespanStart, setTimespanStart] = useState("");
+  const [timespanEnd, setTimespanEnd] = useState("");
 
   const projectOptions = props.projects.map((project) => ({
     value: project.id,
@@ -27,10 +29,15 @@ export default function AddTime(props) {
     setProject(
       props.projects.find((project) => project.id === selectedProject.value)
     );
+    setTimespanStart(project.properties.Timespan.date.start);
+    setTimespanEnd(project.properties.Timespan.date.end);
+    setDate(project.properties.Timespan.date.start);
   };
 
-  const onShowHandler = () => {
-    setProject(props.projects[0]);
+  const onShowHandler = (selectedProject = props.projects[0]) => {
+    setProject(selectedProject);
+    setTimespanStart(selectedProject.properties.Timespan.date.start);
+    setTimespanEnd(selectedProject.properties.Timespan.date.end);
   };
 
   // Date change handler that checks it the date is between choosen projects start and end date
@@ -81,7 +88,9 @@ export default function AddTime(props) {
                     note: note,
                   })
                 );
-              } catch (e) {}
+              } catch (e) {
+                console.error(e);
+              }
 
               e.preventDefault();
               setDate(new Date().toISOString().slice(0, 10));
@@ -94,27 +103,6 @@ export default function AddTime(props) {
             id="addmodal"
             className="w-full max-w-sm"
           >
-            <div className="md:flex md:items-center mb-6">
-              <div className="md:w-1/3">
-                <label
-                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  htmlFor="name"
-                >
-                  Date
-                </label>
-              </div>
-              <div className="md:w-2/3">
-                <input
-                  name="date"
-                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                  id="name"
-                  placeholder="2000-00-00"
-                  type="date"
-                  value={date}
-                  onChange={onDateChangeHandler}
-                />
-              </div>
-            </div>
             <div className="md:flex md:items-center mb-6">
               <div className="md:w-1/3">
                 <label
@@ -144,6 +132,90 @@ export default function AddTime(props) {
                   className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
                   htmlFor="industry"
                 >
+                  Project
+                </label>
+              </div>
+              <div className="md:w-2/3">
+                <Select
+                  options={projectOptions}
+                  defaultValue={projectOptions[0]}
+                  // value={projectOptions[0]}
+                  onChange={handleProjectChange}
+                  isSearchable={true}
+                  required={true}
+                />
+              </div>
+            </div>
+            <div className="md:flex md:items-center mb-6">
+              <div className="md:w-1/3">
+                <label
+                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                  htmlFor="industry"
+                >
+                  Project Start
+                </label>
+              </div>
+              <div className="md:w-2/3">
+                <input
+                  name="timespanStart"
+                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                  id="industry"
+                  placeholder="2000-00-00"
+                  type="date"
+                  value={timespanStart}
+                  disabled={true}
+                />
+              </div>
+            </div>
+            <div className="md:flex md:items-center mb-6">
+              <div className="md:w-1/3">
+                <label
+                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                  htmlFor="industry"
+                >
+                  Project End
+                </label>
+              </div>
+              <div className="md:w-2/3">
+                <input
+                  name="timespanEnd"
+                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                  id="industry"
+                  placeholder="2000-00-00"
+                  type="date"
+                  value={timespanEnd}
+                  disabled={true}
+                />
+              </div>
+            </div>
+
+            <div className="md:flex md:items-center mb-6">
+              <div className="md:w-1/3">
+                <label
+                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                  htmlFor="name"
+                >
+                  Date
+                </label>
+              </div>
+              <div className="md:w-2/3">
+                <input
+                  name="date"
+                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                  id="name"
+                  placeholder="2000-00-00"
+                  type="date"
+                  value={date}
+                  onChange={onDateChangeHandler}
+                />
+              </div>
+            </div>
+            <div className="md:flex md:items-center mb-6">
+              <div className="md:w-1/3">
+                <label
+                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                  htmlFor="industry"
+                >
                   Hours
                 </label>
               </div>
@@ -158,26 +230,6 @@ export default function AddTime(props) {
                   onChange={(e) => {
                     setHours(e.target.value);
                   }}
-                />
-              </div>
-            </div>
-            <div className="md:flex md:items-center mb-6">
-              <div className="md:w-1/3">
-                <label
-                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  htmlFor="industry"
-                >
-                  Project
-                </label>
-              </div>
-              <div className="md:w-2/3">
-                <Select
-                  options={projectOptions}
-                  defaultValue={projectOptions[0]}
-                  // value={projectOptions[0]}
-                  onChange={handleProjectChange}
-                  isSearchable={true}
-                  required={true}
                 />
               </div>
             </div>
