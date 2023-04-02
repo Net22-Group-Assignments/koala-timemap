@@ -4,11 +4,10 @@ import Form from "react-bootstrap/Form";
 export default function CheckProjectStatus(props) {
   const [selectedRadioBtn, setSelectedRadioBtn] = useState("");
 
-  console.log(selectedRadioBtn, "CheckProjectStatus");
-
   return (
     <Form
       onChange={(e) => {
+        console.log(e.target.value, "CheckProjectStatus");
         props.setSelectedRadioBtn(e.target.value);
       }}
     >
@@ -39,11 +38,10 @@ export default function CheckProjectStatus(props) {
             id={`inline-${type}-3`}
           />
           <Form.Check
-            checked
             inline
             label="All projects"
             name="group1"
-            value=""
+            value="All"
             type={type}
             id={`inline-${type}-4`}
           />

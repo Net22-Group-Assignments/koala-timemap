@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Select from "react-select";
 import { useAuthUser } from "react-auth-kit";
+import { getTimeReportRequestObject } from "../../utilities/fetchFunctions";
 
 export default function AddTime(props) {
   const auth = useAuthUser();
@@ -14,6 +15,7 @@ export default function AddTime(props) {
   const [showTime, setShowTime] = useState(props.show);
   const handleClose = () => setShowTime(false);
   const handleShow = () => setShowTime(true);
+
   const projectOptions = props.projects.map((project) => ({
     value: project.id,
     label: project.properties.Projectname.title[0].text.content,
@@ -52,8 +54,15 @@ export default function AddTime(props) {
           <form
             onSubmit={(e) => {
               try {
-                props.newTimeReport(date, person.id, hours, project.id, note);
-                props.refetch();
+                props.addTimeReport(
+                  getTimeReportRequestObject({
+                    date: date,
+                    personId: person.id,
+                    hours: hours,
+                    projectId: project.id,
+                    note: note,
+                  })
+                );
               } catch (e) {}
 
               e.preventDefault();

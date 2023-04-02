@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { StatusSelect } from "../../components/StatusSelect";
+import useAxios from "axios-hooks";
+import { getProjectRequestObject } from "../../utilities/fetchFunctions";
 
 export default function AddProject(props) {
-  const [projectname, setProjectName] = useState("");
+  const [projectName, setProjectName] = useState("");
   const [status, setStatus] = useState("Next-Up");
   const [hours, setHours] = useState("0");
-  const [workedHours, setWorkedHours] = useState("");
-  const [hoursLeft, setHoursLeft] = useState("");
   const [timespanStart, setTimespanStart] = useState(
     new Date().toISOString().slice(0, 10)
   );
@@ -46,16 +46,15 @@ export default function AddProject(props) {
           <form
             onSubmit={(e) => {
               try {
-                props.newProject(
-                  projectname,
-                  status,
-                  hours,
-                  timespanStart,
-                  timespanEnd
+                props.addProject(
+                  getProjectRequestObject({
+                    name: projectName,
+                    status: status,
+                    hours: hours,
+                    start: timespanStart,
+                    end: timespanEnd,
+                  })
                 );
-                console.log("Project added");
-                console.log("run refetch");
-                props.refetch();
               } catch (e) {
                 console.error(e);
               }
@@ -63,8 +62,6 @@ export default function AddProject(props) {
               setProjectName("");
               setStatus("Next-Up");
               setHours("0");
-              setWorkedHours("0");
-              setHoursLeft("0");
               setTimespanStart(new Date().toISOString().slice(0, 10));
               setTimespanEnd(new Date().toISOString().slice(0, 10));
               props.toggleShowProject();
@@ -87,7 +84,7 @@ export default function AddProject(props) {
                   id="name"
                   placeholder="The bestest Project"
                   type="text"
-                  value={projectname}
+                  value={projectName}
                   onChange={(e) => {
                     setProjectName(e.target.value);
                   }}

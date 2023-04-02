@@ -4,44 +4,112 @@ import Table from "react-bootstrap/Table";
 import EditProject from "./EditProject";
 import CheckProjectStatus from "../../components/RadioButtons";
 import { useAuthHeader, useAuthUser } from "react-auth-kit";
-
 import timesumsCss from "./TimeSummary.css";
-import {
-  useNewProject,
-  useNewTimeReport,
-  useProjectEdit,
-} from "../../utilities/fetchFunctions";
 import AddProject from "./AddProject";
 import AddTime from "./AddTime";
+import useAxios from "axios-hooks";
+import { useTreasure } from "react-treasure";
+import useLocalStorage from "use-local-storage";
 
 export default function TimeSummary(props) {
   const auth = useAuthUser();
   const authHeader = useAuthHeader();
-  const { newTimeReport } = useNewTimeReport();
-  const { ProjectEdit } = useProjectEdit();
-  const { newProject } = useNewProject();
-  const [editProject, setEditProject] = useState([]);
+
+  const [projectStorage, setProjectStorage] = useLocalStorage("projects", []);
+  const [peopleStorage, setPeopleStorage] = useLocalStorage("people", []);
+  const [timeStorage, setTimeStorage] = useLocalStorage("timereports", []);
+
   const [showEditProject, setShowEditProject] = useState(false);
-  const [SelectedRadioBtn, setSelectedRadioBtn] = useState("");
-  const [projects, setProjects] = useState([]);
-  const [peopleData, setPeopleData] = useState(null);
-  const [timeData, setTimeData] = useState(null);
+  const [SelectedRadioBtn, setSelectedRadioBtn] = useState("All");
+
+  const [projects, setProjects] = useState(
+    projectStorage.length > 0 ? projectStorage : []
+  );
+  const [peopleData, setPeopleData] = useState(
+    peopleStorage.length > 0 ? peopleStorage : []
+  );
+  const [timeData, setTimeData] = useState(
+    timeStorage.length > 0 ? timeStorage : []
+  );
+
   const [showTimeModal, setShowTimeModal] = useState(false);
   const [showProjectModal, setShowProjectModal] = useState(false);
 
-  const [projectRefetch, toggleProjectRefetch] = useReducer((previousValue) => {
-    return !previousValue;
-  }, false);
-  const [peopleRefetch, togglePeopleRefetch] = useReducer((previousValue) => {
-    return !previousValue;
-  }, false);
-  const [timereportRefetch, toggleTimereportRefetch] = useReducer(
-    (previousValue) => {
-      return !previousValue;
+  // Use axios hooks to fetch data from the API
+  const [
+    {
+      data: getProjectData,
+      loading: getProjectLoading,
+      error: getProjectError,
     },
-    false
+    executeGetProjects,
+  ] = useAxios("/api/projects", { headers: { Authorization: authHeader() } });
+
+  const [
+    { data: getPeopleData, loading: getPeopleLoading, error: getPeopleError },
+    executeGetPeople,
+  ] = useAxios("/api/people", { headers: { Authorization: authHeader() } });
+
+  const [
+    {
+      data: getTimeReportData,
+      loading: getTimeReportLoading,
+      error: getTimeReportError,
+    },
+    executeGetTimeReportData,
+  ] = useAxios("/api/timereports?collated=true", {
+    headers: { Authorization: authHeader() },
+  });
+
+  const [
+    {
+      data: postProjectData,
+      loading: postProjectLoading,
+      error: postProjectError,
+    },
+    executePostProject,
+  ] = useAxios(
+    {
+      url: "/api/projects",
+      method: "POST",
+      headers: { Authorization: authHeader() },
+    },
+    { manual: true }
   );
 
+  const [
+    {
+      data: patchProjectData,
+      loading: patchProjectLoading,
+      error: patchProjectError,
+    },
+    executePatchProject,
+  ] = useAxios(
+    {
+      url: "/api/projects",
+      method: "PATCH",
+      headers: { Authorization: authHeader() },
+    },
+    { manual: true }
+  );
+
+  const [
+    {
+      data: postTimeReportData,
+      loading: postTimeReportLoading,
+      error: postTimeReportError,
+    },
+    executePostTimeReport,
+  ] = useAxios(
+    {
+      url: "/api/timereports",
+      method: "POST",
+      headers: { Authorization: authHeader() },
+    },
+    { manual: true }
+  );
+
+  // Functions to toggle modals
   function toggleShowEditProject() {
     setShowEditProject(!showEditProject);
   }
@@ -54,64 +122,112 @@ export default function TimeSummary(props) {
     setShowTimeModal(!showTimeModal);
   }
 
-  function toggleAllRefetch() {
-    toggleProjectRefetch();
-    togglePeopleRefetch();
-    toggleTimereportRefetch();
+  // Functions to handle data from child components
+  async function addProject(newProjectData) {
+    await executePostProject({
+      data: {
+        properties: newProjectData.properties,
+      },
+    });
+  }
+  async function updateProjects(updatedProjectData) {
+    await executePatchProject({
+      data: {
+        page_id: updatedProjectData.page_id,
+        body_params: { properties: updatedProjectData.properties },
+      },
+    });
   }
 
-  useEffect(() => {
-    console.log("projectRefetch ran inside useEffect:");
-    fetch("/api/projects", {
-      cache: "no-cache",
-      headers: {
-        Authorization: authHeader(),
+  async function addTimeReport(newTimeReportData) {
+    await executePostTimeReport({
+      data: {
+        properties: newTimeReportData.properties,
       },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("data:");
-        console.log(data.results);
-        setProjects(data.results);
-      });
-  }, [projectRefetch]);
+    });
+    await executeGetProjects();
+    await executeGetPeople();
+  }
+
+  //useEffect(() => {}, []);
 
   useEffect(() => {
-    console.log("PeopleRefetch ran inside useEffect:");
-    fetch("/api/people", {
-      cache: "no-cache",
-      headers: {
-        Authorization: authHeader(),
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => setPeopleData(data));
-  }, [peopleRefetch]);
+    if (getProjectData) {
+      setProjects(getProjectData.results);
+      setProjectStorage(getProjectData.results);
+    }
+  }, [getProjectData]);
 
   useEffect(() => {
-    console.log("TimeReportRefetch ran inside useEffect:");
-    fetch("/api/timereports?collated=true", {
-      cache: "no-cache",
-      headers: {
-        Authorization: authHeader(),
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("timedata:");
-        console.log(data);
-        setTimeData(data);
-      });
-  }, [timereportRefetch]);
+    if (getPeopleData) {
+      setPeopleData(getPeopleData.results);
+      setPeopleStorage(getPeopleData.results);
+    }
+  }, [getPeopleData]);
+
+  useEffect(() => {
+    if (getTimeReportData) {
+      setTimeData(getTimeReportData.results);
+      setTimeStorage(getTimeReportData.results);
+    }
+  }, [getTimeReportData]);
+
+  useEffect(() => {
+    if (postProjectData) {
+      const sortedProjects = sortKoalaObjectsByDate(
+        [...projects, postProjectData],
+        "Timespan"
+      );
+      setProjects(sortedProjects);
+      setProjectStorage(sortedProjects);
+    }
+  }, [postProjectData]);
+
+  useEffect(() => {
+    if (patchProjectData) {
+      const patchedProjects = projects.map((project) =>
+        project.id === patchProjectData.id
+          ? { ...project, ...patchProjectData }
+          : project
+      );
+      const sortedPatchedProjects = sortKoalaObjectsByDate(
+        patchedProjects,
+        "Timespan"
+      );
+      setProjects(sortedPatchedProjects);
+      setProjectStorage(sortedPatchedProjects);
+    }
+  }, [patchProjectData]);
+
+  useEffect(() => {
+    if (postTimeReportData) {
+      const updatedTimeData = sortKoalaObjectsByDate(
+        [...timeData, postTimeReportData],
+        "Date"
+      );
+      setTimeData(updatedTimeData);
+      setTimeStorage(updatedTimeData);
+    }
+  }, [postTimeReportData]);
 
   let timeProject = "";
+
+  const sortKoalaObjectsByDate = (koalaObjects, datePropertyName) => {
+    // Sort array by Timespan.date.start
+    return [...koalaObjects].sort((a, b) => {
+      const aDate = new Date(a.properties[datePropertyName].date.start);
+      const bDate = new Date(b.properties[datePropertyName].date.start);
+      // sort by date descending
+      return bDate - aDate;
+    });
+  };
 
   const getFilteredProjects = () => {
     if (timeData && projects) {
       if (auth().person.role !== "User") {
         return projects;
       }
-      const filteredTimeData = timeData.results.filter(
+      const filteredTimeData = timeData.filter(
         (timeReport) =>
           timeReport.properties.Person.relation[0].id === auth().person.id
       );
@@ -139,29 +255,27 @@ export default function TimeSummary(props) {
       <div className="flex justify-content: flex-end">
         <div className="mx-10 my-2">
           <CheckProjectStatus setSelectedRadioBtn={setSelectedRadioBtn} />
+          <p>{SelectedRadioBtn}</p>
         </div>
         <div className="mx-10">
           <EditProject
-            projectEdit={ProjectEdit}
             showEditProject={showEditProject}
             toggleShowEditProject={toggleShowEditProject}
             projects={projects}
-            refetch={toggleProjectRefetch}
+            updateProjects={updateProjects}
           />
           <AddProject
-            newProject={newProject}
+            addProject={addProject}
             showProject={showProjectModal}
             toggleShowProject={toggleShowProjectModal}
-            refetch={toggleProjectRefetch}
           />
           <AddTime
-            newTimeReport={newTimeReport}
+            addTimeReport={addTimeReport}
             showTime={showTimeModal}
             toggleShowTime={toggleShowTimeModal}
             projects={projects}
-            timeReports={timeData}
-            updateTimeReports={setTimeData}
-            refetch={toggleTimereportRefetch}
+            //timeReports={timeData}
+            //updateTimeReports={setTimeData}
           />
         </div>
       </div>
@@ -181,10 +295,10 @@ export default function TimeSummary(props) {
           </thead>
           {projects && timeData
             ? getFilteredProjects()
-                .filter((status) =>
-                  status.properties.Status.select.name.includes(
-                    SelectedRadioBtn
-                  )
+                .filter(
+                  (status) =>
+                    status.properties.Status.select.name === SelectedRadioBtn ||
+                    SelectedRadioBtn === "All"
                 )
                 .map((project) => (
                   <tbody>
@@ -240,7 +354,7 @@ export default function TimeSummary(props) {
             </tr>
           </thead>
           {peopleData
-            ? peopleData.results.map((people) => (
+            ? peopleData.map((people) => (
                 <tbody>
                   <tr>
                     <td>{people.properties.Name.title[0].text.content}</td>
@@ -265,24 +379,34 @@ export default function TimeSummary(props) {
             </tr>
           </thead>
           {timeData
-            ? timeData.results.map((time) => (
+            ? timeData.map((time) => (
                 <tbody>
                   <tr>
                     <td>{time.properties.Date.date.start}</td>
                     <td>
-                      {
-                        time.properties.Person.relation_properties.Name.title[0]
-                          .text.content
-                      }
+                      {Array.isArray(
+                        time.properties.Person.relation_properties.Name.title
+                      )
+                        ? time.properties.Person.relation_properties.Name
+                            .title[0].text.content
+                        : time.properties.Person.relation_properties.Name.title
+                            .text.content}
                     </td>
                     <td>{time.properties.Hours.number}</td>
                     <td>
-                      {
+                      {Array.isArray(
                         time.properties.Project.relation_properties.Projectname
-                          .title[0].text.content
-                      }
+                          .title
+                      )
+                        ? time.properties.Project.relation_properties
+                            .Projectname.title[0].text.content
+                        : time.properties.Project.relation_properties
+                            .Projectname.title.text.content}
                     </td>
-                    <td>{time.properties.Note.title[0].text.content}</td>
+                    <td>
+                      {time.properties.Note.title.length > 0 &&
+                        time.properties.Note.title[0].text.content}
+                    </td>
                   </tr>
                 </tbody>
               ))

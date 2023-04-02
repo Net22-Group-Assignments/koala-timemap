@@ -11,7 +11,7 @@ router
   .get(async (req, res, next) => {
     //req.apicacheGroup = req.params.pageId;
     try {
-      res.json(await PageService.RetrievePage(req.params.pageId, req.token));
+      res.json(await PageService.retrievePage(req.params.pageId, req.token));
     } catch (e) {
       next(e);
     }
@@ -20,7 +20,7 @@ router
     //apicache.clear();
     try {
       res.json(
-        await PageService.UpdatePage(req.params.pageId, req.body, req.token)
+        await PageService.updatePage(req.params.pageId, req.body, req.token)
       );
     } catch (e) {
       next(e);
