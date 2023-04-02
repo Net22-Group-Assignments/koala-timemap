@@ -1,3 +1,5 @@
+import ManagerView from "./TimePage/BossView";
+
 export default function Projects() {
-  return <h1>Projects go here</h1>;
+  return <ManagerView />;
 }
