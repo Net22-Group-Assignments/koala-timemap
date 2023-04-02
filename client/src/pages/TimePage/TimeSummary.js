@@ -254,12 +254,11 @@ export default function TimeSummary(props) {
     <div className="Table_container m-2">
       <div container className="RadioBtn_container">
         <div className="flex justify-content: flex-end">
-        <div className="mx-10 my-2">
-          <CheckProjectStatus setSelectedRadioBtn={setSelectedRadioBtn} />
-          <p>{SelectedRadioBtn}</p>
-        </div>
+          <div className="mx-10 my-2">
+            <CheckProjectStatus setSelectedRadioBtn={setSelectedRadioBtn} />
+          </div>
           <div className="mx-10" id="btn_styles">
-          <EditProject
+            <EditProject
               showEditProject={showEditProject}
               toggleShowEditProject={toggleShowEditProject}
               projects={projects}
@@ -268,8 +267,8 @@ export default function TimeSummary(props) {
 
             <AddProject
               addProject={addProject}
-            showProject={showProjectModal}
-            toggleShowProject={toggleShowProjectModal}
+              showProject={showProjectModal}
+              toggleShowProject={toggleShowProjectModal}
             />
             <AddTime
               addTimeReport={addTimeReport}
@@ -278,31 +277,32 @@ export default function TimeSummary(props) {
               projects={projects}
               //timeReports={timeData}
               //updateTimeReports={setTimeData}
-          /></div>
+            />
+          </div>
         </div>
       </div>
       {/* Here is display for projects DB */}
       <div className="project_container_container">
         <p>Project</p>
         <div className="Project_container">
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Project Name</th>
-              <th>Status</th>
-              <th>Hours</th>
-              <th>Estimated hours left</th>
-              <th>Worked Hours</th>
-              <th>Start-Date</th>
-              <th>End-Date</th>
-            </tr>
-          </thead>
-          {projects && timeData
-            ? getFilteredProjects()
-                .filter(
-                  (status) =>
-                    status.properties.Status.select.name === SelectedRadioBtn ||
-                    SelectedRadioBtn === "All"
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Project Name</th>
+                <th>Status</th>
+                <th>Hours</th>
+                <th>Estimated hours left</th>
+                <th>Worked Hours</th>
+                <th>Start-Date</th>
+                <th>End-Date</th>
+              </tr>
+            </thead>
+            {projects && timeData
+              ? getFilteredProjects()
+                  .filter(
+                    (status) =>
+                      status.properties.Status.select.name ===
+                        SelectedRadioBtn || SelectedRadioBtn === "All"
                   )
                   .map((project) => (
                     <tbody>
@@ -377,53 +377,53 @@ export default function TimeSummary(props) {
       {/* Here is the display for TimeProject DB */}
       <div className="timereport_container_container">
         <p>TimeReport</p>
-      <div className="TimeReport_container">
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Person</th>
-              <th>Hours</th>
-              <th>Project</th>
-              <th>Note</th>
-            </tr>
-          </thead>
-          {timeData
+        <div className="TimeReport_container">
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Person</th>
+                <th>Hours</th>
+                <th>Project</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            {timeData
               ? timeData.map((time) => (
                   <tbody>
-                  <tr>
-                    <td>{time.properties.Date.date.start}</td>
-                    <td>
-                      {Array.isArray(
+                    <tr>
+                      <td>{time.properties.Date.date.start}</td>
+                      <td>
+                        {Array.isArray(
                           time.properties.Person.relation_properties.Name.title
-                      )
+                        )
                           ? time.properties.Person.relation_properties.Name
                               .title[0].text.content
-                          : time.properties.Person.relation_properties.Name.title
-                              .text.content}
-                    </td>
-                    <td>{time.properties.Hours.number}</td>
-                    <td>
-                      {Array.isArray(
-                          time.properties.Project.relation_properties.Projectname
-                              .title
-                      )
+                          : time.properties.Person.relation_properties.Name
+                              .title.text.content}
+                      </td>
+                      <td>{time.properties.Hours.number}</td>
+                      <td>
+                        {Array.isArray(
+                          time.properties.Project.relation_properties
+                            .Projectname.title
+                        )
                           ? time.properties.Project.relation_properties
                               .Projectname.title[0].text.content
                           : time.properties.Project.relation_properties
                               .Projectname.title.text.content}
-                    </td>
-                    <td>
-                      {time.properties.Note.title.length > 0 &&
+                      </td>
+                      <td>
+                        {time.properties.Note.title.length > 0 &&
                           time.properties.Note.title[0].text.content}
-                    </td>
-                  </tr>
+                      </td>
+                    </tr>
                   </tbody>
-              ))
-            : null}
-        </Table>
+                ))
+              : null}
+          </Table>
+        </div>
       </div>
-    </div>
     </div>
   );
 }
