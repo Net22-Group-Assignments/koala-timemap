@@ -4,6 +4,8 @@ import Modal from "react-bootstrap/Modal";
 import Select from "react-select";
 import { useAuthUser } from "react-auth-kit";
 
+import "./TimeSummary.css";
+
 export default function AddTime(props) {
   const auth = useAuthUser();
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
@@ -34,6 +36,7 @@ export default function AddTime(props) {
       <button
         onClick={props.toggleShowTime}
         className="m-2 px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2"
+        id="add_btn"
       >
         Report Time
       </button>

@@ -10,12 +10,22 @@
 
 
 .Table_container{
- 
-    
 }
 #edit_btn{
     box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.50); 
     background-color: whitesmoke !important;
+    color: 	rgb(139 92 246);
+
+    padding: 10px;
+
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    justify-content: center !important;
+    text-align: center;
+    border: 0 !important;
+    border-radius: 25px !important;
+    min-width: none !important;
+    outline: none;
 }
 
 .RadioBtn_container{
@@ -29,6 +39,12 @@
     margin-left: 50px;
     margin-right: 50px;
     margin-top: 5rem;
+
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    min-width: none !important;
+    outline-style: none !important;
+
     
 }
 .People_container{
@@ -38,6 +54,12 @@
     margin-left: 50px;
     margin-right: 50px;
     margin-top: 5rem;
+
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    min-width: none !important;
+    outline: none !important;
+
 }
 .TimeReport_container{
     box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.50);
@@ -46,9 +68,33 @@
     margin-left: 50px;
     margin-right: 50px;
     margin-top: 5rem;
+
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    min-width: none !important;
+    
 } 
 
 #btn_styles{
+    background-color: transparent;
+
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    border: 0 !important;
+    border-radius: 50px !important;
+    padding: 1px 12px !important;
+    line-height: 35px !important;
+    min-width: none !important;
+    outline: none !important;
+}
+
+#add_btn{
     background-color: whitesmoke;
-    box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.50); 
+    
+   /*color: rgb(139 92 246); */
+}
+
+button:hover{
+	background-color: rgb(139 92 246) !important;
+    color: whitesmoke;
 }

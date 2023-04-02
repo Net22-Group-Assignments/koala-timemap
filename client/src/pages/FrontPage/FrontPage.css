@@ -22,3 +22,16 @@
     background-position: right;
     background-position: top;
 }
+
+.title_text{
+    box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.50);
+    background-color: white;
+    color: rgb(139 92 246);
+    
+
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    min-width: none !important;
+    outline-style: none !important;  
+}
+
