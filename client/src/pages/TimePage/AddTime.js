@@ -17,6 +17,8 @@ export default function AddTime(props) {
   const [showTime, setShowTime] = useState(props.show);
   const handleClose = () => setShowTime(false);
   const handleShow = () => setShowTime(true);
+  const [timespanStart, setTimespanStart] = useState("");
+  const [timespanEnd, setTimespanEnd] = useState("");
 
   const projectOptions = props.projects.map((project) => ({
     value: project.id,
@@ -24,13 +26,32 @@ export default function AddTime(props) {
   }));
 
   const handleProjectChange = (selectedProject) => {
-    setProject(
-      props.projects.find((project) => project.id === selectedProject.value)
+    const currentProject = props.projects.find(
+      (project) => project.id === selectedProject.value
     );
+    onShowHandler(currentProject);
   };
 
-  const onShowHandler = () => {
-    setProject(props.projects[0]);
+  const onShowHandler = (selectedProject = props.projects[0]) => {
+    setProject(selectedProject);
+    setTimespanStart(selectedProject.properties.Timespan.date.start);
+    setTimespanEnd(selectedProject.properties.Timespan.date.end);
+    setDate(selectedProject.properties.Timespan.date.start);
+  };
+
+  // Date change handler that checks it the date is between choosen projects start and end date
+  const onDateChangeHandler = (e) => {
+    const { name, value } = e.target;
+    if (name === "date" && value < project.properties.Timespan.date.start) {
+      alert("Reported date must be after project start date");
+    } else if (
+      name === "date" &&
+      value > project.properties.Timespan.date.end
+    ) {
+      alert("Reported date must be before project end date");
+    } else {
+      setDate(value);
+    }
   };
 
   return (
@@ -66,7 +87,9 @@ export default function AddTime(props) {
                     note: note,
                   })
                 );
-              } catch (e) {}
+              } catch (e) {
+                console.error(e);
+              }
 
               e.preventDefault();
               setDate(new Date().toISOString().slice(0, 10));
@@ -91,28 +114,6 @@ export default function AddTime(props) {
               <div className="md:w-2/3">
                 <input
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                  id="name"
-                  placeholder="2000-00-00"
-                  type="date"
-                  value={date}
-                  onChange={(e) => {
-                    setDate(e.target.value);
-                  }}
-                />
-              </div>
-            </div>
-            <div className="md:flex md:items-center mb-6">
-              <div className="md:w-1/3">
-                <label
-                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  htmlFor="industry"
-                >
-                  Person
-                </label>
-              </div>
-              <div className="md:w-2/3">
-                <input
-                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   id="industry"
                   placeholder="Do not type anything"
                   type="text"
@@ -121,28 +122,6 @@ export default function AddTime(props) {
                     setPerson(e.target.value);
                   }}
                   disabled={true}
-                />
-              </div>
-            </div>
-            <div className="md:flex md:items-center mb-6">
-              <div className="md:w-1/3">
-                <label
-                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                  htmlFor="industry"
-                >
-                  Hours
-                </label>
-              </div>
-              <div className="md:w-2/3">
-                <input
-                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                  id="industry"
-                  placeholder="0"
-                  type="text"
-                  value={hours}
-                  onChange={(e) => {
-                    setHours(e.target.value);
-                  }}
                 />
               </div>
             </div>
@@ -163,6 +142,93 @@ export default function AddTime(props) {
                   onChange={handleProjectChange}
                   isSearchable={true}
                   required={true}
+                />
+              </div>
+            </div>
+            <div className="md:flex md:items-center mb-6">
+              <div className="md:w-1/3">
+                <label
+                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                  htmlFor="industry"
+                >
+                  Project Start
+                </label>
+              </div>
+              <div className="md:w-2/3">
+                <input
+                  name="timespanStart"
+                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                  id="industry"
+                  placeholder="2000-00-00"
+                  type="date"
+                  value={timespanStart}
+                  disabled={true}
+                />
+              </div>
+            </div>
+            <div className="md:flex md:items-center mb-6">
+              <div className="md:w-1/3">
+                <label
+                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                  htmlFor="industry"
+                >
+                  Project End
+                </label>
+              </div>
+              <div className="md:w-2/3">
+                <input
+                  name="timespanEnd"
+                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                  id="industry"
+                  placeholder="2000-00-00"
+                  type="date"
+                  value={timespanEnd}
+                  disabled={true}
+                />
+              </div>
+            </div>
+
+            <div className="md:flex md:items-center mb-6">
+              <div className="md:w-1/3">
+                <label
+                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                  htmlFor="name"
+                >
+                  Date
+                </label>
+              </div>
+              <div className="md:w-2/3">
+                <input
+                  name="date"
+                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                  id="name"
+                  placeholder="2000-00-00"
+                  type="date"
+                  value={date}
+                  onChange={onDateChangeHandler}
+                />
+              </div>
+            </div>
+            <div className="md:flex md:items-center mb-6">
+              <div className="md:w-1/3">
+                <label
+                  className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                  htmlFor="industry"
+                >
+                  Hours
+                </label>
+              </div>
+              <div className="md:w-2/3">
+                <input
+                  className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                  id="industry"
+                  placeholder="0"
+                  type="number"
+                  min={0}
+                  value={hours}
+                  onChange={(e) => {
+                    setHours(e.target.value);
+                  }}
                 />
               </div>
             </div>

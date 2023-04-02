@@ -30,14 +30,12 @@ export default function EditProject(props) {
   };
 
   const handleStatusChange = (selectedStatus) => {
-    console.log(selectedStatus.value);
     setStatus(selectedStatus.value);
   };
 
   // Date change handler that checks if timespanEnd date is after timespanStart date
   // and shows an error message if it is not and does not update the state
   const onDateChangeHandler = (e) => {
-    console.log(e.target.name, e.target.value);
     const { name, value } = e.target;
     if (name === "timespanStart" && value > timespanEnd) {
       alert("Start date must be before end date");
