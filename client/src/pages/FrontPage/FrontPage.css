@@ -21,6 +21,7 @@
     width: 50%;
     background-position: right;
     background-position: top;
+    background-repeat: no-repeat;
 }
 
 .title_text{

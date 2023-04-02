@@ -67,10 +67,10 @@ export default function Navbar() {
                     id={"NavBar_folded_text"}
                     className={({ isActive }) => {
                       return (
-                        "block rounded-md px-3 py-2 text-base font-medium no-underline" +
+                        "block px-3 py-2 text-gray-400 rounded-md text-sm font-medium no-underline" +
                         (!isActive
                           ? "text-gray-300 hover:bg-gray-700 hover:text-white"
-                          : "bg-gray-900 text-white")
+                          : "bg-violet-600 text-white")
                       );
                     }}
                   >
