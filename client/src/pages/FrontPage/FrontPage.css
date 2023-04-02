@@ -1,6 +1,6 @@
 
 .title_text{
-    box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.20);
+    box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.50);
     background-color: white;
     text-align: center !important;
     max-width: fit-content !important;
@@ -19,7 +19,6 @@
     margin-left: auto;
     margin-top: 0px;
     width: 50%;
-
     background-position: right;
     background-position: top;
 }

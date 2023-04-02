@@ -4,14 +4,8 @@
 
 
 body{
-
-
-    background: url('./components/pictures/koala-background.png');
+    background: url('./components/pictures/colorfullbackground.jpg');
     background-position: center;
-;
     width: 100vw;
     height: 100vw;
-
 }
-
-

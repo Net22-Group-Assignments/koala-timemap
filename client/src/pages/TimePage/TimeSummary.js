@@ -285,7 +285,7 @@ export default function TimeSummary(props) {
                           .title[0].text.content
                       }
                     </td>
-                    {/* <td>{time.properties.Note.title[0].text.content}</td> */}
+                    {<td>{time.properties.Note.title[0].text.content}</td>}
                   </tr>
                 </tbody>
               ))
