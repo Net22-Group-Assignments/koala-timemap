@@ -34,9 +34,6 @@ function App() {
       process.env.REACT_APP_INTEGRATION_TYPE !== "public"
     ) {
       if (!isAuthenticated()) {
-        //axios.post("/api/login").then((res) => {
-        //if (res.status === 200) {
-        //if (
         signIn({
           token: process.env.REACT_APP_NOTION_API_KEY_ID,
           expiresIn: 60,
@@ -53,13 +50,9 @@ function App() {
               notion_id: "901e01bb-f221-48dd-a233-b368a1c004f8",
               notion_name: "Oskar",
               notion_email: "oskar.ahling@edu.edugrade.se",
+              avatar_url:
+                "https://s3-us-west-2.amazonaws.com/public.notion-static.com/fea34a59-d0fd-4a31-a5eb-fb4d178fa527/koala-logo.png",
             },
-          },
-        });
-        fetch("/api/timereports?collated=true", {
-          headers: {
-            Authorization: authHeader(),
-            cache: "no-cache",
           },
         });
       }
@@ -117,14 +110,11 @@ function App() {
   return (
     <>
       <Navbar />
-      <p>
-        Current User: {auth().person.name} Current Role: {auth().person.role}
-      </p>
       <Routes>
         <Route path="/" element={<FrontPage />} />
-        <Route path="/Timesummary" element={<TimeSummary />} />
+        <Route path="/timesummary" element={<TimeSummary />} />
         {/*<Route path="/timeregistry" element={<TimeRegistry />} />*/}
-        <Route path="/projects" element={<Projects />} />
+        {/*<Route path="/projects" element={<Projects />} />*/}
         <Route path="/dev" element={<Dev />} />
       </Routes>
     </>
