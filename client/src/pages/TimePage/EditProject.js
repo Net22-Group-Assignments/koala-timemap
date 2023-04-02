@@ -184,6 +184,7 @@ export default function EditProject(props) {
                   id="industry"
                   placeholder="0"
                   type="number"
+                  min={0}
                   value={hours}
                   onChange={(e) => {
                     setHours(e.target.value);
