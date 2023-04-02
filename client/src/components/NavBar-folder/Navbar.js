@@ -2,17 +2,25 @@ import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { NavLink } from "react-router-dom";
+import { useAuthUser, useIsAuthenticated, useSignOut } from "react-auth-kit";
+import { useNavigate } from "react-router-dom";
 
 import "./Navbar.css";
+import defaultAvatar from "../../assets/koala.png";
 
 const navigation = [
   { name: "Time Summary", href: "/timesummary" },
   // { name: "Time Registry", href: "/timeregistry" },
-  { name: "Projects", href: "/projects" },
-  { name: "Other", href: "/other" },
-  { name: "Dev", href: "/dev" },
+  // { name: "Projects", href: "/projects" },
+  // { name: "Other", href: "/other" },
+  // { name: "Dev", href: "/dev" },
 ];
 export default function Navbar() {
+  const isAuthenticated = useIsAuthenticated();
+  const auth = useAuthUser();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
+
   return (
     <>
       <Disclosure as="nav" className=" bg-violet-600">
@@ -34,28 +42,35 @@ export default function Navbar() {
                 <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                   <div className="hidden sm:ml-6 sm:block">
                     <div className="flex space-x-4">
-                      {navigation.map((item) => (
-                        <NavLink
-                          key={item.name}
-                          to={item.href}
-                          //  className={"NavBar_text"}
-                          id="NavBar_text"
-                          className={({ isActive }) => {
-                            return (
-                              "px-3 py-2 text-gray-400 rounded-md text-sm font-medium no-underline" +
-                              (!isActive
-                                ? "text-gray-300 hover:bg-gray-700 hover:text-white"
-                                : "bg-violet-600 text-white")
-                            );
-                          }}
-                        >
-                          {item.name}
-                        </NavLink>
-                      ))}
+                      {isAuthenticated() &&
+                        navigation.map((item) => (
+                          <NavLink
+                            key={item.name}
+                            to={item.href}
+                            //  className={"NavBar_text"}
+                            id="NavBar_text"
+                            className={({ isActive }) => {
+                              return (
+                                "text-2xl px-3 py-2 text-gray-300 rounded-md text-sm font-medium no-underline" +
+                                (!isActive
+                                  ? "text-gray-300 hover:text-white"
+                                  : "bg-violet-600 text-white")
+                              );
+                            }}
+                          >
+                            {item.name}
+                          </NavLink>
+                        ))}
                     </div>
                   </div>
                 </div>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                  <span className="text-2xl px-3 py-2 text-white rounded-md font-medium no-underline">
+                    {auth().person.role}
+                  </span>
+                  <span className="text-2xl px-3 py-2 text-white rounded-md font-medium no-underline">
+                    {auth().person.name}
+                  </span>
                   {/* Profile dropdown */}
                   <Menu as="div" className="relative ml-3">
                     <div>
@@ -63,7 +78,7 @@ export default function Navbar() {
                         <span className="sr-only">Open user menu</span>
                         <img
                           className="h-8 w-8 rounded-full"
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                          src={auth().person.avatar_url ?? defaultAvatar}
                           alt=""
                         />
                       </Menu.Button>
@@ -80,31 +95,11 @@ export default function Navbar() {
                       <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <Menu.Item>
                           <NavLink
-                            to={"#"}
-                            className={({ isActive }) => {
-                              return isActive
-                                ? "bg-gray-100"
-                                : "block px-4 py-2 text-sm text-gray-700";
+                            to={""}
+                            onClick={() => {
+                              signOut();
+                              navigate("/");
                             }}
-                          >
-                            Your Profile
-                          </NavLink>
-                        </Menu.Item>
-                        <Menu.Item>
-                          <NavLink
-                            to={"#"}
-                            className={({ isActive }) => {
-                              return isActive
-                                ? "bg-gray-100"
-                                : "block px-4 py-2 text-sm text-gray-700";
-                            }}
-                          >
-                            Settings
-                          </NavLink>
-                        </Menu.Item>
-                        <Menu.Item>
-                          <NavLink
-                            to={"#"}
                             className={({ isActive }) => {
                               return isActive
                                 ? "bg-gray-100"

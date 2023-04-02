@@ -13,19 +13,18 @@
 }
 .img_container{
 
-    background-image: url("../../components//pictures/koala-logo.png") !important;
-    width: 50vw;
-    height: 25vw;
-    margin-left: auto;
-    margin-top: 0px;
-    width: 50%;
-    background-position: right;
-    background-position: top;
-    background-repeat: no-repeat;
+    /*background-image: url("../../components//pictures/koala-logo.png") !important;*/
+    /*width: 50vw;*/
+    /*height: 25vw;*/
+    /*margin-top: 0px;*/
+    /*width: 50%;*/
+    /*background-position: right;*/
+    /*background-position: top;*/
+    /*background-repeat: no-repeat;*/
 }
 
 .title_text{
-    box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.50);
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.50);
     background-color: white;
     color: rgb(139 92 246);
     
@@ -34,5 +33,22 @@
     font-weight: 500 !important;
     min-width: none !important;
     outline-style: none !important;  
+}
+
+#signin_btn {
+    box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.50);
+    background-color: rgb(139 92 246) !important;
+    color: 	whitesmoke;
+
+    padding: 10px;
+
+    font-size: 20px !important;
+    font-weight: 500 !important;
+    justify-content: center !important;
+    text-align: center;
+    border: 0 !important;
+    border-radius: 25px !important;
+    min-width: none !important;
+    outline: none;
 }
 

@@ -53,6 +53,7 @@ const filterPeople = (person) => {
     notion_id: notionUser?.id,
     notion_name: notionUser?.name,
     notion_email: notionUser?.person?.email,
+    avatar_url: notionUser?.avatar_url,
   };
 };
 
