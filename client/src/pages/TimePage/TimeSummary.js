@@ -252,35 +252,39 @@ export default function TimeSummary(props) {
 
   return (
     <div className="Table_container m-2">
-      <div className="flex justify-content: flex-end">
+      <div container className="RadioBtn_container">
+        <div className="flex justify-content: flex-end">
         <div className="mx-10 my-2">
           <CheckProjectStatus setSelectedRadioBtn={setSelectedRadioBtn} />
           <p>{SelectedRadioBtn}</p>
         </div>
-        <div className="mx-10">
+          <div className="mx-10" id="btn_styles">
           <EditProject
-            showEditProject={showEditProject}
-            toggleShowEditProject={toggleShowEditProject}
-            projects={projects}
-            updateProjects={updateProjects}
-          />
-          <AddProject
-            addProject={addProject}
+              showEditProject={showEditProject}
+              toggleShowEditProject={toggleShowEditProject}
+              projects={projects}
+              updateProjects={updateProjects}
+            />
+
+            <AddProject
+              addProject={addProject}
             showProject={showProjectModal}
             toggleShowProject={toggleShowProjectModal}
-          />
-          <AddTime
-            addTimeReport={addTimeReport}
-            showTime={showTimeModal}
-            toggleShowTime={toggleShowTimeModal}
-            projects={projects}
-            //timeReports={timeData}
-            //updateTimeReports={setTimeData}
-          />
+            />
+            <AddTime
+              addTimeReport={addTimeReport}
+              showTime={showTimeModal}
+              toggleShowTime={toggleShowTimeModal}
+              projects={projects}
+              //timeReports={timeData}
+              //updateTimeReports={setTimeData}
+          /></div>
         </div>
       </div>
       {/* Here is display for projects DB */}
-      <div className="Project_container">
+      <div className="project_container_container">
+        <p>Project</p>
+        <div className="Project_container">
         <Table striped bordered hover>
           <thead>
             <tr>
@@ -299,74 +303,80 @@ export default function TimeSummary(props) {
                   (status) =>
                     status.properties.Status.select.name === SelectedRadioBtn ||
                     SelectedRadioBtn === "All"
-                )
-                .map((project) => (
+                  )
+                  .map((project) => (
+                    <tbody>
+                      <tr>
+                        <td
+                          className="project_status"
+                          id={project.properties.Status.select.name}
+                          style={{
+                            backgroundColor:
+                              project.properties.Status.select.name === "Active"
+                                ? "yellow"
+                                : "",
+                          }}
+                        >
+                          {project.properties.Projectname.title[0].text.content}
+                          {props.children}
+                        </td>
+                        <td>{project.properties.Status.select.name}</td>
+                        <td>{project.properties.Hours.number}</td>
+                        <td
+                          style={{
+                            backgroundColor:
+                              project.properties.HoursLeft.formula.number < 0
+                                ? "lightpink"
+                                : "",
+                          }}
+                          value={
+                            project.properties.HoursLeft.formula.number < 0
+                              ? (timeProject = "WARNING")
+                              : (timeProject = "")
+                          }
+                        >
+                          {project.properties.HoursLeft.formula.number}{" "}
+                          {timeProject}
+                        </td>
+                        <td>{project.properties.WorkedHours.rollup.number}</td>
+                        <td>{project.properties.Timespan.date.start}</td>
+                        <td>{project.properties.Timespan.date.end}</td>
+                      </tr>
+                    </tbody>
+                  ))
+              : null}
+          </Table>
+        </div>
+      </div>
+      {/* Here is the display for People DB */}
+      <div className="people_container_container">
+        <p>People Timereport</p>
+        <div className="People_container">
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Names</th>
+                <th>Total hours worked </th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            {peopleData
+              ? peopleData.map((people) => (
                   <tbody>
                     <tr>
-                      <td
-                        className="project_status"
-                        id={project.properties.Status.select.name}
-                        style={{
-                          backgroundColor:
-                            project.properties.Status.select.name === "Active"
-                              ? "yellow"
-                              : "",
-                        }}
-                      >
-                        {project.properties.Projectname.title[0].text.content}
-                        {props.children}
-                      </td>
-                      <td>{project.properties.Status.select.name}</td>
-                      <td>{project.properties.Hours.number}</td>
-                      <td
-                        style={{
-                          backgroundColor:
-                            project.properties.HoursLeft.formula.number < 0
-                              ? "lightpink"
-                              : "",
-                        }}
-                        value={
-                          project.properties.HoursLeft.formula.number < 0
-                            ? (timeProject = "WARNING")
-                            : (timeProject = "")
-                        }
-                      >
-                        {project.properties.HoursLeft.formula.number}{" "}
-                        {timeProject}
-                      </td>
-                      <td>{project.properties.WorkedHours.rollup.number}</td>
-                      <td>{project.properties.Timespan.date.start}</td>
-                      <td>{project.properties.Timespan.date.end}</td>
+                      <td>{people.properties.Name.title[0].text.content}</td>
+                      <td>{people.properties.TotalHours.rollup.number}</td>
+                      <td>{people.properties.Role.select.name}</td>
                     </tr>
                   </tbody>
                 ))
-            : null}
-        </Table>
-      </div>
-      {/* Here is the display for People DB */}
-      <div className="People_container">
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>Names</th>
-              <th>Total hours worked </th>
-              <th>Role</th>
-            </tr>
-          </thead>
-          {peopleData
-            ? peopleData.map((people) => (
-                <tbody>
-                  <tr>
-                    <td>{people.properties.Name.title[0].text.content}</td>
-                    <td>{people.properties.TotalHours.rollup.number}</td>
-                    <td>{people.properties.Role.select.name}</td>
-                  </tr>
-                </tbody>
-              ))
-            : null}
-        </Table>
+              : null}
+          </Table>
+        </div>
       </div>
       {/* Here is the display for TimeProject DB */}
+      <div className="timereport_container_container">
+        <p>TimeReport</p>
       <div className="TimeReport_container">
         <Table striped bordered hover>
           <thead>
@@ -379,40 +389,41 @@ export default function TimeSummary(props) {
             </tr>
           </thead>
           {timeData
-            ? timeData.map((time) => (
-                <tbody>
+              ? timeData.map((time) => (
+                  <tbody>
                   <tr>
                     <td>{time.properties.Date.date.start}</td>
                     <td>
                       {Array.isArray(
-                        time.properties.Person.relation_properties.Name.title
+                          time.properties.Person.relation_properties.Name.title
                       )
-                        ? time.properties.Person.relation_properties.Name
-                            .title[0].text.content
-                        : time.properties.Person.relation_properties.Name.title
-                            .text.content}
+                          ? time.properties.Person.relation_properties.Name
+                              .title[0].text.content
+                          : time.properties.Person.relation_properties.Name.title
+                              .text.content}
                     </td>
                     <td>{time.properties.Hours.number}</td>
                     <td>
                       {Array.isArray(
-                        time.properties.Project.relation_properties.Projectname
-                          .title
+                          time.properties.Project.relation_properties.Projectname
+                              .title
                       )
-                        ? time.properties.Project.relation_properties
-                            .Projectname.title[0].text.content
-                        : time.properties.Project.relation_properties
-                            .Projectname.title.text.content}
+                          ? time.properties.Project.relation_properties
+                              .Projectname.title[0].text.content
+                          : time.properties.Project.relation_properties
+                              .Projectname.title.text.content}
                     </td>
                     <td>
                       {time.properties.Note.title.length > 0 &&
-                        time.properties.Note.title[0].text.content}
+                          time.properties.Note.title[0].text.content}
                     </td>
                   </tr>
-                </tbody>
+                  </tbody>
               ))
             : null}
         </Table>
       </div>
+    </div>
     </div>
   );
 }
