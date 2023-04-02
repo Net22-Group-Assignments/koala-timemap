@@ -7,7 +7,7 @@
     "server": "npm start --prefix server",
     "client": "npm start --prefix client",
     "devserver": "npm run dev --prefix server",
-    "start": "concurrently \"npm run devserver\" \"npm run client\"",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
     "dev": "concurrently \"npm run devserver\" \"npm run client\"",
     "test": "echo \"Error: no test specified\" && exit 1",
     "install:client": "cd client && npm install",

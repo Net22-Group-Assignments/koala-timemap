@@ -1,3 +1,18 @@
+/*
+  The application is built using the following technologies:
+    - React
+    - Express
+    - Node
+    - Notion API
+    - SQLite
+
+  Express is used to create the server and handle the routes.
+  Requests to Notion are made using the official Notion API client, the exceptions being
+  when starting up and checking if the internal token is valid
+  and when registering a public integration token with Notion. In those cases, Axios is used.
+
+ */
+
 const express = require("express");
 const bearerToken = require("express-bearer-token");
 const db = require("./db");
@@ -25,11 +40,14 @@ let status = {
   valid_internal_token: false,
 };
 
+// Set the integration type to public if the
+// --integration flag is passed with the value public
 if (integrationArgIndex > -1) {
   status.integration_type = process.argv[integrationArgIndex + 1];
   process.env.INTEGRATION_TYPE = status.integration_type;
 }
 
+// Runs all the configurations and test to make sure the server is ready to run.
 (async () => {
   if (!process.env.NOTION_API_KEY) {
     console.log("No internal access token in .env file");
@@ -61,14 +79,15 @@ if (integrationArgIndex > -1) {
   }
 
   let ClientPool = null;
-
+  // If the integration type is public,
+  // then we need to connect to the database.
   if (process.env.INTEGRATION_TYPE === "public") {
     await db.config();
     ClientPool = ClientPoolFactory(db);
   } else {
     ClientPool = ClientPoolFactory();
   }
-
+  // Injects the client pool into the services.
   UserService.configure(ClientPool);
   PageService.configure(ClientPool);
   ProjectsService.configure(ClientPool);
@@ -104,6 +123,7 @@ const server = app.listen(PORT, () => {
   console.log(`Running with ${status.integration_type} Notion integration`);
 });
 
+// Create a server terminator to gracefully shutdown the server. (Not used ATM)
 const httpTerminator = createHttpTerminator({ server });
 
 app.get("/api/status", (req, res) => {
