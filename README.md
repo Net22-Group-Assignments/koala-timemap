@@ -2,8 +2,8 @@
 
 The intention with this project is to provide a tool for tracking time on projects.
 
-We used a board on trello as our planning tool/issue tracker.
-Link: [Koala Kanban](https://trello.com/b/rp5OgZdT/koala-time-map)
+**We used a board on trello as our planning tool/issue tracker**.
+**Link**: [Koala Kanban](https://trello.com/b/rp5OgZdT/koala-time-map)
 
 The application uses a page on [Notion.so](https://www.notion.so/) with 3 databases on Notion as its data storage. The frontend is a webpage built with React. The backend is a webservice built with Express.js running on Node.js. The backend keeps track of users Notion credentials and acts as a middleman to Notions API. The last point is crucial as Notion does not allow calls against its API directly from a browser. The backend can delegate API calls transparently but also, and this is more commonly used in this project, provides its own API. This API can simplify some calls as logic for handling more complicated requests can be located on the backend. Data that needs multiple roundtrips to notion can be aggregated on the backend and sent to requesting parties as one complete response.
 
@@ -43,7 +43,7 @@ User credentials are stored in a SQLite database. This database is checked again
 
 ## Client
 
-The server does not make any assumptions how the client is built except that it most follow the security protocols the server puts up. This implementation uses a React Web application as its frontend. The application is built with a mix of  components built from scratch and components, hooks and functions installed from NPM.
+The server does not make any assumptions how the client is built except that it must follow the security protocols the server puts up. This implementation uses a React Web application as its frontend. The application is built with a mix of  components built from scratch and components, hooks and functions installed from NPM.
 
 Currently, the main functionality lives on the front page.
 
