@@ -54,4 +54,4 @@ All CRUD functions except the ability to Delete has been built in to the app to 
 
 The navigation consists of a Navbar that runs on React Router to help the user easily move between pages.
 
-Data kan also be filtered using radio buttons which calls a function that displays depending on which status you choose for your project.
+Data kan also be filtered using radio buttons which calls a function that displays the data of your choice depending on which status you choose for your project.
