@@ -26,6 +26,24 @@ export default function AddProject(props) {
     setStatus(selectedStatus.value);
   };
 
+  // Date change handler that checks if timespanEnd date is after timespanStart date
+  // and shows an error message if it is not and does not update the state
+  const onDateChangeHandler = (e) => {
+    console.log(e.target.name, e.target.value);
+    const { name, value } = e.target;
+    if (name === "timespanStart" && value > timespanEnd) {
+      alert("Start date must be before end date");
+    } else if (name === "timespanEnd" && value < timespanStart) {
+      alert("End date must be after start date");
+    } else {
+      if (name === "timespanStart") {
+        setTimespanStart(value);
+      } else if (name === "timespanEnd") {
+        setTimespanEnd(value);
+      }
+    }
+  };
+
   return (
     <>
       <button
@@ -122,7 +140,8 @@ export default function AddProject(props) {
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   id="industry"
                   placeholder="0"
-                  type="text"
+                  type="number"
+                  min={0}
                   value={hours}
                   onChange={(e) => {
                     setHours(e.target.value);
@@ -141,14 +160,13 @@ export default function AddProject(props) {
               </div>
               <div className="md:w-2/3">
                 <input
+                  name="timespanStart"
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   id="industry"
                   placeholder="2000-00-00"
                   type="date"
                   value={timespanStart}
-                  onChange={(e) => {
-                    setTimespanStart(e.target.value);
-                  }}
+                  onChange={onDateChangeHandler}
                 />
               </div>
             </div>
@@ -163,14 +181,13 @@ export default function AddProject(props) {
               </div>
               <div className="md:w-2/3">
                 <input
+                  name="timespanEnd"
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   id="industry"
                   placeholder="2000-00-00"
                   type="date"
                   value={timespanEnd}
-                  onChange={(e) => {
-                    setTimespanEnd(e.target.value);
-                  }}
+                  onChange={onDateChangeHandler}
                 />
               </div>
             </div>
