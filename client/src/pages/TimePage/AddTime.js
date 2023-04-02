@@ -33,6 +33,21 @@ export default function AddTime(props) {
     setProject(props.projects[0]);
   };
 
+  // Date change handler that checks it the date is between choosen projects start and end date
+  const onDateChangeHandler = (e) => {
+    const { name, value } = e.target;
+    if (name === "date" && value < project.properties.Timespan.date.start) {
+      alert("Reported date must be after project start date");
+    } else if (
+      name === "date" &&
+      value > project.properties.Timespan.date.end
+    ) {
+      alert("Reported date must be before project end date");
+    } else {
+      setDate(value);
+    }
+  };
+
   return (
     <>
       <button
@@ -90,14 +105,13 @@ export default function AddTime(props) {
               </div>
               <div className="md:w-2/3">
                 <input
+                  name="date"
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   id="name"
                   placeholder="2000-00-00"
                   type="date"
                   value={date}
-                  onChange={(e) => {
-                    setDate(e.target.value);
-                  }}
+                  onChange={onDateChangeHandler}
                 />
               </div>
             </div>
@@ -138,7 +152,8 @@ export default function AddTime(props) {
                   className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   id="industry"
                   placeholder="0"
-                  type="text"
+                  type="number"
+                  min={0}
                   value={hours}
                   onChange={(e) => {
                     setHours(e.target.value);
