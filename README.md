@@ -41,15 +41,17 @@ All routes are defined in separate files in the `routes` folder. When requests a
 
 User credentials are stored in a SQLite database. This database is checked against a token from a connecting client. If available, a Notion client object will be created an placed in a pool for further use. If not, a client application most retrieve a new token from the server with username/password or a one-time code depending on configuration. If the client has never registered with the server, or if the Notion token has been deleted in the server, a new token must be registered on Notion. If succesful, a client will be created and a bearer token is passed on to the client.
 
-## Client
+### Client
 
 The server does not make any assumptions how the client is built except that it must follow the security protocols the server puts up. This implementation uses a React Web application as its frontend. The application is built with a mix of  components built from scratch and components, hooks and functions installed from NPM.
 
 Currently, the main functionality lives on the front page.
 
+The frontend is built using React were functionality has been added to Add/Edit Projects, Add Timereports and also view the data that is being stored.
 
+The data is being brought in using an API and afterwards displayed in tables for easy readability.
+All CRUD functions except the ability to Delete has been built in to the app to help the user both view and manipulate data.
 
+The navigation consists of a Navbar that runs on React Router to help the user easily move between pages.
 
-
-
-
+Data kan also be filtered using radio buttons which calls a function that displays depending on which status you choose for your project.
