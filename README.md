@@ -68,3 +68,14 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### 'Frontend
+
+The frontend is built using React were functionality has been added to Add/Edit Projects, Add Timereports and also view the data that is being stored.
+
+The data is being brought in using an API and afterwards displayed in tables for easy readability.
+All CRUD functions except the ability to Delete has been built in to the app to help the user both view and manipulate data.
+
+The navigation consists of a Navbar that runs on React Router to help the user easily move between pages.
+
+Data kan also be filtered using radio buttons which calls a function that displays depending on which status you choose for your project.
