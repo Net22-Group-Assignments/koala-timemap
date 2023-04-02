@@ -19,6 +19,7 @@
     "react-scripts": "5.0.1",
     "react-select": "^5.7.1",
     "react-treasure": "^1.0.0",
+    "use-local-storage": "^2.3.6",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -26,6 +26,14 @@ router.post("/projects", async (req, res, next) => {
   }
 });
 
+router.patch("/projects", async (req, res, next) => {
+  try {
+    res.json(await ProjectService.updateProject(req.body, req.token));
+  } catch (e) {
+    next(e);
+  }
+});
+
 router.get("/projects/statusvalues", async (req, res, next) => {
   // req.apicacheGroup = "projects";
   try {

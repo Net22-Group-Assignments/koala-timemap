@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+body{
+    background: url('./components/pictures/colorfullbackground.jpg');
+    background-position: center;
+    width: 100vw;
+    height: 100vw;
+}

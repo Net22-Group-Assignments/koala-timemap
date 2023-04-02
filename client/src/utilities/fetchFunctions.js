@@ -1,141 +1,44 @@
-import { useAuthHeader } from "react-auth-kit";
-
-const useNewProject = () => {
-  const authHeader = useAuthHeader();
-  function newProject(Projectname, Status, Hours, TimespanStart, TimespanEnd) {
-    fetch("/api/projects", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: authHeader(),
-      },
-      body: JSON.stringify({
-        parent: {
-          type: "database_id",
-          database_id: "3a6e6b4bbcab4f83a66750fc4313e44c",
-        },
-        properties: {
-          Hours: {
-            number: parseInt(Hours),
-          },
-          Status: {
-            select: {
-              name: Status,
-            },
-          },
-          Timespan: {
-            date: {
-              start: TimespanStart,
-              end: TimespanEnd,
-            },
-          },
-          Projectname: {
-            title: [
-              {
-                text: {
-                  content: Projectname,
-                },
-              },
-            ],
-          },
-        },
-      }),
-    })
-      .then((response) => {
-        console.log(response);
-        if (!response.ok) {
-          throw new Error("Something went wrong");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        return data;
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }
-
-  return { newProject };
-};
-
-const useProjectEdit = () => {
-  const authHeader = useAuthHeader();
-  function ProjectEdit(ProjectId, Status, Hours) {
-    fetch("/api/pages/" + ProjectId, {
-      method: "PATCH",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: authHeader(),
-      },
-      body: JSON.stringify({
-        properties: {
-          Status: {
-            select: {
-              name: Status,
-            },
-          },
-          Hours: {
-            number: parseInt(Hours),
-          },
-        },
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Something went wrong");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        return data;
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }
-
-  return { ProjectEdit };
-};
-
-const useNewTimeReport = () => {
-  const authHeader = useAuthHeader();
-  function newTimeReport(Date, PersonId, Hours, ProjectId, Note) {
-    fetch("/api/timereports", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: authHeader(),
-      },
-      body: JSON.stringify({
-        parent: {
-          type: "database_id",
-          database_id: "32d3152bf0ff4036b38598308527c376",
-        },
-        properties: {
-          Date: {
-            date: {
-              start: Date,
-            },
-          },
-          Person: {
+// These fuctions are used to create the request bodies for the Notion API.
+// They are used in the routes for the timereports and projects endpoints.
+// Undefinded values are not included in the request body when doing patch
+// requests so that the Notion API does not overwrite existing values with empty strings.
+const getTimeReportRequestObject = ({
+  id: TimeReportId,
+  date: Date,
+  personId: PersonId,
+  hours: Hours,
+  projectId: ProjectId,
+  note: Note,
+}) => {
+  return {
+    page_id: TimeReportId ? TimeReportId : undefined,
+    properties: {
+      Date: Date ? { date: { start: Date } } : undefined,
+      Person: PersonId
+        ? {
             relation: [
               {
                 id: PersonId,
               },
             ],
-          },
-          Hours: {
+          }
+        : undefined,
+      Hours: Hours
+        ? {
             number: parseInt(Hours),
-          },
-          Project: {
+          }
+        : undefined,
+      Project: ProjectId
+        ? {
             relation: [
               {
                 id: ProjectId,
               },
             ],
-          },
-          Note: {
+          }
+        : undefined,
+      Note: Note
+        ? {
             title: [
               {
                 text: {
@@ -143,25 +46,57 @@ const useNewTimeReport = () => {
                 },
               },
             ],
-          },
-        },
-      }),
-    })
-      .then((response) => {
-        //console.log(response);
-        if (!response.ok) {
-          throw new Error("Something went wrong");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        return data;
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }
-  return { newTimeReport };
+          }
+        : undefined,
+    },
+  };
 };
 
-export { useNewProject, useProjectEdit, useNewTimeReport };
+const getProjectRequestObject = ({
+  id: ProjectId,
+  name: Projectname,
+  status: Status,
+  hours: Hours,
+  start: TimespanStart,
+  end: TimespanEnd,
+}) => {
+  return {
+    page_id: ProjectId ? ProjectId : undefined,
+    properties: {
+      Projectname: Projectname
+        ? {
+            title: [
+              {
+                text: {
+                  content: Projectname,
+                },
+              },
+            ],
+          }
+        : undefined,
+      Status: Status
+        ? {
+            select: {
+              name: Status,
+            },
+          }
+        : undefined,
+      Hours: Hours
+        ? {
+            number: parseInt(Hours),
+          }
+        : undefined,
+      Timespan:
+        TimespanStart || TimespanEnd
+          ? {
+              date: {
+                start: TimespanStart ? TimespanStart : undefined,
+                end: TimespanEnd ? TimespanEnd : undefined,
+              },
+            }
+          : undefined,
+    },
+  };
+};
+
+export { getTimeReportRequestObject, getProjectRequestObject };

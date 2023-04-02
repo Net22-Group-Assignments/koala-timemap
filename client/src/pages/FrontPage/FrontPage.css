@@ -1,0 +1,38 @@
+
+.title_text{
+    box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.50);
+    background-color: white;
+    text-align: center !important;
+    max-width: fit-content !important;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 30px;
+    padding-bottom: -30px;
+
+}
+.img_container{
+
+    background-image: url("../../components//pictures/koala-logo.png") !important;
+    width: 50vw;
+    height: 25vw;
+    margin-left: auto;
+    margin-top: 0px;
+    width: 50%;
+    background-position: right;
+    background-position: top;
+    background-repeat: no-repeat;
+}
+
+.title_text{
+    box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.50);
+    background-color: white;
+    color: rgb(139 92 246);
+    
+
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    min-width: none !important;
+    outline-style: none !important;  
+}
+
