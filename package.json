@@ -7,9 +7,12 @@
     "server": "npm start --prefix server",
     "client": "npm start --prefix client",
     "devserver": "npm run dev --prefix server",
-    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "start": "concurrently \"npm run devserver\" \"npm run client\"",
     "dev": "concurrently \"npm run devserver\" \"npm run client\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install:client": "cd client && npm install",
+    "install:server": "cd server && npm install",
+    "postinstall": "npm run install:server && npm run install:client"
   },
   "repository": {
     "type": "git",
@@ -24,10 +27,5 @@
   "homepage": "https://github.com/Net22-Group-Assignments/koala-timemap#readme",
   "devDependencies": {
     "concurrently": "^7.6.0"
-  },
-  "dependencies": {
-    "@mui/material": "^5.11.12",
-    "bootstrap": "^5.2.3",
-    "react-bootstrap": "^2.7.2"
   }
 }
