@@ -5,7 +5,7 @@ const UserService = require("../service/user_service");
 
 // const cache = apicache.middleware;
 
-router.get("users/me", async (req, res, next) => {
+router.get("/users/me", async (req, res, next) => {
   try {
     res.json(await UserService.getTokenBotUser(req.token));
   } catch (e) {
