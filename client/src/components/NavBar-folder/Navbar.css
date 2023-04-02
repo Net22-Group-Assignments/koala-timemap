@@ -1,8 +1,9 @@
 *{
     text-decoration: none !important;
 }
-.NavBar_text{
-    color: black;
+#NavBar_text{
+    color: white;
+    
 }
 .NavBar_folded_text{
    

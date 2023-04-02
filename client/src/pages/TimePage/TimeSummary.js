@@ -138,10 +138,10 @@ export default function TimeSummary(props) {
     <div className="Table_container m-2">
       <div container className="RadioBtn_container">
         <div className="flex justify-content: flex-end">
-          <div className="mx-10 my-2">
+          <div className="mx-10 my-2 ">
             <CheckProjectStatus setSelectedRadioBtn={setSelectedRadioBtn} />
           </div>
-          <div className="mx-10">
+          <div className="mx-10" id="btn_styles">
             <EditProject
               projectEdit={ProjectEdit}
               showEditProject={showEditProject}
@@ -149,6 +149,7 @@ export default function TimeSummary(props) {
               projects={projects}
               refetch={toggleProjectRefetch}
             />
+
             <AddProject
               newProject={newProject}
               showProject={showProjectModal}
@@ -277,14 +278,14 @@ export default function TimeSummary(props) {
                           .text.content
                       }
                     </td>
-                    <td>{time.properties.Hours.number}</td>
+                    <td>{time.properties.Hours.number.text}</td>
                     <td>
                       {
                         time.properties.Project.relation_properties.Projectname
                           .title[0].text.content
                       }
                     </td>
-                    <td>{time.properties.Note.title[0].text.content}</td>
+                    {/* <td>{time.properties.Note.title[0].text.content}</td> */}
                   </tr>
                 </tbody>
               ))

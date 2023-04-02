@@ -10,25 +10,45 @@
 
 
 .Table_container{
-    contain: content;
-    padding: 90px;
+ 
     
 }
+#edit_btn{
+    box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.50); 
+    background-color: whitesmoke !important;
+}
 
-
-/* .RadioBtn_container{
-    background-color: pink;
-    padding: 20px;
+.RadioBtn_container{
+    /* box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.13); */
+    background-color: transparent;
 }
 .Project_container{
-    background-color: purple;
-    padding: 20px;
+    box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.13);
+    background-color: white;
+    
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 5rem;
+    
 }
 .People_container{
-    background-color: green;
-    padding: 20px;
+    box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.13);
+    background-color: white;
+    
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 5rem;
 }
 .TimeReport_container{
-    background-color: red;
-    padding: 20px;
-} */
+    box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.13);
+    background-color: white;
+  
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 5rem;
+} 
+
+#btn_styles{
+    background-color: whitesmoke;
+    box-shadow: 0px 2px 92px 0px rgba(0, 0, 0, 0.50); 
+}

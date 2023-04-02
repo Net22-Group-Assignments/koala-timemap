@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Form from "react-bootstrap/Form";
 
+import "../pages/TimePage/TimeSummary.css";
+
 export default function CheckProjectStatus(props) {
   const [selectedRadioBtn, setSelectedRadioBtn] = useState("");
 
@@ -13,7 +15,11 @@ export default function CheckProjectStatus(props) {
       }}
     >
       {["radio"].map((type) => (
-        <div key={`inline-${type}`} className="mb-3">
+        <div
+          key={`inline-${type}`}
+          className="mb-3 bg-violet-100"
+          id="edit_btn"
+        >
           <Form.Check
             inline
             label="Active"
