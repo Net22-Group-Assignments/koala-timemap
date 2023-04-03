@@ -21,6 +21,9 @@ export default function Navbar() {
   const signOut = useSignOut();
   const navigate = useNavigate();
 
+  if (!isAuthenticated()) {
+    return <></>;
+  }
   return (
     <>
       <Disclosure as="nav" className=" bg-violet-600">
