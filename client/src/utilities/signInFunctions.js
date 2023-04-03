@@ -4,7 +4,7 @@ const useFakeSignIn = () => {
   const signIn = useSignIn();
 
   const fakeSignIn = () => {
-    return signIn({
+    signIn({
       token: process.env.REACT_APP_NOTION_API_KEY_ID,
       expiresIn: 60,
       tokenType: "string",

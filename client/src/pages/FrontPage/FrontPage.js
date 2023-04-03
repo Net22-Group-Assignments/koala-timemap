@@ -1,9 +1,11 @@
 import "./FrontPage.css";
 import frontKoala from "../../components/pictures/koala-logo.png";
 import { useNavigate } from "react-router-dom";
+import { useFakeSignIn } from "../../utilities/signInFunctions";
 
 export default function Frontpage() {
   const navigate = useNavigate();
+  const fakeSignIn = useFakeSignIn();
 
   return (
     <div className="front_page_container">
@@ -14,7 +16,10 @@ export default function Frontpage() {
             <button
               id="signin_btn"
               className="w-64"
-              onClick={() => navigate("/timesummary")}
+              onClick={() => {
+                fakeSignIn();
+                navigate("/timesummary");
+              }}
             >
               Sign In
             </button>
