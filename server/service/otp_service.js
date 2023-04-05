@@ -9,8 +9,8 @@ const dummyKey = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 const client = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "bjorn.agnemo@gmail.com",
-    pass: "sxlbeqepydtzrnkf",
+    user: "john.doe@gmail.com",
+    pass: "App password registered with Google",
   },
 });
 

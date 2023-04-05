@@ -1,13 +1,10 @@
 import { Routes, Route, useNavigate, useSearchParams } from "react-router-dom";
 import {
-  useAuthUser,
   useSignIn,
   useIsAuthenticated,
-  RequireAuth,
 } from "react-auth-kit";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useTreasure } from "react-treasure";
 
 export const Login = () => {
   const signIn = useSignIn();
@@ -28,12 +25,7 @@ export const Login = () => {
             res.data.registerStatus === "NOT_REGISTERED" ||
             res.data.registerStatus === "REGISTERED_INVALID"
           ) {
-            // This should be replaced with a better modal.
-            // const tc = prompt("Enter temporary code, cancel to register.");
-            // if (!tc) {
             window.location.replace(res.data.redirectUrl);
-            // }
-            // setTempCode(tc);
           } else {
             if (res.data.registerStatus === "REGISTERED_USER") {
               signIn({
