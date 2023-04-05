@@ -143,6 +143,8 @@ const LoginService = {
       email: response.data.owner.user.person.email,
     };
 
+    await db.deleteToken(tokenInfo.bot_id);
+
     await db.insertToken(
       tokenInfo.bot_id,
       tokenInfo.token,

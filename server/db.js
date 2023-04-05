@@ -33,7 +33,7 @@ const config = async () => {
       process.env.NOTION_API_KEY,
       "internal",
       process.env.NOTION_API_KEY_ID,
-      "bjorn.agnemo@edu.edugrade.se"
+      "snake.plissken@shadow.moses.gov"
     );
   }
 

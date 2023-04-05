@@ -84,10 +84,10 @@ export default function Frontpage() {
                   id="signin_btn"
                   className="w-64 mb-6"
                   onClick={() => {
-                    if (
-                      process.env.NODE_ENV !== "production" &&
-                      process.env.REACT_APP_INTEGRATION_TYPE !== "public"
+                    if (!isAuthenticated() &&
+                       process.env.REACT_APP_INTEGRATION_TYPE !== "public"
                     ) {
+                      alert("fake sign in")
                       fakeSignIn();
                       navigate("/timesummary");
                     } else {
