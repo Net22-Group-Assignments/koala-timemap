@@ -15,7 +15,7 @@
 
 const express = require("express");
 const bearerToken = require("express-bearer-token");
-const db = require("./db");
+const db = require("./db.js");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const cors = require("cors");

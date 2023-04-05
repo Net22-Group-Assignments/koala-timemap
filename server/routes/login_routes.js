@@ -1,5 +1,11 @@
 const express = require("express");
 const LoginService = require("../service/login_service");
+const {
+  generateOtp,
+  verifyOtp,
+  generateOtpResponse,
+  signInByOtp,
+} = require("../service/otp_service");
 const router = express.Router();
 
 router.post("/login", async (req, res, next) => {
@@ -23,7 +29,7 @@ router.get("/registertoken", async (req, res, next) => {
   console.log(req.query.code);
   try {
     const tokenInfo = await LoginService.registerToken(req.query.code);
-    res.redirect(`http://localhost:3000?code=${tokenInfo.bot_id}`);
+    res.redirect(`http://localhost:3000/login?code=${tokenInfo.bot_id}`);
     // TODO - this is a hack to test to get the code to be passed back to the client. Remove this when done.
     // res.redirect(
     //   `http://localhost:3000?code=helloafterregistering&code=${req.query.code}`
@@ -46,6 +52,29 @@ router.delete("/deletepublictokens", async (req, res, next) => {
 router.get("/listtokens", async (req, res, next) => {
   try {
     res.json(await LoginService.getAllTokens());
+  } catch (e) {
+    next(e);
+  }
+});
+
+// Route to post a one-time password to the server
+router.post("/verifyotp", async (req, res, next) => {
+  const email = req.body.email;
+  const otp = req.body.otp;
+
+  try {
+    res.json(await signInByOtp(email, otp));
+  } catch (e) {
+    next(e);
+  }
+});
+
+// Route to generate a one-time password
+router.post("/requestotp", async (req, res, next) => {
+  console.log(req.body);
+  const email = req.body.email;
+  try {
+    res.json(await generateOtpResponse(email));
   } catch (e) {
     next(e);
   }

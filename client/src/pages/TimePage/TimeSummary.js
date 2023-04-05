@@ -43,12 +43,20 @@ export default function TimeSummary(props) {
       error: getProjectError,
     },
     executeGetProjects,
-  ] = useAxios("/api/projects", { headers: { Authorization: authHeader() } });
+  ] = useAxios({
+    url: "/api/projects",
+    method: "GET",
+    headers: { Authorization: authHeader() },
+  });
 
   const [
     { data: getPeopleData, loading: getPeopleLoading, error: getPeopleError },
     executeGetPeople,
-  ] = useAxios("/api/people", { headers: { Authorization: authHeader() } });
+  ] = useAxios({
+    url: "/api/people",
+    method: "GET",
+    headers: { Authorization: authHeader() },
+  });
 
   const [
     {
@@ -57,7 +65,9 @@ export default function TimeSummary(props) {
       error: getTimeReportError,
     },
     executeGetTimeReportData,
-  ] = useAxios("/api/timereports?collated=true", {
+  ] = useAxios({
+    url: "/api/timereports?collated=true",
+    method: "GET",
     headers: { Authorization: authHeader() },
   });
 
@@ -283,7 +293,7 @@ export default function TimeSummary(props) {
       </div>
       {/* Here is display for projects DB */}
       <div className="project_container_container">
-        <p>Project</p>
+        <p>Project Overview</p>
         <div className="Project_container">
           <Table striped bordered hover>
             <thead>
@@ -350,7 +360,7 @@ export default function TimeSummary(props) {
       </div>
       {/* Here is the display for People DB */}
       <div className="people_container_container">
-        <p>People Timereport</p>
+        <p>Staff Overwiew</p>
         <div className="People_container">
           <Table striped bordered hover>
             <thead>
@@ -376,7 +386,7 @@ export default function TimeSummary(props) {
       </div>
       {/* Here is the display for TimeProject DB */}
       <div className="timereport_container_container">
-        <p>TimeReport</p>
+        <p>Time Reports</p>
         <div className="TimeReport_container">
           <Table striped bordered hover>
             <thead>

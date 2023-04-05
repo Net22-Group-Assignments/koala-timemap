@@ -1,6 +1,7 @@
 const express = require("express");
 const UserService = require("../service/user_service");
 const PeopleService = require("../service/people_service");
+const { generateOtp } = require("../service/otp_service");
 const router = express.Router();
 
 router.get("/bearertest", async (req, res) => {
@@ -24,6 +25,15 @@ router.get("/test/people/notionuserid/:notionUserId", async (req, res) => {
       process.env.NOTION_API_KEY_ID
     )
   );
+});
+
+// Test route to gnerate a one-time password
+router.post("/test/otp", async (req, res, next) => {
+  try {
+    res.json(await generateOtp("123"));
+  } catch (e) {
+    next(e);
+  }
 });
 
 module.exports = router;

@@ -1,4 +1,9 @@
-import { useAuthUser, useSignIn, useSignOut } from "react-auth-kit";
+import {
+  useAuthUser,
+  useSignIn,
+  useSignOut,
+  useAuthHeader,
+} from "react-auth-kit";
 import { useState } from "react";
 import useAxios from "axios-hooks";
 import { useNavigate } from "react-router-dom";
@@ -7,18 +12,26 @@ function Dev() {
   const signIn = useSignIn();
   const signOut = useSignOut();
   const navigate = useNavigate();
-
+  const authHeader = useAuthHeader();
   const auth = useAuthUser();
   const [user, setUser] = useState(auth());
   const [person, setPerson] = useState(user.person);
   const [selectedPersonId, setSelectedPersonId] = useState(user.person.id);
   const [selectedRole, setSelectedRole] = useState(person.role);
-  const [{ data }] = useAxios("/api/people?schema=native");
+  const [
+    { data: getPeopleData, loading: getPeopleLoading, error: getPeopleError },
+  ] = useAxios({
+    url: "/api/people?schema=native",
+    method: "GET",
+    headers: {
+      Authorization: "Bearer 16eb2615-67cb-49af-8adb-8f9036cc9144",
+    },
+  });
 
   const changePerson = (event) => {
     const personId = event.target.value;
     setSelectedPersonId(personId);
-    const person = data.find((item) => item.id === personId);
+    const person = getPeopleData.find((item) => item.id === personId);
     signIn({
       token: user.integration.id,
       expiresIn: 60,
@@ -39,7 +52,7 @@ function Dev() {
     signIn({
       token: user.integration.id,
       expiresIn: 60,
-      tokenType: "string",
+      tokenType: "Bearer",
       authState: {
         integration: user.integration,
         person: personWithNewRole,
@@ -50,7 +63,8 @@ function Dev() {
   return (
     <>
       <div>
-        <table className="table-auto border border-collapse">
+        <p>{authHeader()}</p>
+        <table className="table-auto border border-collapse bg-amber-300">
           <thead>
             <tr>
               <th colSpan="2" className="border">
@@ -89,14 +103,14 @@ function Dev() {
           </tbody>
         </table>
       </div>
-      {!!data && (
+      {!!getPeopleData && (
         <div>
           <select
             value={selectedPersonId}
             onChange={changePerson}
             className="border"
           >
-            {data.map((person) => {
+            {getPeopleData.map((person) => {
               // console.log(person);
               return <option value={person.id}>{person.name}</option>;
             })}

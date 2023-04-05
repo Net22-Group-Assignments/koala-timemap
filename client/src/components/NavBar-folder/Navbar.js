@@ -54,7 +54,7 @@ export default function Navbar() {
                             id="NavBar_text"
                             className={({ isActive }) => {
                               return (
-                                "text-2xl px-3 py-2 text-gray-300 rounded-md text-sm font-medium no-underline" +
+                                "text-3xl px-3 py-2 text-white rounded-md text-sm font-medium no-underline" +
                                 (!isActive
                                   ? "text-gray-300 hover:text-white"
                                   : "bg-violet-600 text-white")
