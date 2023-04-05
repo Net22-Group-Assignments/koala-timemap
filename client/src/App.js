@@ -14,6 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useTreasure } from "react-treasure";
+import { Login } from "./pages/Login";
 
 function App() {
   const signIn = useSignIn();
@@ -117,7 +118,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<FrontPage />} />
-        {/*<Route path="/timesummary" element={<TimeSummary />} />*/}
+        <Route path="/login" element={<Login />} />
         <Route
           path="/timesummary"
           element={

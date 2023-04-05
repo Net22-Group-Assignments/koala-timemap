@@ -1,5 +1,5 @@
 const { Client, LogLevel, APIErrorCode } = require("@notionhq/client");
-const db = require("./db");
+const db = require("./db.js");
 
 const ClientPoolFactory = (db = null) => {
   if (!db) {
@@ -26,19 +26,32 @@ const InternalClientPool = (token) => {
 
 const PublicClientPool = () => {
   const clients = {};
+  const internalClient = {
+    id: process.env.NOTION_API_KEY_ID,
+    type: "internal",
+    client: new Client({
+      auth: process.env.NOTION_API_KEY,
+      logLevel: LogLevel.DEBUG,
+    }),
+  };
+
   return {
     obtainClient: async (botId) => {
+      console.log("Obtaining client for botId: " + botId);
+      if (botId === process.env.NOTION_API_KEY_ID) {
+        return internalClient;
+      }
+
       if (clients[botId]) {
         console.log("Client found in array");
         return clients[botId];
       }
-      const rows = await db.getToken(botId);
-      if (rows.length === 0) {
+      const tokenInfo = await db.getToken(botId);
+      if (!tokenInfo) {
         const error = new Error("Token not found");
         error.statusCode = 401;
         throw error;
       }
-      const tokenInfo = rows[0];
       const client = {
         id: botId,
         type: tokenInfo.type,
@@ -60,7 +73,7 @@ const PublicClientPool = () => {
       return client;
     },
     obtainInternalClient: async () => {
-      return await this.obtainClient(process.env.NOTION_API_KEY_ID);
+      return internalClient;
     },
   };
 };

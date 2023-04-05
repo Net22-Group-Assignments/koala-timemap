@@ -1,6 +1,7 @@
 const PeopleService = require("./people_service");
-const db = require("../db");
+const db = require("../db.js");
 const axios = require("axios");
+const { token } = require("morgan");
 const LoginService = {
   configure: (ClientPool) => {
     this.clientPool = ClientPool;
@@ -26,14 +27,13 @@ const LoginService = {
     const notionOAuthRedirectUrl =
       "https://api.notion.com/v1/oauth/authorize?client_id=c572edd7-44b3-40e6-af1f-0a0f92c2a7d1&response_type=code&owner=user";
     const response = Object.create(signInResponse);
-    const rows = await db.getToken(botId);
-    if (rows.length === 0) {
+    const tokenInfo = await db.getToken(botId);
+    if (!tokenInfo) {
       console.log("Not registered yet");
       response.registerStatus = registerStatus.NOT_REGISTERED;
       response.redirectUrl = notionOAuthRedirectUrl;
       return response;
     }
-    const tokenInfo = rows[0];
     console.log("Token info from database");
     console.log(tokenInfo);
     // use tokenInfo.token with axios to connect to Notion API https://api.notion.com/v1/users/me
@@ -88,6 +88,28 @@ const LoginService = {
       response.token = tokenInfo.bot_id;
       response.expiresIn = 60 * 60 * 24 * 365;
       response.redirectUrl = "/";
+      console.log(response);
+      return response;
+    } else {
+      response.authState = {
+        integration: {
+          id: process.env.NOTION_API_KEY_ID,
+          type: "internal",
+        },
+        person: {
+          id: process.env.NOTION_API_KEY_ID,
+          name: "Ishmael",
+          role: "Super",
+          notion_id: "",
+          notion_name: "Snake Plissken",
+          notion_email: "",
+          avatar_url: null,
+        },
+      };
+      response.registerStatus = registerStatus.REGISTERED_USER;
+      response.token = process.env.NOTION_API_KEY_ID;
+      response.expiresIn = 60 * 60 * 24 * 365;
+      response.redirectUrl = "/";
       return response;
     }
   },
@@ -118,13 +140,15 @@ const LoginService = {
       token: response.data.access_token,
       user_id: response.data.owner.user.id,
       integration_type: "public",
+      email: response.data.owner.user.person.email,
     };
 
     await db.insertToken(
       tokenInfo.bot_id,
       tokenInfo.token,
       tokenInfo.integration_type,
-      tokenInfo.user_id
+      tokenInfo.user_id,
+      tokenInfo.email
     );
 
     return tokenInfo;

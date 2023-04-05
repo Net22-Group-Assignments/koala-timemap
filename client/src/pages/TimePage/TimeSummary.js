@@ -43,12 +43,20 @@ export default function TimeSummary(props) {
       error: getProjectError,
     },
     executeGetProjects,
-  ] = useAxios("/api/projects", { headers: { Authorization: authHeader() } });
+  ] = useAxios({
+    url: "/api/projects",
+    method: "GET",
+    headers: { Authorization: authHeader() },
+  });
 
   const [
     { data: getPeopleData, loading: getPeopleLoading, error: getPeopleError },
     executeGetPeople,
-  ] = useAxios("/api/people", { headers: { Authorization: authHeader() } });
+  ] = useAxios({
+    url: "/api/people",
+    method: "GET",
+    headers: { Authorization: authHeader() },
+  });
 
   const [
     {
@@ -57,7 +65,9 @@ export default function TimeSummary(props) {
       error: getTimeReportError,
     },
     executeGetTimeReportData,
-  ] = useAxios("/api/timereports?collated=true", {
+  ] = useAxios({
+    url: "/api/timereports?collated=true",
+    method: "GET",
     headers: { Authorization: authHeader() },
   });
 
